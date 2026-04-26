@@ -1,6 +1,7 @@
 package Nicolas_End.demo.domains.user;
 
 
+import Nicolas_End.demo.enums.user.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,11 +16,14 @@ import lombok.*;
 @AllArgsConstructor
 public class UserEntity {
 
-    @Id
-    private String userEmail;
+@Id
+private String userEmail;
 
-    @Column(nullable = false)
-    private String name;
+@Column(nullable = false)
+private String name;
 
-    @Column(n)
+@Column(nullable = false)
+private UserRole role;
+
+
 }
