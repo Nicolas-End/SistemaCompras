@@ -68,6 +68,7 @@ public class QuoteEntity {
 
     @PrePersist
     public void PrePersist(){
+        this.status = QuoteStatus.SOLICITADO;
         this.createdAt = LocalDateTime.now();
     };
 

@@ -1,6 +1,7 @@
 package Nicolas_End.demo.domains.orders;
 
 import Nicolas_End.demo.domains.quote.QuoteEntity;
+import Nicolas_End.demo.enums.order.OrderStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -15,13 +16,21 @@ public class OrderEntity {
     @Column
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
+
     @OneToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name="quote_id", referencedColumnName = "id")
     private QuoteEntity quoteId;
 
+
+
+
     @PrePersist
     private void PrePersist(){
         this.createdAt = LocalDateTime.now();
+        this.orderStatus = OrderStatus.CHEGANDO;
     }
 
 
