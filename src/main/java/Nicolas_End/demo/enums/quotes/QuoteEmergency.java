@@ -1,6 +1,6 @@
-package Nicolas_End.demo.enums.order;
+package Nicolas_End.demo.enums.quotes;
 
-public enum OrderEmergency {
+public enum QuoteEmergency {
 
     MAXIMA("MAXIMA"),
     MEDIO("MEDIO"),
@@ -8,7 +8,7 @@ public enum OrderEmergency {
 
     private final String emergency;
 
-    OrderEmergency(String emergency) {
+    QuoteEmergency(String emergency) {
         this.emergency = emergency;
     }
 

@@ -1,11 +1,7 @@
-package Nicolas_End.demo.enums.user;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.core.userdetails.User;
+package Nicolas_End.demo.enums.staff;
 
 
-public enum UserRole {
+public enum StaffRoles {
     COMPRADOR("COMPRADOR"),
     ADMINISTRADOR("ADMINISTRADOR"),
     VENDEDOR("VENDEDOR"),
@@ -13,7 +9,7 @@ public enum UserRole {
 
     private final String role;
 
-    private UserRole(String role){
+    private StaffRoles(String role){
         this.role = role;
     }
 
