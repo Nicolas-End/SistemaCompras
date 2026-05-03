@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "TB_QUOTE", schema = "Compras")
+@Table(name = "TB_QUOTE", schema = "compras")
 @Getter
 @Setter
 public class QuoteEntity {

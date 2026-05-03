@@ -8,7 +8,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "TB_ANNEX", schema = "Compras")
+@Table(name = "TB_ANNEX", schema = "compras")
 @Getter
 @Setter
 public class AnnexEntity {

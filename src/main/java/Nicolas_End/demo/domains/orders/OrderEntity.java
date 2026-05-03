@@ -3,9 +3,16 @@ package Nicolas_End.demo.domains.orders;
 import Nicolas_End.demo.domains.quote.QuoteEntity;
 import Nicolas_End.demo.enums.order.OrderStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+@Entity
+@Table(name = "TB_ORDERS", schema = "compras")
+@Getter
+@Setter
 
 public class OrderEntity {
 
