@@ -1,9 +1,11 @@
-package Nicolas_End.demo.util.response;
+package Nicolas_End.demo.infra.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class ResponseUtil {
+
+
 
     public static<T> ApiResponse<T> sucess(T datas, String message, String path ){
         ApiResponse<T> apiResponse = new ApiResponse<>();
@@ -11,20 +13,20 @@ public class ResponseUtil {
         apiResponse.setSucess(true);
         apiResponse.setMessage(message);
         apiResponse.setDatas(datas);
-        apiResponse.setErrors(null);
+        apiResponse.setError(null);
         apiResponse.setTime(LocalDateTime.now());
         apiResponse.setPath(path);
 
         return apiResponse;
     };
 
-    public static<T> ApiResponse<T> error(List<String> errors , String message, String path){
+    public static<T> ApiResponse<T> error(Exception error , String message, String path){
         ApiResponse<T> apiResponse = new ApiResponse<>();
 
         apiResponse.setSucess(false);
         apiResponse.setMessage(message);
         apiResponse.setDatas(null);
-        apiResponse.setErrors(errors);
+        apiResponse.setError(error);
         apiResponse.setTime(LocalDateTime.now());
         apiResponse.setPath(path);
 

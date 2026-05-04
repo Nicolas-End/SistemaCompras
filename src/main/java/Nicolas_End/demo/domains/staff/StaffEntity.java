@@ -5,6 +5,7 @@ import Nicolas_End.demo.enums.staff.StaffRoles;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -16,23 +17,30 @@ import java.util.UUID;
 @AllArgsConstructor
 public class StaffEntity {
 
-@Id
-@GeneratedValue(strategy = GenerationType.AUTO)
-private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
 
 
-@Column(nullable = false, unique = true)
-private String email;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-@Column(nullable = false)
-private String name;
+    @Column(nullable = false)
+    private String name;
 
-@Column(nullable = false)
-private String password;
-
-
-@Column(nullable = false, unique = false)
-private StaffRoles role;
+    @Column(nullable = false)
+    private String password;
 
 
+    @Column(nullable = false, unique = false)
+    private StaffRoles role;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void PrePersist(){
+        this.createdAt = LocalDateTime.now();
+        this.password = "senha123";
+    }
 }
