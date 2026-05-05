@@ -16,7 +16,7 @@ public class StaffService {
             return ResponseUtil.sucess(null, "Colaborador Cadastrado com sucesso", "POST /staff");
 
         } catch (Exception e) {
-            return ResponseUtil.error(e, "Deu um erro ai Campeão", "POST /staff");
+            return ResponseUtil.error(String.valueOf(e), "Deu um erro ai Campeão", "POST /staff");
         }
     }
 }

@@ -20,7 +20,7 @@ public class ResponseUtil {
         return apiResponse;
     };
 
-    public static<T> ApiResponse<T> error(Exception error , String message, String path){
+    public static<T> ApiResponse<T> error(String error , String message, String path){
         ApiResponse<T> apiResponse = new ApiResponse<>();
 
         apiResponse.setSucess(false);

@@ -12,7 +12,7 @@ public class ApiResponse<T> {
     private boolean sucess;
     private String message;
     private T datas;
-    private Exception error;
+    private String error;
     private LocalDateTime time; // Mostra quando gerou a resposta
     private String path; //Endpoint-utilizado
 
