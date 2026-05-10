@@ -21,7 +21,7 @@ public class CustomExceptions {
 
         String path = String.valueOf(request.getRequestURL());
 
-        this.errorResponse = ResponseUtil.error("Bad Request", "Formato enviado invalido", path);
+        this.errorResponse = ResponseUtil.error("Bad Request", "Formato enviado invalido", path, HttpStatus.BAD_REQUEST);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.errorResponse);
 

@@ -1,5 +1,7 @@
 package Nicolas_End.demo.infra.response;
 
+import org.springframework.http.HttpStatus;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class ResponseUtil {
         return apiResponse;
     };
 
-    public static<T> ApiResponse<T> error(String error , String message, String path){
+    public static<T> ApiResponse<T> error(String error , String message, String path, HttpStatus statusCode){
         ApiResponse<T> apiResponse = new ApiResponse<>();
 
         apiResponse.setSucess(false);
@@ -29,6 +31,7 @@ public class ResponseUtil {
         apiResponse.setError(error);
         apiResponse.setTime(LocalDateTime.now());
         apiResponse.setPath(path);
+        apiResponse.setStatus(statusCode);
 
         return apiResponse;
     }

@@ -12,4 +12,6 @@ public interface StaffRespository extends JpaRepository<StaffEntity, UUID> {
 
     UserDetails findByEmail(String email);
 
+
+
 }

@@ -2,9 +2,10 @@ package Nicolas_End.demo.controllers;
 
 
 import Nicolas_End.demo.domains.staff.StaffService;
-import Nicolas_End.demo.dtos.staff.PostNewStaffDTO;
+import Nicolas_End.demo.dtos.staff.StaffDatasDTO;
 import Nicolas_End.demo.infra.response.ApiResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
@@ -20,14 +21,14 @@ public class StaffController {
     }
 
     @PostMapping
-    public ResponseEntity createNewStaff(@RequestBody PostNewStaffDTO staff){
+    public ResponseEntity registerStaff(@RequestBody StaffDatasDTO staff){
 
-            ApiResponse staffStatus = staffService.registerNewStaff(staff);
+            ApiResponse staffStatus = this.staffService.registerNewStaff(staff);
 
             if (staffStatus.getSucess()){
-                return  ResponseEntity.ok(staffStatus);
+                return ResponseEntity.ok(staffStatus);
             }
-            return  ResponseEntity.status(401).body(staffStatus);
+            return ResponseEntity.status(staffStatus.getStatus()).body(staffStatus);
     }
 
     @GetMapping()
