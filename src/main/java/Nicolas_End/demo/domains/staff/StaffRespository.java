@@ -10,7 +10,7 @@ import java.util.UUID;
 @EnableJpaRepositories
 public interface StaffRespository extends JpaRepository<StaffEntity, UUID> {
 
-    UserDetails findByEmail(String email);
+    StaffEntity findByEmail(String email);
 
 
 

@@ -18,6 +18,7 @@ public class ResponseUtil {
         apiResponse.setError(null);
         apiResponse.setTime(LocalDateTime.now());
         apiResponse.setPath(path);
+        apiResponse.setStatus(HttpStatus.OK);
 
         return apiResponse;
     };

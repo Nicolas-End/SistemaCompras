@@ -4,6 +4,7 @@ package Nicolas_End.demo.domains.staff;
 import Nicolas_End.demo.enums.staff.StaffRoles;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class StaffEntity {
     private String password;
 
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = false)
     private StaffRoles role;
 
@@ -41,6 +43,6 @@ public class StaffEntity {
     @PrePersist
     public void PrePersist(){
         this.createdAt = LocalDateTime.now();
-        this.password = "senha123";
+        this.password = new BCryptPasswordEncoder().encode("senha123");
     }
 }

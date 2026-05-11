@@ -29,10 +29,12 @@ public class StaffController {
                 return ResponseEntity.ok(staffStatus);
             }
             return ResponseEntity.status(staffStatus.getStatus()).body(staffStatus);
+
     }
 
     @GetMapping()
     public ResponseEntity hello(){
+
         return  ResponseEntity.ok("OLAAA");
     }
 
