@@ -9,7 +9,7 @@ public class ResponseUtil {
 
 
 
-    public static<T> ApiResponse<T> sucess(T datas, String message, String path ){
+    public static<T> ApiResponse<T> sucess(List<T> datas, String message, String path, HttpStatus httpStatus){
         ApiResponse<T> apiResponse = new ApiResponse<>();
 
         apiResponse.setSucess(true);
@@ -18,7 +18,7 @@ public class ResponseUtil {
         apiResponse.setError(null);
         apiResponse.setTime(LocalDateTime.now());
         apiResponse.setPath(path);
-        apiResponse.setStatus(HttpStatus.OK);
+        apiResponse.setStatus(httpStatus);
 
         return apiResponse;
     };
