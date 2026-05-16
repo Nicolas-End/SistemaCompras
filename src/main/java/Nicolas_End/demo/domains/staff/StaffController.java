@@ -5,6 +5,7 @@ import Nicolas_End.demo.dtos.staff.StaffDatasDTO;
 import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
 import Nicolas_End.demo.infra.response.ApiResponse;
 
+
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/staff")
 public class StaffController {
+
+
+
 
     StaffService staffService;
 
@@ -34,10 +38,10 @@ public class StaffController {
     @GetMapping()
     public ResponseEntity staffLogin(@RequestBody StaffEmailAndPasswordDTO datas){
 
+
         ApiResponse staffLogin = this.staffService.validateStaffLogin(datas);
 
         return ResponseEntity.status(staffLogin.getStatus()).body(staffLogin);
     }
-
 
 }
