@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -60,9 +61,10 @@ public class StaffService {
 
             List<T> responsDatas = new java.util.ArrayList<>(List.of());
 
+            List<String> userToken = this.createStringDataList(this.tokenService.generateToken(staffEntity));
 
-            String userToken = this.tokenService.generateToken(staffEntity);
             responsDatas.add((T) userToken);
+            System.out.println(responsDatas); 
 
             return ResponseUtil.sucess(responsDatas, "Usuario encontrado", path, HttpStatus.OK);
 
@@ -102,5 +104,9 @@ public class StaffService {
 
     }
 
+    private List<String> createStringDataList(String data){
+        return new ArrayList<>(List.of(data));
+
+    }
 
 }
