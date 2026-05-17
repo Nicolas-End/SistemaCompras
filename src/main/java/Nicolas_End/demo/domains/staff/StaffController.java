@@ -52,10 +52,11 @@ public class StaffController {
     @GetMapping("/all")
     public  ResponseEntity getAllStaff(){
 
-        return  ResponseEntity.status(HttpStatus.OK)
+        ApiResponse staffList = this.staffService.getAllStaff();
+
+        return  ResponseEntity.status(staffList.getStatus())
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES))
-                .body("Teste")
-                ;
+                .body(staffList);
 
     }
 

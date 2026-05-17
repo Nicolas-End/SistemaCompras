@@ -31,7 +31,11 @@ public class StaffService {
 
     public <T>ApiResponse<T> registerNewStaff(StaffDatasDTO datas ){
 
-        try {
+
+            if(this.staffIsRegistered(datas.email())){
+                return  ResponseUtil.error("User already registered", "Usuario Já cadastrado no sistema", path, HttpStatus.CONFLICT);
+            }
+
 
             // gera a Entidade para eu conseguir salvar seus dados
             StaffEntity staff = this.createStaffEntity(datas);
@@ -42,9 +46,7 @@ public class StaffService {
             return ResponseUtil.sucess(null, "Usuario Cadastrado com Sucesso", this.path,HttpStatus.CREATED);
 
         // caso ja haja cadastro voltara um erro ao cliente
-        }catch (DataIntegrityViolationException e ){
-            return  ResponseUtil.error("User already registered", "Usuario Já cadastrado no sistema", path, HttpStatus.CONFLICT);
-        }
+
 
     }
 
@@ -52,44 +54,48 @@ public class StaffService {
     @Transactional
     public  <T>ApiResponse<T> validateStaffLogin(StaffEmailAndPasswordDTO datas){
 
-        try {
-            StaffEntity staffEntity = staffRespository.findByEmail(datas.email());
-            boolean staffCredentials = this.validateStaffCredentials(staffEntity, datas.password());
 
-            if (!staffCredentials){
+            StaffEntity staffEntity = this.getEspecificStaffByEmailAndValidateCredentials(datas);
+            if (staffEntity == null){
                 return  ResponseUtil.error("User Not Found","Usuario não encontrado",path,HttpStatus.NOT_FOUND);
             }
 
             List<T> responsDatas = new java.util.ArrayList<>(List.of());
 
-            List<String> userToken = this.createStringDataList(this.tokenService.generateToken(staffEntity));
+            StaffTokenDTO userToken = this.setStaffTokenReturn(staffEntity);
 
             responsDatas.add((T) userToken);
             System.out.println(responsDatas); 
 
             return ResponseUtil.sucess(responsDatas, "Usuario encontrado", path, HttpStatus.OK);
 
-        }catch(Exception e){
-            return  ResponseUtil.error(String.valueOf(e), "Erro Interno", path, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
 
     }
 
 
 
     public <T> ApiResponse getAllStaff(){
-        try{
 
-            List<StaffEntity> staffs = this.getAllStaff();
-        }catch (Exception e){
-            return  ResponseUtil.error(String.valueOf(e), "Erro Interno", path, HttpStatus.INTERNAL_SERVER_ERROR);
+            List<StaffDatasDTO> staffs = this.getAllStaffs();
 
-        }
+            return ResponseUtil.sucess(staffs, "Usuario Encontrados", path, HttpStatus.OK);
+
+
 
     }
 
 
+    // valida se o usuario existe e se as credenciais estão correta
+    private StaffEntity getEspecificStaffByEmailAndValidateCredentials(StaffEmailAndPasswordDTO datas){
+        StaffEntity staffEntity = staffRespository.findByEmail(datas.email());
+        boolean staffCredentials = this.validateStaffCredentials(staffEntity, datas.password());
 
+        if (!staffCredentials){
+            return  null;
+        }
+        return staffEntity;
+    }
 
 
     private boolean validateStaffCredentials(StaffEntity staffEntity, String staffPasswordInput ){
@@ -115,10 +121,21 @@ public class StaffService {
 
     }
 
-    private StaffTokenDTO setStaffTokenReturn(String token){
-        return new StaffTokenDTO(token);
+
+    private StaffTokenDTO setStaffTokenReturn(StaffEntity staffEntity){
+
+        return new StaffTokenDTO(this.tokenService.generateToken(staffEntity));
     }
 
-    privaet
+
+    private boolean staffIsRegistered(String email){
+        return this.staffRespository.findByEmail(email) == null;
+
+    }
+
+
+    private List<StaffDatasDTO> getAllStaffs(){
+        return this.staffRespository.findAllBy();
+    }
 
 }

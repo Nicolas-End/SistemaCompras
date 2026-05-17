@@ -1,7 +1,7 @@
 package Nicolas_End.demo.infra.security;
 
 
-import Nicolas_End.demo.domains.staff.StaffRespository;
+import Nicolas_End.demo.domains.staff.StaffRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +17,10 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
-    private final StaffRespository staffRespository;
+    private final StaffRepository staffRespository;
 
     public SecurityFilter(TokenService tokenService,
-                          StaffRespository staffRespository){
+                          StaffRepository staffRespository){
         this.tokenService = tokenService;
         this.staffRespository = staffRespository;
     }
