@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.UUID;
 
 @EnableJpaRepositories
-public interface StaffRespository extends JpaRepository<StaffEntity, UUID> {
+public interface StaffRepository extends JpaRepository<StaffEntity, UUID> {
 
     StaffEntity findByEmail(String email);
 

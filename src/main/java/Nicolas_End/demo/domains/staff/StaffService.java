@@ -2,6 +2,7 @@ package Nicolas_End.demo.domains.staff;
 
 import Nicolas_End.demo.dtos.staff.StaffDatasDTO;
 import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
+import Nicolas_End.demo.dtos.staff.StaffTokenDTO;
 import Nicolas_End.demo.infra.response.ApiResponse;
 import Nicolas_End.demo.infra.response.ResponseUtil;
 import Nicolas_End.demo.infra.security.TokenService;
@@ -16,12 +17,12 @@ import java.util.List;
 
 @Service
 public class StaffService {
-    StaffRespository staffRespository;
+    StaffRepository staffRespository;
     TokenService tokenService;
     String path;
 
 
-    public StaffService(StaffRespository staffRespository, TokenService tokenService){
+    public StaffService(StaffRepository staffRespository, TokenService tokenService){
         this.path = "/staff";
         this.tokenService = tokenService;
         this.staffRespository = staffRespository;
@@ -76,6 +77,16 @@ public class StaffService {
 
 
 
+    public <T> ApiResponse getAllStaff(){
+        try{
+
+            List<StaffEntity> staffs = this.getAllStaff();
+        }catch (Exception e){
+            return  ResponseUtil.error(String.valueOf(e), "Erro Interno", path, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+    }
 
 
 
@@ -104,9 +115,10 @@ public class StaffService {
 
     }
 
-    private List<String> createStringDataList(String data){
-        return new ArrayList<>(List.of(data));
-
+    private StaffTokenDTO setStaffTokenReturn(String token){
+        return new StaffTokenDTO(token);
     }
+
+    privaet
 
 }

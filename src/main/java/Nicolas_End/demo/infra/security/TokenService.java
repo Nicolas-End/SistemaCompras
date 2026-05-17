@@ -7,6 +7,9 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
 
+import jakarta.annotation.PostConstruct;
+import org.antlr.v4.runtime.Token;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +24,10 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+
     public String generateToken(StaffEntity staff){
         try{
-
+            validateSecret();
             Algorithm algorithm = Algorithm.HMAC256(this.secret);
             return JWT.create()
                     .withIssuer("auth-api")
@@ -42,6 +46,7 @@ public class TokenService {
 
     public String validateToken(String token){
         try{
+            validateSecret();
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
                     .withIssuer("auth-api")
@@ -56,6 +61,16 @@ public class TokenService {
     private Instant genExpirationDate(){
 
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-3"));
+    }
+
+
+    @PostConstruct
+    private void validateSecret(){
+        if (secret == null){
+
+            throw  new RuntimeException("A variavel secret não esta configurada");
+        }
+
     }
 
 }

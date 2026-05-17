@@ -6,9 +6,13 @@ import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
 import Nicolas_End.demo.infra.response.ApiResponse;
 
 
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping(path = "/staff")
@@ -42,6 +46,17 @@ public class StaffController {
         ApiResponse staffLogin = this.staffService.validateStaffLogin(datas);
 
         return ResponseEntity.status(staffLogin.getStatus()).body(staffLogin);
+    }
+
+
+    @GetMapping("/all")
+    public  ResponseEntity getAllStaff(){
+
+        return  ResponseEntity.status(HttpStatus.OK)
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES))
+                .body("Teste")
+                ;
+
     }
 
 }
