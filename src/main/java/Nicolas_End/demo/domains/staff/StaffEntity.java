@@ -18,6 +18,16 @@ import java.util.UUID;
 @AllArgsConstructor
 public class StaffEntity {
 
+    private StaffEntity(String email, String name, StaffRoles role) {
+        this.email = email;
+        this.name = name;
+        this.role = role;
+    }
+
+    public static StaffEntity createStaff(String email, String name, StaffRoles role){
+        return new StaffEntity(email, name, role);
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;

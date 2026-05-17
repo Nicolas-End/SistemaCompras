@@ -32,7 +32,7 @@ public class StaffService {
         try {
 
             // gera a Entidade para eu conseguir salvar seus dados
-            StaffEntity staff = this.generateStaffEntity(datas);
+            StaffEntity staff = this.createStaffEntity(datas);
 
             this.staffRespository.save(staff);
 
@@ -93,14 +93,13 @@ public class StaffService {
     }
 
 
-    private StaffEntity generateStaffEntity(StaffDatasDTO staffDatas){
-        StaffEntity staff = new StaffEntity();
+    private StaffEntity createStaffEntity(StaffDatasDTO staffDatas){
+        return StaffEntity.createStaff(
+                staffDatas.email(),
+                staffDatas.name(),
+                staffDatas.role()
+        );
 
-        staff.setEmail(staffDatas.email());
-        staff.setName(staffDatas.name());
-        staff.setRole(staffDatas.role());
-
-        return  staff;
     }
 
 
