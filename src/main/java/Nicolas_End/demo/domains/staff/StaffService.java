@@ -129,7 +129,7 @@ public class StaffService {
 
 
     private boolean staffIsRegistered(String email){
-        return this.staffRespository.findByEmail(email) == null;
+        return this.staffRespository.findByEmail(email) != null;
 
     }
 
