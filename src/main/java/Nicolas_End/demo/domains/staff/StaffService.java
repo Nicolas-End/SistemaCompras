@@ -65,7 +65,6 @@ public class StaffService {
             StaffTokenDTO userToken = this.setStaffTokenReturn(staffEntity);
 
             responsDatas.add((T) userToken);
-            System.out.println(responsDatas); 
 
             return ResponseUtil.sucess(responsDatas, "Usuario encontrado", path, HttpStatus.OK);
 
