@@ -5,16 +5,21 @@ FROM node:22
 
 WORKDIR /front-end
 
-COPY . . 
+COPY package*.json ./
+
+
 
 #------  BAIXANDO DEPRENDENCIAS -------
 
 RUN npm install 
 
+
 #------ RODANDO PROGAMA --------
 
-EXPOSE 6379
+COPY . . 
 
 RUN npm run build
 
-CMD ["npm", "start","-h", "0.0.0.0", "-p", "6379"]
+EXPOSE 3000
+
+CMD ["npm", "start"]

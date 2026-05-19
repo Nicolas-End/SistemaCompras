@@ -56,7 +56,7 @@ public class StaffEntity implements UserDetails {
     private LocalDateTime createdAt;
 
     @PrePersist
-    public void PrePersist(){
+    public void prePersist(){
         this.createdAt = LocalDateTime.now();
         this.password = new BCryptPasswordEncoder().encode("senha123");
     }

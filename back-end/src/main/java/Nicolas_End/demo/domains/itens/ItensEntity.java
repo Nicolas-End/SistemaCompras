@@ -30,4 +30,14 @@ public class ItensEntity {
 
     @Column
     private double price;
+
+    @PrePersist
+    public void prePersist(){
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        this.updatedAt = LocalDateTime.now();
+    }
 }
