@@ -1,9 +1,8 @@
 package Nicolas_End.demo.infra.exception;
 
 
-import Nicolas_End.demo.infra.response.ApiResponse;
-import Nicolas_End.demo.infra.response.ResponseUtil;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import Nicolas_End.demo.infra.util.response.ApiResponse;
+import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,14 +13,18 @@ import jakarta.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class CustomExceptions {
 
+    private final ResponseUtil responseUtil;
+
+    public CustomExceptions(ResponseUtil responseUtil){
+        this.responseUtil = responseUtil;
+    }
+
     ApiResponse errorResponse;
-
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse> BadRequestExceptionHandler(HttpServletRequest request){
+    public ResponseEntity<ApiResponse> BadRequestExceptionHandler(){
 
-        String path = String.valueOf(request.getRequestURL());
 
-        this.errorResponse = ResponseUtil.error("Bad Request", "Formato enviado invalido", path, HttpStatus.BAD_REQUEST);
+        this.errorResponse = responseUtil.error("Bad Request", "Formato enviado invalido", HttpStatus.BAD_REQUEST);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.errorResponse);
 
@@ -29,10 +32,10 @@ public class CustomExceptions {
 
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> GeneralExceptionHandler(HttpServletRequest request){
-        String path = String.valueOf(request.getRequestURL());
+    public ResponseEntity<ApiResponse> GeneralExceptionHandler(){
 
-        this.errorResponse = ResponseUtil.error("Internal Error", "Error interno do sistema", path, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        this.errorResponse = responseUtil.error("Internal Error", "Error interno do sistema",  HttpStatus.INTERNAL_SERVER_ERROR);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.errorResponse);
     }

@@ -3,11 +3,10 @@ package Nicolas_End.demo.domains.staff;
 
 import Nicolas_End.demo.dtos.staff.StaffDatasDTO;
 import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
-import Nicolas_End.demo.infra.response.ApiResponse;
+import Nicolas_End.demo.infra.util.response.ApiResponse;
 
 
 import org.springframework.http.CacheControl;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;

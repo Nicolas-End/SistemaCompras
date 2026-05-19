@@ -3,27 +3,24 @@ package Nicolas_End.demo.domains.staff;
 import Nicolas_End.demo.dtos.staff.StaffDatasDTO;
 import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
 import Nicolas_End.demo.dtos.staff.StaffTokenDTO;
-import Nicolas_End.demo.infra.response.ApiResponse;
-import Nicolas_End.demo.infra.response.ResponseUtil;
+import Nicolas_End.demo.infra.util.response.ApiResponse;
+import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import Nicolas_End.demo.infra.security.TokenService;
 import jakarta.transaction.Transactional;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class StaffService {
-    StaffRepository staffRespository;
-    TokenService tokenService;
-    String path;
+    private final StaffRepository staffRespository;
+    private final TokenService tokenService;
+    private final ResponseUtil responseUtil;
 
-
-    public StaffService(StaffRepository staffRespository, TokenService tokenService){
-        this.path = "/staff";
+    public StaffService(StaffRepository staffRespository, ResponseUtil responseUtil, TokenService tokenService){
+        this.responseUtil = responseUtil;
         this.tokenService = tokenService;
         this.staffRespository = staffRespository;
 
@@ -33,7 +30,7 @@ public class StaffService {
 
 
             if(this.staffIsRegistered(datas.email())){
-                return  ResponseUtil.error("User already registered", "Usuario Já cadastrado no sistema", path, HttpStatus.CONFLICT);
+                return  responseUtil.error("User already registered", "Usuario Já cadastrado no sistema",  HttpStatus.CONFLICT);
             }
 
 
@@ -43,7 +40,7 @@ public class StaffService {
             this.staffRespository.save(staff);
 
 
-            return ResponseUtil.sucess(null, "Usuario Cadastrado com Sucesso", this.path,HttpStatus.CREATED);
+            return responseUtil.sucess(null, "Usuario Cadastrado com Sucesso",HttpStatus.CREATED);
 
         // caso ja haja cadastro voltara um erro ao cliente
 
@@ -57,7 +54,7 @@ public class StaffService {
 
             StaffEntity staffEntity = this.getEspecificStaffByEmailAndValidateCredentials(datas);
             if (staffEntity == null){
-                return  ResponseUtil.error("User Not Found","Usuario não encontrado",path,HttpStatus.NOT_FOUND);
+                return  responseUtil.error("User Not Found","Usuario não encontrado",HttpStatus.NOT_FOUND);
             }
 
             List<T> responsDatas = new java.util.ArrayList<>(List.of());
@@ -66,7 +63,7 @@ public class StaffService {
 
             responsDatas.add((T) userToken);
 
-            return ResponseUtil.sucess(responsDatas, "Usuario encontrado", path, HttpStatus.OK);
+            return responseUtil.sucess(responsDatas, "Usuario encontrado", HttpStatus.OK);
 
 
 
@@ -78,7 +75,7 @@ public class StaffService {
 
             List<StaffDatasDTO> staffs = this.getAllStaffs();
 
-            return ResponseUtil.sucess(staffs, "Usuario Encontrados", path, HttpStatus.OK);
+            return responseUtil.sucess(staffs, "Usuario Encontrados", HttpStatus.OK);
 
 
 
