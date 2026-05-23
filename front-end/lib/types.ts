@@ -1,11 +1,13 @@
-export type OrderStatus = "pending" | "production" | "shipped" | "completed" | "cancelled"
+import { UUID } from "crypto"
+
+export type OrderStatus = "CHEGANDO" | "RECEBIDO" | "CANCELADO " | "completed" | "cancelled"
 
 export type Priority = "low" | "medium" | "high"
 
-export type UserRole = "admin" | "employee"
+export type UserRole = "ADMINISTRADOR" | "COMPRADOR" | "VENDEDOR" | "MOTORISTA"
 
 export interface User {
-  id: string
+  id: UUID 
   name: string
   email: string
   role: UserRole
@@ -14,14 +16,14 @@ export interface User {
 }
 
 export interface OrderItem {
-  id: string
+  id: UUID 
   name: string
   quantity: number
   price: number
 }
 
 export interface OrderTimelineEvent {
-  id: string
+  id: UUID 
   status: OrderStatus
   date: Date
   user: string
@@ -29,29 +31,17 @@ export interface OrderTimelineEvent {
 }
 
 export interface Order {
-  id: string
-  clientName: string
-  clientEmail: string
+  id: UUID 
+  employeerName: string
+  employeerEmail: string
   status: OrderStatus
-  priority: Priority
   items: OrderItem[]
   total: number
   createdAt: Date
   updatedAt: Date
-  dueDate: Date
-  timeline: OrderTimelineEvent[]
   assignedTo?: string
 }
 
-export interface Notification {
-  id: string
-  title: string
-  message: string
-  type: "info" | "success" | "warning" | "error"
-  read: boolean
-  createdAt: Date
-  orderId?: string
-}
 
 export interface DashboardMetrics {
   totalOrders: number
