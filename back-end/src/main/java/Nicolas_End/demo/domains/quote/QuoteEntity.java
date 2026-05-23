@@ -55,16 +55,6 @@ public class QuoteEntity {
     )
     private List<AnnexEntity> annexes;
 
-    @ManyToMany
-    @JoinTable(
-            name="TB_ITENS_QUOTE",
-            joinColumns = @JoinColumn(name="quote_id"),
-            inverseJoinColumns = @JoinColumn(name="item_id"),
-            schema = "compras",
-            indexes = @Index(columnList = "quote_id")
-
-    )
-    private List<ItensEntity> itens;
 
 
     @PrePersist
