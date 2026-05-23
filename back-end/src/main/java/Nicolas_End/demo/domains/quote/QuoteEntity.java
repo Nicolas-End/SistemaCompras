@@ -50,7 +50,7 @@ public class QuoteEntity {
             joinColumns = @JoinColumn(name = "quote_id"),
             inverseJoinColumns = @JoinColumn(name = "annex_id"),
             indexes = @Index(columnList = "quote_id"),
-            schema = "Compras"
+            schema = "compras"
 
     )
     private List<AnnexEntity> annexes;
@@ -60,6 +60,7 @@ public class QuoteEntity {
             name="TB_ITENS_QUOTE",
             joinColumns = @JoinColumn(name="quote_id"),
             inverseJoinColumns = @JoinColumn(name="item_id"),
+            schema = "compras",
             indexes = @Index(columnList = "quote_id")
 
     )
