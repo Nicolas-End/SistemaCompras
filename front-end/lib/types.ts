@@ -6,6 +6,13 @@ export type Priority = "low" | "medium" | "high"
 
 export type UserRole = "ADMINISTRADOR" | "COMPRADOR" | "VENDEDOR" | "MOTORISTA"
 
+
+export interface LoginDatas{
+    email:string;
+    password:string;
+}
+
+
 export interface User {
   id: UUID 
   name: string
@@ -54,4 +61,14 @@ export interface DashboardMetrics {
     pedidos: number
     concluidos: number
   }[]
+}
+
+
+export interface ApiResponse{ 
+  error:string |null,
+  message:string | null,
+  path:string | null,
+  status: string | null,
+  sucess: boolean | null,
+  time: Date | null
 }

@@ -2,12 +2,21 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Package, Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { Package, Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Spinner } from "@/components/ui/spinner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { getStaffLogin } from "./(app)/api/staffs/api"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -16,13 +25,19 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
+  const [showErrorDialog, setShowErrorDialog] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     
     // Simulating authentication
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    const isAuthenticated = await getStaffLogin({email, password})
+    if (!isAuthenticated){
+      setShowErrorDialog(true)
+      setIsLoading(false)
+      return
+    }
     
     router.push("/dashboard")
   }
@@ -137,6 +152,23 @@ export default function LoginPage() {
           </div>
         </CardContent>
       </Card>
+
+      <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <div className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-destructive" />
+              <AlertDialogTitle>Login Inválido</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription>
+              E-mail ou senha incorretos. Verifique suas credenciais e tente novamente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogAction onClick={() => setShowErrorDialog(false)}>
+            Fechar
+          </AlertDialogAction>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
