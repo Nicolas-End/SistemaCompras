@@ -2,26 +2,29 @@ package Nicolas_End.demo.domains.itens_order;
 
 import Nicolas_End.demo.domains.itens.ItensEntity;
 import Nicolas_End.demo.domains.orders.OrderEntity;
+import Nicolas_End.demo.domains.quote.QuoteEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Entity
 @Table(name = "TB_ITENS_QUOTE", schema = "compras")
 @Getter
 @Setter
-public class ItensOrderEntity {
+public class ItensOrderEntity implements Serializable {
     @EmbeddedId
     private ItensOrderId id;
 
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("orderId")
     @JoinColumn(name = "order_id")
-    private OrderEntity order;
+    private QuoteEntity order;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("itemId")
     @JoinColumn(name = "item_id")
     private ItensEntity item;

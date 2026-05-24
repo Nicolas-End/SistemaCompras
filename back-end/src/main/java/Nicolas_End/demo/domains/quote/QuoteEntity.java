@@ -2,6 +2,7 @@ package Nicolas_End.demo.domains.quote;
 
 import Nicolas_End.demo.domains.annex.AnnexEntity;
 import Nicolas_End.demo.domains.itens.ItensEntity;
+import Nicolas_End.demo.domains.itens_order.ItensOrderEntity;
 import Nicolas_End.demo.domains.provider.ProviderEntity;
 import Nicolas_End.demo.domains.staff.StaffEntity;
 import Nicolas_End.demo.enums.quotes.QuoteStatus;
@@ -33,6 +34,8 @@ public class QuoteEntity {
     @Column(nullable = false)
     private QuoteStatus status;
 
+    @OneToMany(mappedBy = "order")
+    private List<ItensOrderEntity> itens;
 
    @ManyToOne
    @JoinColumn(name = "staff_id")

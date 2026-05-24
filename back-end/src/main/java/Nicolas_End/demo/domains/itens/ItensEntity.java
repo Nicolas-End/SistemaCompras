@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "tb_itens")
 @Getter
 @Setter
-public class ItensEntity {
+public class ItensEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
