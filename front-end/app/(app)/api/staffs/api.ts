@@ -14,14 +14,17 @@ export const getStaffLogin = async (datas:LoginDatas):Promise<boolean>  => {
     try{
   
 
-    const userToken = await api.post<LoginResponse>("/staff/login", datas);
+    const staffDatas = await api.post<LoginResponse>("/staff/login", datas);
+    
+    console.log("Resposta da API:", staffDatas); // Log para verificar a resposta da API
 
-    if (!userToken.sucess || userToken.datas.token === null){
-        console.error("Login falhou:", userToken.message);
+
+    if (!staffDatas.sucess || staffDatas.datas.token === null){
+        console.error("Login falhou:", staffDatas.message);
         return false
     }
 
-    setTokenFromCookies(userToken.datas.token);
+    setTokenFromCookies(staffDatas.datas.token);
     return true; 
 
     }catch (error) {
