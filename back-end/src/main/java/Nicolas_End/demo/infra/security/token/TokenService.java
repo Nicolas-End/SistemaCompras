@@ -1,4 +1,4 @@
-package Nicolas_End.demo.infra.security;
+package Nicolas_End.demo.infra.security.token;
 
 import Nicolas_End.demo.domains.staff.StaffEntity;
 import com.auth0.jwt.JWT;
@@ -8,8 +8,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 
 
 import jakarta.annotation.PostConstruct;
-import org.antlr.v4.runtime.Token;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

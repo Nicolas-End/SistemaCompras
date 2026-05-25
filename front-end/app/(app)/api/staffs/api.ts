@@ -13,9 +13,11 @@ type LoginResponse = ApiResponse & {
 export const getStaffLogin = async (datas:LoginDatas):Promise<boolean>  => {
     try{
   
-    const userToken = await api.post<LoginResponse>("/staffs/login", datas);
-    if (userToken.sucess == false || !userToken.datas.token){
-        
+    console.log("Dados de login enviados:", datas);
+    const userToken = await api.post<LoginResponse>("/staff/login", datas);
+    console.log("Resposta do login:", userToken);
+    if (!userToken.sucess || userToken.datas.token === null){
+        console.error("Login falhou:", userToken.message);
         return false
     }
 
@@ -23,7 +25,7 @@ export const getStaffLogin = async (datas:LoginDatas):Promise<boolean>  => {
     return true; 
 
     }catch (error) {
-        console.log("TIPO: ", typeof api.post)
+        
         console.error("Erro ao fazer login:", error);
         return false;
     }

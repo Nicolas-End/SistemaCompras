@@ -1,6 +1,6 @@
 import { getTokenFromCookies } from "./cookies";
 
-const  API_URL = process.env.API_URL;
+const  apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 type RequestOption = RequestInit /* "metodo" padrão do fetch para colocar info principais para requisição*/ 
 
@@ -17,7 +17,7 @@ async function request <T>(endpoint:string,
         authHeader = token ? `Bearer ${token}` : "";
     }
 
-    const response = await fetch(`${API_URL}${endpoint}`, {
+    const response = await fetch(`${apiUrl}${endpoint}`, {
         ...rest,
         headers: {
             "Content-Type":"application/json",
@@ -25,8 +25,11 @@ async function request <T>(endpoint:string,
             ...headers
         }
     });
+     if (!response.ok) {
+        
+        return null as unknown as T; // Retorna null em caso de erro
+    }
 
-    
     return response.json() as Promise<T>;
 
 }

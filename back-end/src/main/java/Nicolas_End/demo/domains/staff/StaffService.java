@@ -5,7 +5,7 @@ import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
 import Nicolas_End.demo.dtos.staff.StaffTokenDTO;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
-import Nicolas_End.demo.infra.security.TokenService;
+import Nicolas_End.demo.infra.security.token.TokenService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

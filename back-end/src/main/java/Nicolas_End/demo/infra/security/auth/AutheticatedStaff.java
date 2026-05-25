@@ -1,4 +1,4 @@
-package Nicolas_End.demo.infra.security;
+package Nicolas_End.demo.infra.security.auth;
 
 import Nicolas_End.demo.domains.staff.StaffEntity;
 import org.springframework.security.core.context.SecurityContextHolder;

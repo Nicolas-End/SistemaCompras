@@ -38,7 +38,7 @@ public class StaffController {
 
     }
 
-    @GetMapping()
+    @PostMapping("/login")
     public ResponseEntity staffLogin(@RequestBody StaffEmailAndPasswordDTO datas){
 
 
@@ -48,7 +48,7 @@ public class StaffController {
     }
 
 
-    @GetMapping("/all")
+    @GetMapping()
     public  ResponseEntity getAllStaff(){
 
         ApiResponse staffList = this.staffService.getAllStaff();

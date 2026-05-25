@@ -31,3 +31,5 @@ build/
 
 ### MYSFEL ###
 /src/main/resources/.env
+
+.env

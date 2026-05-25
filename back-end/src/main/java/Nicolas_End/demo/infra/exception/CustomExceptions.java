@@ -31,14 +31,6 @@ public class CustomExceptions {
     }
 
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse> GeneralExceptionHandler(){
-
-
-        this.errorResponse = responseUtil.error("Internal Error", "Error interno do sistema",  HttpStatus.INTERNAL_SERVER_ERROR);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.errorResponse);
-    }
     
 
 }

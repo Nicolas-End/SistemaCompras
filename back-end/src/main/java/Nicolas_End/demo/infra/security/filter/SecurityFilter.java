@@ -1,7 +1,8 @@
-package Nicolas_End.demo.infra.security;
+package Nicolas_End.demo.infra.security.filter;
 
 
 import Nicolas_End.demo.domains.staff.StaffRepository;
+import Nicolas_End.demo.infra.security.token.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
