@@ -1,10 +1,13 @@
-import { ApiResponse, LoginDatas } from "@/lib/types";
+import { ApiResponse, LoginDatas, User } from "@/lib/types";
 import { api} from "@/services/api";
 import { setTokenFromCookies } from "@/services/cookies";
 
 type LoginResponse = ApiResponse & {
-    datas: {    
+    datas: User & {    
+        
         token: string|null
+
+        
     
     }
 }
@@ -16,7 +19,7 @@ export const getStaffLogin = async (datas:LoginDatas):Promise<boolean>  => {
 
     const staffDatas = await api.post<LoginResponse>("/staff/login", datas);
     
-    console.log("Resposta da API:", staffDatas); // Log para verificar a resposta da API
+    console.log("Resposta da API:", staffDatas.datas.token); // Log para verificar a resposta da API
 
 
     if (!staffDatas.sucess || staffDatas.datas.token === null){
