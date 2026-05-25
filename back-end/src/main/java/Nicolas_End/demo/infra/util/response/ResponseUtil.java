@@ -16,7 +16,7 @@ public class ResponseUtil {
     }
 
 
-    public <T> ApiResponse<T> sucess(List<T> datas, String message,  HttpStatus httpStatus){
+    public <T> ApiResponse<T> sucess(T datas, String message,  HttpStatus httpStatus){
         ApiResponse<T> apiResponse = new ApiResponse<>();
 
         apiResponse.setSucess(true);
