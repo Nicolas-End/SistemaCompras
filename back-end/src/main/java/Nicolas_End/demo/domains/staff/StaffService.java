@@ -3,6 +3,7 @@ package Nicolas_End.demo.domains.staff;
 import Nicolas_End.demo.dtos.staff.StaffDatasDTO;
 import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
 import Nicolas_End.demo.dtos.staff.StaffTokenDTO;
+import Nicolas_End.demo.dtos.staff.StaffTokenEmailNameAndRole;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import Nicolas_End.demo.infra.security.token.TokenService;
@@ -57,12 +58,12 @@ public class StaffService {
                 return  responseUtil.error("User Not Found","Usuario não encontrado",HttpStatus.NOT_FOUND);
             }
 
-            List<T> responseDatas = new java.util.ArrayList<>(List.of());
+            StaffTokenEmailNameAndRole allStaffInfos = this.joinAllStaffInfos(staffEntity);
 
-            StaffTokenDTO userToken = this.setStaffTokenReturn(staffEntity);
-            StaffDatasDTO staffDatas = this.getJustNonVunerableStaffInfos(staffEntity);
-            responseDatas.add((T) userToken);
-            responseDatas.add((T) staffDatas);
+            List<T> responseDatas = new java.util.ArrayList(List.of(allStaffInfos));
+
+
+
             return responseUtil.sucess(responseDatas, "Usuario encontrado", HttpStatus.OK);
 
 
@@ -81,7 +82,12 @@ public class StaffService {
 
     }
 
+    private StaffTokenEmailNameAndRole joinAllStaffInfos(StaffEntity staffEntity){
+        StaffTokenDTO userToken = this.setStaffTokenReturn(staffEntity);
+        StaffDatasDTO staffDatas = this.getJustNonVunerableStaffInfos(staffEntity);
 
+        return new StaffTokenEmailNameAndRole(userToken.token(),staffDatas.email(),staffDatas.name(),staffDatas.role());
+    }
     // valida se o usuario existe e se as credenciais estão correta
     private StaffEntity getEspecificStaffByEmailAndValidateCredentials(StaffEmailAndPasswordDTO datas){
         StaffEntity staffEntity = staffRespository.findByEmail(datas.email());
