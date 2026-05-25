@@ -14,12 +14,12 @@ export interface LoginDatas{
 
 
 export interface User {
-  id: UUID 
-  name: string
-  email: string
-  role: UserRole
+  id?: UUID
+  name?: string 
+  email?: string 
+  role?: UserRole
   avatar?: string
-  createdAt: Date
+  createdAt?: Date
 }
 
 export interface OrderItem {

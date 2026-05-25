@@ -57,13 +57,13 @@ public class StaffService {
                 return  responseUtil.error("User Not Found","Usuario não encontrado",HttpStatus.NOT_FOUND);
             }
 
-            List<T> responsDatas = new java.util.ArrayList<>(List.of());
+            List<T> responseDatas = new java.util.ArrayList<>(List.of());
 
             StaffTokenDTO userToken = this.setStaffTokenReturn(staffEntity);
-
-            responsDatas.add((T) userToken);
-
-            return responseUtil.sucess(responsDatas, "Usuario encontrado", HttpStatus.OK);
+            StaffDatasDTO staffDatas = this.getJustNonVunerableStaffInfos(staffEntity);
+            responseDatas.add((T) userToken);
+            responseDatas.add((T) staffDatas);
+            return responseUtil.sucess(responseDatas, "Usuario encontrado", HttpStatus.OK);
 
 
 
@@ -129,7 +129,10 @@ public class StaffService {
 
     }
 
+    private StaffDatasDTO getJustNonVunerableStaffInfos(StaffEntity staffEntity){
+        return  new StaffDatasDTO(staffEntity.getEmail(),staffEntity.getName(),staffEntity.getRole());
 
+    }
     private List<StaffDatasDTO> getAllStaffs(){
         return this.staffRespository.findAllBy();
     }
