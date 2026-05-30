@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { Sidebar } from "./sidebar"
 import { Navbar } from "./navbar"
 import { cn } from "@/lib/utils"
+import { currentUser } from "@/lib/mock-data"
+import { UserSys } from "@/lib/types"
 
 interface AppShellProps {
   children: React.ReactNode
@@ -13,6 +15,7 @@ export function AppShell({ children }: AppShellProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<UserSys | null>(null)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -25,6 +28,18 @@ export function AppShell({ children }: AppShellProps) {
     checkMobile()
     window.addEventListener("resize", checkMobile)
     return () => window.removeEventListener("resize", checkMobile)
+  }, [])
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const userData = await currentUser()
+        setUser(userData)
+      } catch (error) {
+        console.error("Erro ao carregar usuario:", error)
+      }
+    }
+    loadUser()
   }, [])
 
   const toggleSidebar = () => {
@@ -65,7 +80,11 @@ export function AppShell({ children }: AppShellProps) {
           isMobile ? "ml-0" : sidebarCollapsed ? "ml-16" : "ml-64"
         )}
       >
-        <Navbar onMenuClick={toggleSidebar} showMenuButton={isMobile} />
+        <Navbar 
+          onMenuClick={toggleSidebar} 
+          showMenuButton={isMobile}
+          currentUser={user}
+        />
         <main className="flex-1 p-4 lg:p-6">{children}</main>
       </div>
     </div>
