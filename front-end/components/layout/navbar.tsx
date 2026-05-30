@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Bell, Search, Menu, User } from "lucide-react"
+import { Bell, Search, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -20,32 +20,21 @@ import {
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { mockNotifications, currentUser } from "@/lib/mock-data"
-import {UserSys} from "@/lib/types"
+import { mockNotifications } from "@/lib/mock-data"
+import { UserSys } from "@/lib/types"
 import { getRelativeTime } from "@/lib/order-utils"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
-
-const  [showCurrentUser , setShowCurrentUser] = useState< UserSys | null> (null)
-
 interface NavbarProps {
   onMenuClick: () => void
   showMenuButton: boolean
+  currentUser: UserSys | null
 }
 
-
-export function Navbar({ onMenuClick, showMenuButton }: NavbarProps) {
+export function Navbar({ onMenuClick, showMenuButton, currentUser }: NavbarProps) {
   const [notifications] = useState(mockNotifications)
   const unreadCount = notifications.filter((n) => !n.read).length
-  useEffect(() => {
-  async function setUser() {
-    const user = await currentUser(); 
-    setShowCurrentUser(user);
-  }
-
-  setUser(); 
-  }, [])
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -59,7 +48,16 @@ export function Navbar({ onMenuClick, showMenuButton }: NavbarProps) {
         return "bg-blue-500"
     }
   }
-function carregando () {
+
+  const getUserInitials = (name?: string) => {
+    if (!name) return "?"
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
+  }
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:px-6">
@@ -93,7 +91,7 @@ function carregando () {
           </PopoverTrigger>
           <PopoverContent className="w-80 p-0" align="end">
             <div className="flex items-center justify-between border-b border-border p-4">
-              <h4 className="font-semibold">Notificações</h4>
+              <h4 className="font-semibold">Notificacoes</h4>
               <Button variant="ghost" size="sm" className="text-xs text-muted-foreground">
                 Marcar todas como lidas
               </Button>
@@ -101,7 +99,7 @@ function carregando () {
             <ScrollArea className="h-80">
               {notifications.length === 0 ? (
                 <div className="flex h-32 items-center justify-center text-sm text-muted-foreground">
-                  Nenhuma notificação
+                  Nenhuma notificacao
                 </div>
               ) : (
                 <div className="divide-y divide-border">
@@ -144,15 +142,15 @@ function carregando () {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="gap-2 px-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={showCurrentUser?.avatar} alt={showCurrentUser?.name} />
+                <AvatarImage src={currentUser?.avatar} alt={currentUser?.name} />
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  {showCurrentUser != null && showCurrentUser.name != undefined  ? showCurrentUser.name.split(" ").map((n) => n[0]).join(""): "Carregando"}
+                  {getUserInitials(currentUser?.name)}
                 </AvatarFallback>
               </Avatar>
               <div className="hidden text-left lg:block">
-                <p className="text-sm font-medium">{showCurrentUser?.name}</p>
+                <p className="text-sm font-medium">{currentUser?.name || "Carregando..."}</p>
                 <p className="text-xs text-muted-foreground capitalize">
-                  {showCurrentUser?.role}
+                  {currentUser?.role || "..."}
                 </p>
               </div>
             </Button>
@@ -161,7 +159,7 @@ function carregando () {
             <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Perfil</DropdownMenuItem>
-            <DropdownMenuItem>Configurações</DropdownMenuItem>
+            <DropdownMenuItem>Configuracoes</DropdownMenuItem>
             <DropdownMenuSeparator />
             <Link href="/">
               <DropdownMenuItem className="text-destructive focus:text-destructive">
@@ -173,5 +171,4 @@ function carregando () {
       </div>
     </header>
   )
-}
 }

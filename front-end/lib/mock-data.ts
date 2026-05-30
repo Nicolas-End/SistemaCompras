@@ -2,16 +2,26 @@ import { getStaffInfosFromCookies } from "@/services/cookies";
 import type { Order, UserSys, Notification, DashboardMetrics } from "./types"
 
 
-export async function currentUser():Promise<UserSys> {
-  const userInfos = await getStaffInfosFromCookies();
+export async function currentUser(): Promise<UserSys> {
+  try {
+    const userInfos = await getStaffInfosFromCookies();
 
-  return {
-    name:userInfos.staffName,
-    email:userInfos.staffEmail,
-    role:userInfos.staffRole,
-    createdAt:userInfos.createdAt,
-    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Carlos"
-  };
+    return {
+      name: userInfos.staffName || "Usuario",
+      email: userInfos.staffEmail || "",
+      role: userInfos.staffRole,
+      createdAt: userInfos.createdAt,
+      avatar: `https://api.dicebear.com/9.x/avataaars/svg?seed=${userInfos.staffName || "User"}`
+    };
+  } catch (error) {
+    console.error("Erro ao obter informacoes do usuario:", error);
+    return {
+      name: "Usuario",
+      email: "",
+      role: undefined,
+      avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=User"
+    };
+  }
 } 
 
 export const mockOrders: Order[] = [

@@ -1,6 +1,6 @@
 "use server";
 
-import { User, UserRole } from "@/lib/types";
+import { UserSys, UserRole } from "@/lib/types";
 import { cookies } from "next/headers";
 
 interface StaffCookiesInfos {
@@ -49,7 +49,7 @@ export async function setTokenFromCookies(
 }
 
 export async function setStaffInfos(
-    staffDatas: User
+    staffDatas: UserSys
 ): Promise<void> {
 
     const cookieStore = await cookies();
