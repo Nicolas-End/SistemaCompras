@@ -13,7 +13,7 @@ export interface LoginDatas{
 }
 
 
-export interface User {
+export interface UserSys {
   id?: UUID
   name?: string 
   email?: string 
@@ -71,4 +71,16 @@ export interface ApiResponse{
   status: string | null,
   sucess: boolean | null,
   time: Date | null
+}
+
+
+export interface Notification {
+  id:string,
+  title:string,
+  message:string,
+  type:string,
+  read:boolean,
+  createdAt:Date,
+  orderId:string
+
 }

@@ -25,10 +25,7 @@ async function request <T>(endpoint:string,
             ...headers
         }
     });
-     if (!response.ok) {
-        
-        return null as unknown as T; // Retorna null em caso de erro
-    }
+    
 
     return response.json() as Promise<T>;
 

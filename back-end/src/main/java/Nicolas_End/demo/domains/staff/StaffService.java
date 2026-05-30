@@ -59,12 +59,11 @@ public class StaffService {
             }
 
             StaffTokenEmailNameAndRole allStaffInfos = this.joinAllStaffInfos(staffEntity);
-
-            List<T> responseDatas = new java.util.ArrayList(List.of(allStaffInfos));
-
+            
 
 
-            return responseUtil.sucess(responseDatas, "Usuario encontrado", HttpStatus.OK);
+
+            return responseUtil.sucess((T) allStaffInfos, "Usuario encontrado", HttpStatus.OK);
 
 
 

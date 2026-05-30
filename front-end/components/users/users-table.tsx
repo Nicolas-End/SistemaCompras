@@ -19,13 +19,13 @@ import {
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import type { User } from "@/lib/types"
+import type { UserSys } from "@/lib/types"
 import { formatDate } from "@/lib/order-utils"
 import { cn } from "@/lib/utils"
 
 interface UsersTableProps {
-  users: User[]
-  onEditUser: (user: User) => void
+  users: UserSys[]
+  onEditUser: (user: UserSys) => void
 }
 
 export function UsersTable({ users, onEditUser }: UsersTableProps) {
@@ -56,7 +56,7 @@ export function UsersTable({ users, onEditUser }: UsersTableProps) {
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={user.avatar} alt={user.name} />
                       <AvatarFallback className="bg-primary text-primary-foreground">
-                        {user.name.split(" ").map((n) => n[0]).join("")}
+                        {user.name?.split(" ").map((n) => n[0]).join("")}
                       </AvatarFallback>
                     </Avatar>
                     <span className="font-medium">{user.name}</span>
@@ -68,21 +68,21 @@ export function UsersTable({ users, onEditUser }: UsersTableProps) {
                     variant="outline"
                     className={cn(
                       "gap-1",
-                      user.role === "admin"
+                      user.role === "ADMINISTRADOR"
                         ? "border-primary/30 bg-primary/10 text-primary"
                         : "border-muted text-muted-foreground"
                     )}
                   >
-                    {user.role === "admin" ? (
+                    {user.role === "ADMINISTRADOR" ? (
                       <Shield className="h-3 w-3" />
                     ) : (
                       <UserIcon className="h-3 w-3" />
                     )}
-                    {user.role === "admin" ? "Administrador" : "Funcionário"}
+                    {user.role === "ADMINISTRADOR" ? "ADMINISTRADOR" : "COMPRADOR"}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {formatDate(user.createdAt)}
+                  {formatDate(user.createdAt? user.createdAt : new Date)}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>

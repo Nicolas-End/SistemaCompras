@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Bell, Search, Menu } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Bell, Search, Menu, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -21,18 +21,31 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { mockNotifications, currentUser } from "@/lib/mock-data"
+import {UserSys} from "@/lib/types"
 import { getRelativeTime } from "@/lib/order-utils"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+
+
+const  [showCurrentUser , setShowCurrentUser] = useState< UserSys | null> (null)
 
 interface NavbarProps {
   onMenuClick: () => void
   showMenuButton: boolean
 }
 
+
 export function Navbar({ onMenuClick, showMenuButton }: NavbarProps) {
   const [notifications] = useState(mockNotifications)
   const unreadCount = notifications.filter((n) => !n.read).length
+  useEffect(() => {
+  async function setUser() {
+    const user = await currentUser(); 
+    setShowCurrentUser(user);
+  }
+
+  setUser(); 
+  }, [])
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -46,6 +59,7 @@ export function Navbar({ onMenuClick, showMenuButton }: NavbarProps) {
         return "bg-blue-500"
     }
   }
+function carregando () {
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:px-6">
@@ -130,15 +144,15 @@ export function Navbar({ onMenuClick, showMenuButton }: NavbarProps) {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="gap-2 px-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
+                <AvatarImage src={showCurrentUser?.avatar} alt={showCurrentUser?.name} />
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  {currentUser.name.split(" ").map((n) => n[0]).join("")}
+                  {showCurrentUser != null && showCurrentUser.name != undefined  ? showCurrentUser.name.split(" ").map((n) => n[0]).join(""): "Carregando"}
                 </AvatarFallback>
               </Avatar>
               <div className="hidden text-left lg:block">
-                <p className="text-sm font-medium">{currentUser.name}</p>
+                <p className="text-sm font-medium">{showCurrentUser?.name}</p>
                 <p className="text-xs text-muted-foreground capitalize">
-                  {currentUser.role === "admin" ? "Administrador" : "Funcionário"}
+                  {showCurrentUser?.role}
                 </p>
               </div>
             </Button>
@@ -159,4 +173,5 @@ export function Navbar({ onMenuClick, showMenuButton }: NavbarProps) {
       </div>
     </header>
   )
+}
 }

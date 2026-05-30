@@ -12,7 +12,7 @@ import java.util.List;
 public class ApiResponse<T> {
     private boolean sucess;
     private String message;
-    private List<T> datas;
+    private T datas;
     private String error;
     private LocalDateTime time; // Mostra quando gerou a resposta
     private String path;

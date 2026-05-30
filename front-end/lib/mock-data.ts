@@ -1,162 +1,22 @@
-import type { Order, User, Notification, DashboardMetrics } from "./types"
+import { getStaffInfosFromCookies } from "@/services/cookies";
+import type { Order, UserSys, Notification, DashboardMetrics } from "./types"
 
-export const mockUsers: User[] = [
-  {
-    id: "1",
-    name: "Carlos Silva",
-    email: "carlos@empresa.com",
-    role: "admin",
-    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Carlos",
-    createdAt: new Date("2024-01-15"),
-  },
-  {
-    id: "2",
-    name: "Ana Oliveira",
-    email: "ana@empresa.com",
-    role: "employee",
-    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Ana",
-    createdAt: new Date("2024-02-20"),
-  },
-  {
-    id: "3",
-    name: "Pedro Santos",
-    email: "pedro@empresa.com",
-    role: "employee",
-    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Pedro",
-    createdAt: new Date("2024-03-10"),
-  },
-  {
-    id: "4",
-    name: "Mariana Costa",
-    email: "mariana@empresa.com",
-    role: "employee",
-    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Mariana",
-    createdAt: new Date("2024-04-05"),
-  },
-]
+
+export async function currentUser():Promise<UserSys> {
+  const userInfos = await getStaffInfosFromCookies();
+
+  return {
+    name:userInfos.staffName,
+    email:userInfos.staffEmail,
+    role:userInfos.staffRole,
+    createdAt:userInfos.createdAt,
+    avatar: "https://api.dicebear.com/9.x/avataaars/svg?seed=Carlos"
+  };
+} 
 
 export const mockOrders: Order[] = [
-  {
-    id: "PED-001",
-    clientName: "Tech Solutions Ltda",
-    clientEmail: "contato@techsolutions.com",
-    status: "completed",
-    priority: "high",
-    items: [
-      { id: "1", name: "Notebook Dell XPS", quantity: 5, price: 8500 },
-      { id: "2", name: "Monitor 27\"", quantity: 5, price: 1800 },
-    ],
-    total: 51500,
-    createdAt: new Date("2024-12-01"),
-    updatedAt: new Date("2024-12-10"),
-    dueDate: new Date("2024-12-15"),
-    timeline: [
-      { id: "1", status: "pending", date: new Date("2024-12-01"), user: "Carlos Silva", note: "Pedido recebido" },
-      { id: "2", status: "production", date: new Date("2024-12-03"), user: "Ana Oliveira", note: "Iniciando preparação" },
-      { id: "3", status: "shipped", date: new Date("2024-12-08"), user: "Pedro Santos", note: "Enviado via transportadora" },
-      { id: "4", status: "completed", date: new Date("2024-12-10"), user: "Carlos Silva", note: "Entrega confirmada" },
-    ],
-    assignedTo: "2",
-  },
-  {
-    id: "PED-002",
-    clientName: "Escritório Central",
-    clientEmail: "compras@escritoriocentral.com",
-    status: "production",
-    priority: "medium",
-    items: [
-      { id: "1", name: "Cadeira Ergonômica", quantity: 20, price: 950 },
-      { id: "2", name: "Mesa de Trabalho", quantity: 10, price: 1200 },
-    ],
-    total: 31000,
-    createdAt: new Date("2024-12-05"),
-    updatedAt: new Date("2024-12-08"),
-    dueDate: new Date("2024-12-20"),
-    timeline: [
-      { id: "1", status: "pending", date: new Date("2024-12-05"), user: "Carlos Silva", note: "Pedido aprovado" },
-      { id: "2", status: "production", date: new Date("2024-12-08"), user: "Mariana Costa", note: "Em produção" },
-    ],
-    assignedTo: "4",
-  },
-  {
-    id: "PED-003",
-    clientName: "Clínica Saúde Total",
-    clientEmail: "admin@clinicasaudetotal.com",
-    status: "pending",
-    priority: "high",
-    items: [
-      { id: "1", name: "Computador All-in-One", quantity: 8, price: 4500 },
-      { id: "2", name: "Impressora Multifuncional", quantity: 4, price: 2800 },
-    ],
-    total: 47200,
-    createdAt: new Date("2024-12-10"),
-    updatedAt: new Date("2024-12-10"),
-    dueDate: new Date("2024-12-18"),
-    timeline: [
-      { id: "1", status: "pending", date: new Date("2024-12-10"), user: "Carlos Silva", note: "Aguardando aprovação de crédito" },
-    ],
-    assignedTo: "3",
-  },
-  {
-    id: "PED-004",
-    clientName: "Restaurante Sabor & Arte",
-    clientEmail: "gerencia@saborarte.com",
-    status: "shipped",
-    priority: "low",
-    items: [
-      { id: "1", name: "Tablet Android", quantity: 6, price: 1200 },
-    ],
-    total: 7200,
-    createdAt: new Date("2024-12-02"),
-    updatedAt: new Date("2024-12-12"),
-    dueDate: new Date("2024-12-25"),
-    timeline: [
-      { id: "1", status: "pending", date: new Date("2024-12-02"), user: "Ana Oliveira", note: "Pedido registrado" },
-      { id: "2", status: "production", date: new Date("2024-12-05"), user: "Pedro Santos", note: "Preparando itens" },
-      { id: "3", status: "shipped", date: new Date("2024-12-12"), user: "Ana Oliveira", note: "Enviado" },
-    ],
-    assignedTo: "2",
-  },
-  {
-    id: "PED-005",
-    clientName: "Academia PowerFit",
-    clientEmail: "compras@powerfit.com",
-    status: "cancelled",
-    priority: "medium",
-    items: [
-      { id: "1", name: "Smart TV 55\"", quantity: 3, price: 3200 },
-    ],
-    total: 9600,
-    createdAt: new Date("2024-11-28"),
-    updatedAt: new Date("2024-12-05"),
-    dueDate: new Date("2024-12-10"),
-    timeline: [
-      { id: "1", status: "pending", date: new Date("2024-11-28"), user: "Carlos Silva", note: "Pedido recebido" },
-      { id: "2", status: "cancelled", date: new Date("2024-12-05"), user: "Carlos Silva", note: "Cancelado pelo cliente" },
-    ],
-    assignedTo: "1",
-  },
-  {
-    id: "PED-006",
-    clientName: "Escola Futuro Brilhante",
-    clientEmail: "secretaria@futurobrilhante.edu.br",
-    status: "production",
-    priority: "high",
-    items: [
-      { id: "1", name: "Chromebook", quantity: 30, price: 2200 },
-      { id: "2", name: "Mouse sem fio", quantity: 30, price: 80 },
-      { id: "3", name: "Fone de ouvido", quantity: 30, price: 120 },
-    ],
-    total: 72000,
-    createdAt: new Date("2024-12-08"),
-    updatedAt: new Date("2024-12-11"),
-    dueDate: new Date("2024-12-22"),
-    timeline: [
-      { id: "1", status: "pending", date: new Date("2024-12-08"), user: "Mariana Costa", note: "Pedido urgente para início das aulas" },
-      { id: "2", status: "production", date: new Date("2024-12-11"), user: "Pedro Santos", note: "Itens em separação" },
-    ],
-    assignedTo: "3",
-  },
+  
+   
 ]
 
 export const mockNotifications: Notification[] = [
@@ -220,4 +80,3 @@ export const mockDashboardMetrics: DashboardMetrics = {
   ],
 }
 
-export const currentUser = mockUsers[0]
