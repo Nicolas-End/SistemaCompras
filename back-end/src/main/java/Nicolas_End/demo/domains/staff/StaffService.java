@@ -74,7 +74,7 @@ public class StaffService {
     public <T> ApiResponse getAllStaff(){
 
             List<StaffDatasDTO> staffs = this.getAllStaffs();
-
+            
             return responseUtil.sucess(staffs, "Usuario Encontrados", HttpStatus.OK);
 
 
