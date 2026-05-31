@@ -1,6 +1,7 @@
 package Nicolas_End.demo.infra.exception;
 
 
+import Nicolas_End.demo.infra.security.filter.InvalidTokenException;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,12 @@ public class CustomExceptions {
 
         this.errorResponse = responseUtil.error("Bad Request", "Formato enviado invalido", HttpStatus.BAD_REQUEST);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(this.errorResponse);
+        return ResponseEntity.status(errorResponse.getStatus()).body(this.errorResponse);
 
     }
+
+
+
 
 
     

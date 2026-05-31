@@ -53,12 +53,15 @@ public class ItensService {
     private ApiResponse validateItemNameAndPriceDTO(ItemNameAndPriceDTO datas){
 
         if (datas.itemName() == null || datas.itemPrice() == null) {
-            responseUtil.error("User invalid input", "Algum dos valores enviados é invalido", HttpStatus.BAD_REQUEST);
+            return responseUtil.error("User invalid input", "Algum dos valores enviados é invalido", HttpStatus.BAD_REQUEST);
         }
+
+
         else if (itemAlreadyRegisteredByName(datas.itemName()))
         {
-            responseUtil.error("Item already registered", "Item com este nome ja registrado", HttpStatus.CONFLICT);
+            return responseUtil.error("Item already registered", "Item com este nome ja registrado", HttpStatus.CONFLICT);
         }
+
         return  responseUtil.sucess(null,null,null);
     }
 
