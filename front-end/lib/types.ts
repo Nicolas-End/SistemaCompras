@@ -82,5 +82,55 @@ export interface Notification {
   read:boolean,
   createdAt:Date,
   orderId:string
+}
 
+// Tipos para Itens
+export interface Item {
+  id: string
+  name: string
+  description: string
+  category: string
+  sku: string
+  price: number
+  quantity: number
+  minStock: number
+  unit: string
+  supplier?: string
+  imageUrl?: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export type ItemCategory = "materiais" | "equipamentos" | "escritorio" | "limpeza" | "outros"
+
+// Tipos para Orcamentos
+export type BudgetStatus = "rascunho" | "enviado" | "aprovado" | "rejeitado" | "expirado"
+
+export interface BudgetItem {
+  id: string
+  itemId: string
+  itemName: string
+  quantity: number
+  unitPrice: number
+  totalPrice: number
+}
+
+export interface Budget {
+  id: string
+  title: string
+  description?: string
+  clientName: string
+  clientEmail: string
+  clientPhone?: string
+  status: BudgetStatus
+  items: BudgetItem[]
+  subtotal: number
+  discount: number
+  tax: number
+  total: number
+  validUntil: Date
+  notes?: string
+  createdAt: Date
+  updatedAt: Date
+  createdBy: string
 }

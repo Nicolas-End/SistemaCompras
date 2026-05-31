@@ -11,6 +11,8 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  ShoppingCart,
+  FileText,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -28,8 +30,10 @@ interface SidebarProps {
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/pedidos", icon: Package, label: "Pedidos" },
-  { href: "/usuarios", icon: Users, label: "Usuários" },
-  { href: "/configuracoes", icon: Settings, label: "Configurações" },
+  { href: "/itens", icon: ShoppingCart, label: "Itens" },
+  { href: "/orcamentos", icon: FileText, label: "Orcamentos" },
+  { href: "/usuarios", icon: Users, label: "Usuarios" },
+  { href: "/configuracoes", icon: Settings, label: "Configuracoes" },
 ]
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
