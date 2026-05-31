@@ -43,7 +43,6 @@ public class StaffController {
 
 
         ApiResponse staffLogin = this.staffService.validateStaffLogin(datas);
-
         return ResponseEntity.status(staffLogin.getStatus()).body(staffLogin);
     }
 
