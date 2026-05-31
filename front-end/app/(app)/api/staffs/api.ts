@@ -11,17 +11,22 @@ type LoginResponse = ApiResponse & {
     }
 }
 
+interface errorsLoginReturnIf{
+    sucess: boolean
+    title? : string,
+    message?: string,
+}
 
-export const getStaffLogin = async (datas: LoginDatas): Promise<boolean> => {
+export const getStaffLogin = async (datas: LoginDatas): Promise<errorsLoginReturnIf> => {
     try {
         const staffDatas = await api.post<LoginResponse>("/staff/login", datas);
 
         if (!staffDatas.sucess || staffDatas.datas.token === null) {
             if (staffDatas.status === "404 NOT_FOUND") {
-                return false;
+                return {sucess:false,title:"Login Invalido",message:"E-mail ou senha incorretos. Verifique suas credenciais e tente novamente."};
             }
-            console.error("Login falhou:", staffDatas.message);
-            return false;
+            
+            return {sucess:false,title:"Sistema Indesponivel", message:"Tente novamente mais tarde, estamos solucionando problema em questão"};
         }
 
         // Salva o token nos cookies
@@ -34,10 +39,10 @@ export const getStaffLogin = async (datas: LoginDatas): Promise<boolean> => {
             role: staffDatas.datas.role || undefined,
         });
 
-        return true; 
+        return {sucess:true}; 
 
     } catch (error) {
-        console.error("Erro ao fazer login:", error);
-        return false;
+        
+        return {sucess:false, title:"Sistema Indesponivel", message:"Tente novamente mais tarde, estamos solucionando problema em questão"}
     }
 }
