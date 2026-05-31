@@ -25,6 +25,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
+  const [errorTitle, setErrorTitle] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const [showErrorDialog, setShowErrorDialog] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,7 +35,10 @@ export default function LoginPage() {
     
     // Simulating authentication
     const isAuthenticated = await getStaffLogin({email, password})
-    if (!isAuthenticated){
+    if (!isAuthenticated.sucess ){
+      
+      setErrorMessage(isAuthenticated.message?isAuthenticated.message:'LOGIN INVALIDO')
+      setErrorTitle(isAuthenticated.title?isAuthenticated.title:"LOGIN INVALIDADO")
       setShowErrorDialog(true)
       setIsLoading(false)
       return
@@ -158,10 +163,10 @@ export default function LoginPage() {
           <AlertDialogHeader>
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-destructive" />
-              <AlertDialogTitle>Login Inválido</AlertDialogTitle>
+              <AlertDialogTitle>{errorTitle}</AlertDialogTitle>
             </div>
             <AlertDialogDescription>
-              E-mail ou senha incorretos. Verifique suas credenciais e tente novamente.
+              {errorMessage}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogAction onClick={() => setShowErrorDialog(false)}>

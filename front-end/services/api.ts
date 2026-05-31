@@ -1,3 +1,4 @@
+import { Thasadith } from "next/font/google";
 import { getTokenFromCookies } from "./cookies";
 
 const  apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -24,6 +25,7 @@ async function request <T>(endpoint:string,
             ...(authHeader && { Authorization: authHeader }),
             ...headers
         }
+        
     });
     
 
