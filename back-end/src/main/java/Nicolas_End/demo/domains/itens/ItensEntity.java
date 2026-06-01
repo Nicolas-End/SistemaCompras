@@ -1,6 +1,7 @@
 package Nicolas_End.demo.domains.itens;
 
 
+import Nicolas_End.demo.domains.provider.ProviderEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +17,10 @@ import java.util.UUID;
 @Setter
 public class ItensEntity implements Serializable {
 
-    public ItensEntity(String name, Double price){
+    public ItensEntity(String name, Double price, ProviderEntity providerEntity){
         this.name = name;
         this.price = price;
+        this.provider = providerEntity;
     }
 
     @Id
@@ -33,6 +35,11 @@ public class ItensEntity implements Serializable {
 
     @Column
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(insertable = true)
+    private ProviderEntity provider;
+
 
     @Column
     private double price;

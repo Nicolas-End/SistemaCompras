@@ -1,6 +1,9 @@
 package Nicolas_End.demo.domains.itens;
 
-import Nicolas_End.demo.dtos.itens.ItemNameAndPriceDTO;
+import Nicolas_End.demo.domains.provider.ProviderEntity;
+import Nicolas_End.demo.domains.provider.ProviderService;
+import Nicolas_End.demo.dtos.itens.ItemNamePriceAndProviderCNPJDTO;
+import Nicolas_End.demo.dtos.itens.ItemNamePriceProviderEnityDTO;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import Nicolas_End.demo.dtos.itens.ItensListDTO;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
@@ -10,16 +13,19 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItensService {
 
     final private ItensRepository itensRepository;
     final private ResponseUtil responseUtil ;
+    final private ProviderService providerService;
 
-    public  ItensService(ItensRepository itensRepository, ResponseUtil responseUtil){
+    public  ItensService(ItensRepository itensRepository, ResponseUtil responseUtil, ProviderService providerService){
         this.itensRepository = itensRepository;
         this.responseUtil = responseUtil;
+        this.providerService = providerService;
     }
 
     public <T> ApiResponse getAllItens(){
@@ -29,7 +35,7 @@ public class ItensService {
     }
 
 
-    public  <T> ApiResponse registerNewItem(ItemNameAndPriceDTO datas){
+    public  <T> ApiResponse registerNewItem(ItemNamePriceAndProviderCNPJDTO datas){
 
         // verifica se o item ja esta cadastrado ou se não esta com valores invalidos
         ApiResponse validateItemName = this.validateItemNameAndPriceDTO(datas);
@@ -37,7 +43,12 @@ public class ItensService {
             return validateItemName;
         }
 
-        ItensEntity itemEntity = this.createItemEntity(datas);
+        // cria e gerencia o dados do item para ser adicionado ao banco de dados
+        Optional<ProviderEntity> providerEntity = this.searchForProviderByCnpj(datas);
+        ItemNamePriceProviderEnityDTO internalItensDatasWithProviderEntity = this.setItemNamePriceProviderEnitty(datas, providerEntity);
+
+        // cria a entidade do item a ser adicionado ao banco de dados
+        ItensEntity itemEntity = this.createItemEntity(internalItensDatasWithProviderEntity);
 
         ItensEntity itemEntityRegistered = this.itensRepository.save(itemEntity);
 
@@ -46,11 +57,15 @@ public class ItensService {
 
     }
 
+
+
+
+
     private List<ItensListDTO> getListItens(){
         return this.itensRepository.findAllBy();
     }
 
-    private ApiResponse validateItemNameAndPriceDTO(ItemNameAndPriceDTO datas){
+    private ApiResponse validateItemNameAndPriceDTO(ItemNamePriceAndProviderCNPJDTO datas){
 
         if (datas.itemName() == null || datas.itemPrice() == null) {
             return responseUtil.error("User invalid input", "Algum dos valores enviados é invalido", HttpStatus.BAD_REQUEST);
@@ -69,8 +84,30 @@ public class ItensService {
         return this.itensRepository.existsByName(name);
     }
 
-    private  ItensEntity createItemEntity(ItemNameAndPriceDTO datas){
-        return  new ItensEntity(datas.itemName(), datas.itemPrice());
+    private  ItensEntity createItemEntity(ItemNamePriceProviderEnityDTO datas){
+
+        return  new ItensEntity(datas.name(), datas.price(), datas.providerEntity()) ;
     }
 
+
+
+
+
+    // retorna a entidade do destibuidor
+    private Optional<ProviderEntity> searchForProviderByCnpj(ItemNamePriceAndProviderCNPJDTO datas) {
+
+        if (datas.providerCNPJ().isEmpty()){
+            return Optional.empty();
+        }
+            return this.providerService.findProviderEntityByCnpjToItensEntity(datas.providerCNPJ().get());
+    }
+
+
+    private ItemNamePriceProviderEnityDTO setItemNamePriceProviderEnitty(ItemNamePriceAndProviderCNPJDTO datas, Optional<ProviderEntity> provider){
+        if(provider.isEmpty()){
+            return new ItemNamePriceProviderEnityDTO(datas.itemName(), datas.itemPrice(), null);
+        }
+        return new ItemNamePriceProviderEnityDTO(datas.itemName(),datas.itemPrice(),provider.get());
+
+    }
 }

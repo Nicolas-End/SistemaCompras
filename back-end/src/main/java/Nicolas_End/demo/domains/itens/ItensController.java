@@ -1,7 +1,7 @@
 package Nicolas_End.demo.domains.itens;
 
 
-import Nicolas_End.demo.dtos.itens.ItemNameAndPriceDTO;
+import Nicolas_End.demo.dtos.itens.ItemNamePriceAndProviderCNPJDTO;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ public class ItensController {
     }
 
     @PostMapping()
-    public  ResponseEntity registerNewItem(@RequestBody ItemNameAndPriceDTO data ){
+    public  ResponseEntity registerNewItem(@RequestBody ItemNamePriceAndProviderCNPJDTO data ){
         ApiResponse apiResponse = this.itensService.registerNewItem(data);
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
