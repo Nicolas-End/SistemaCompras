@@ -27,6 +27,10 @@ public class ItensEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    // codigo interno da empresa
+    @Column(nullable = true, unique = true)
+    private String InternalCode;
+
     @Column(nullable = false, unique = true)
     private String name;
 
