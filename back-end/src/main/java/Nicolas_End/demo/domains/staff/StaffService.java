@@ -55,7 +55,7 @@ public class StaffService {
 
             StaffEntity staffEntity = this.getEspecificStaffByEmailAndValidateCredentials(datas);
             if (staffEntity == null){
-                return  responseUtil.error("User Not Found","Usuario não encontrado",HttpStatus.NOT_FOUND);
+                return  responseUtil.error("User Not Found","Usuario não encontrado",HttpStatus.UNAUTHORIZED);
             }
 
             StaffTokenEmailNameAndRole allStaffInfos = this.joinAllStaffInfos(staffEntity);
