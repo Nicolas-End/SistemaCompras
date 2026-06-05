@@ -7,9 +7,9 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'OrderFlow - Gestão de Pedidos',
-  description: 'Sistema de gerenciamento de pedidos internos para empresas',
-  generator: 'v0.app',
+  title: 'Sistema Compras - SC',
+  description: 'Sistema de gerenciamento de pedidos e orçamentos internos de uma empresa',
+  generator: 'Nicolas-End',
   icons: {
     icon: [
       {

@@ -10,6 +10,7 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  ShoppingCart,
   LogOut,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -29,6 +30,7 @@ const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/pedidos", icon: Package, label: "Pedidos" },
   { href: "/usuarios", icon: Users, label: "Usuários" },
+  {href: "/itens", icon: ShoppingCart, label: "Itens" },
   { href: "/configuracoes", icon: Settings, label: "Configurações" },
 ]
 
@@ -50,7 +52,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sidebar-primary">
                 <Package className="h-5 w-5 text-sidebar-primary-foreground" />
               </div>
-              <span className="text-lg font-semibold">OrderFlow</span>
+              <span className="text-lg font-semibold">Sistema Compras</span>
             </Link>
           )}
           {collapsed && (

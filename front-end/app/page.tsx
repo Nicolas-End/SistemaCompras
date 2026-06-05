@@ -16,7 +16,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { getStaffLogin } from "./(app)/api/staffs/api"
+import { getStaffLogin } from "./(app)/_api/staffs/api"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -57,7 +57,7 @@ export default function LoginPage() {
             <Package className="h-7 w-7 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold">OrderFlow</CardTitle>
+            <CardTitle className="text-2xl font-bold">Sistema Compras</CardTitle>
             <CardDescription className="text-muted-foreground mt-1">
               Faça login para acessar o sistema de gestão de pedidos
             </CardDescription>

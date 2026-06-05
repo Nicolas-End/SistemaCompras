@@ -1,9 +1,18 @@
 import { getStaffInfosFromCookies } from "@/services/cookies";
-import type { Order, UserSys, Notification, DashboardMetrics } from "./types"
+import type { Order, UserSys, Notification, DashboardMetrics, Item } from "./types"
+import { getAllItens } from "@/app/(app)/_api/items/get-routes";
+import { ApiError } from "next/dist/server/api-utils";
+
+interface MockReponse{
+  success:false,
+  datas?: any
+}
+
 
 
 export async function currentUser(): Promise<UserSys> {
   try {
+  
     const userInfos = await getStaffInfosFromCookies();
 
     return {
@@ -23,6 +32,25 @@ export async function currentUser(): Promise<UserSys> {
     };
   }
 } 
+
+export  const  mockItems = async():Promise<Item[ ] | void> => {
+  try{ 
+    const itensInfos= await getAllItens ();
+
+    if(!itensInfos.sucess){
+      return ; 
+    }
+    return itensInfos.datas
+
+  }catch (error) {
+    console.error("Erro Captura de informações de itens: ", error);
+    return 
+  }
+
+}
+
+
+
 
 export const mockOrders: Order[] = [
   

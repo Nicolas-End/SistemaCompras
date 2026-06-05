@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Save, Bell, User, Shield, Palette } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -10,11 +10,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Spinner } from "@/components/ui/spinner"
 import { currentUser } from "@/lib/mock-data"
+import { getStaffInfosFromCookies } from "@/services/cookies"
 
 export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(false)
-  const [name, setName] = useState(currentUser.name)
-  const [email, setEmail] = useState(currentUser.email)
+  const [name, setName] = useState(String)
+  const [email, setEmail] = useState(String)
 
   // Notification settings
   const [emailNotifications, setEmailNotifications] = useState(true)
@@ -27,6 +28,17 @@ export default function SettingsPage() {
     await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsLoading(false)
   }
+
+  useEffect( () =>{
+    async function setStaffInfos() {
+      const userDatas = await getStaffInfosFromCookies();
+      setName(userDatas.staffName?userDatas.staffName:'USUARIO')
+      setEmail(userDatas.staffEmail?userDatas.staffEmail: 'EMAIL')
+    }
+    
+    setStaffInfos();
+
+  })
 
   return (
     <div className="space-y-6">

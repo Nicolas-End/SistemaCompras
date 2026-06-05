@@ -1,4 +1,4 @@
-import { ApiResponse, LoginDatas, UserRole } from "@/lib/types";
+import { ApiResponse, LoginDatas, ResponseFront, UserRole } from "@/lib/types";
 import { api } from "@/services/api";
 import { setTokenFromCookies, setStaffInfos } from "@/services/cookies";
 import { stringify } from "querystring";
@@ -12,18 +12,14 @@ type LoginResponse = ApiResponse & {
     }
 }
 
-interface errorsLoginReturnIf{
-    sucess: boolean
-    title? : string,
-    message?: string,
-}
 
-export const getStaffLogin = async (datas: LoginDatas): Promise< errorsLoginReturnIf> => {
+
+export const getStaffLogin = async (datas: LoginDatas): Promise< ResponseFront> => {
     try {
         const staffDatas = await api.post<LoginResponse>("/staff/login", datas);
 
         if (!staffDatas.sucess || staffDatas.datas.token === null) {
-            if (staffDatas.status === "404 NOT_FOUND") {
+            if (staffDatas.status === "401 UNAUTHORIZED") {
                 return {sucess:false,title:"Login Invalido",message:"E-mail ou senha incorretos. Verifique suas credenciais e tente novamente."};
             }
             

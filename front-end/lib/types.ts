@@ -84,3 +84,24 @@ export interface Notification {
   orderId:string
 
 }
+
+export interface Item {
+  id:UUID,
+  internalId?: string, 
+  name:string,
+  price:number,
+  createdAt:Date,
+  provider_name?: string
+}
+
+
+export interface ResponseFront{
+    sucess: boolean,
+    datas?:any
+    path?:string; 
+    title? : string,
+    message?: string,
+}
+
+
+export type ItemCategory = "materiais" | "equipamentos" | "escritorio" | "limpeza" | "outros"
