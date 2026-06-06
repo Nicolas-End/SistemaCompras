@@ -1,8 +1,7 @@
 package Nicolas_End.demo.infra.config;
 
+import Nicolas_End.demo.infra.exception.CustomAuthenticationEntryPoint;
 import Nicolas_End.demo.infra.security.filter.SecurityFilter;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +24,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 public class SecutiryConfigurations {
-    @Autowired
+
     SecurityFilter securityFilter;
+    CustomAuthenticationEntryPoint authenticationEntryPoint;
+
+    public SecutiryConfigurations(SecurityFilter securityFilter, CustomAuthenticationEntryPoint authenticationEntryPoint){
+        this.securityFilter = securityFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+
+    }
 
     @Value("${api.origin.url}")
     private String originUrl;
@@ -35,12 +41,14 @@ public class SecutiryConfigurations {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
         return httpSecurity
                 .cors(Customizer.withDefaults())
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(this.authenticationEntryPoint))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // Configura as permissões de cada endpoint:
                 .authorizeHttpRequests(authorize -> authorize
 
-                        .anyRequest().permitAll()
+                        .requestMatchers("/staff/login").permitAll()
+                        .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

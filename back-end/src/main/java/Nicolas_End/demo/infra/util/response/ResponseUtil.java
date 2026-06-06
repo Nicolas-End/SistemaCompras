@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
@@ -23,7 +24,7 @@ public class ResponseUtil {
         apiResponse.setMessage(message);
         apiResponse.setDatas(datas);
         apiResponse.setError(null);
-        apiResponse.setTime(LocalDateTime.now());
+        apiResponse.setTime(this.getPresentTime());
         apiResponse.setPath(this.apiPathUtil.getContextPath());
         apiResponse.setStatus(httpStatus);
 
@@ -37,10 +38,14 @@ public class ResponseUtil {
         apiResponse.setMessage(message);
         apiResponse.setDatas(null);
         apiResponse.setError(error);
-        apiResponse.setTime(LocalDateTime.now());
+        apiResponse.setTime(this.getPresentTime());
         apiResponse.setPath(this.apiPathUtil.getContextPath());
         apiResponse.setStatus(statusCode);
 
         return apiResponse;
+    }
+
+    private String getPresentTime(){
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss"));
     }
 }
