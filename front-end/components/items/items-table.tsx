@@ -138,7 +138,7 @@ export function ItemsTable({
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
                       <span className="text-destructive font-medium">
-                        {item.createdAt.toDateString()}
+                        {item.createdAt}
                       </span>
                     </div>
                   </TableCell>

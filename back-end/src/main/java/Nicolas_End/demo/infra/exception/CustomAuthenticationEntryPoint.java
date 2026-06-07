@@ -4,7 +4,6 @@ import Nicolas_End.demo.infra.util.response.ApiResponse;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,7 +29,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        ApiResponse errorResponse = this.responseUtil.error("Expired Token","Token do usuario Invalido", HttpStatus.UNAUTHORIZED);
+        ApiResponse errorResponse = this.responseUtil.error("Expired Token","Token do usuario Invalido ou Expirado", HttpStatus.UNAUTHORIZED);
 
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

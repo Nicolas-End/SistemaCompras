@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Entity
@@ -35,10 +36,10 @@ public class ItensEntity implements Serializable {
     private String name;
 
     @Column
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @Column
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 
     @ManyToOne
     @JoinColumn(insertable = true)
@@ -50,11 +51,17 @@ public class ItensEntity implements Serializable {
 
     @PrePersist
     public void prePersist(){
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = this.getPresentTime();
     }
 
     @PreUpdate
     public void preUpdate(){
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = this.getPresentTime();
+
+    }
+
+    private String getPresentTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+        return LocalDateTime.now().format(formatter);
     }
 }

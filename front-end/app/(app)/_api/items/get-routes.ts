@@ -1,5 +1,6 @@
 import { ApiResponse, Item, ResponseFront } from "@/lib/types";
 import { api } from "@/services/api";
+import { getTokenFromCookies } from "@/services/cookies";
 
 
 
@@ -14,6 +15,7 @@ export async function getAllItens(): Promise<ResponseFront> {
     try{
         const itensDatas: ApiItensReponse = await api.get('/itens'); 
        
+    
         if (!itensDatas.sucess){
             return {sucess:false,title:"Erro Interno",message:"Houve erro Interno no sistema"};
         }

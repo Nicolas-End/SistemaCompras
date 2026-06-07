@@ -90,7 +90,7 @@ export interface Item {
   internalId?: string, 
   name:string,
   price:number,
-  createdAt:Date,
+  createdAt:String,
   provider_name?: string
 }
 

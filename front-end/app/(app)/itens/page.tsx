@@ -17,7 +17,7 @@ export default function ItemsPage() {
   const [categoryFilter, setCategoryFilter] = useState<ItemCategory | "all">("all")
   const [stockFilter, setStockFilter] = useState<"all" | "low" | "normal">("all")
   const [selectedItems, setSelectedItems] = useState<string[]>([])
-
+  
   
 
   useEffect (()=> {
@@ -26,6 +26,7 @@ export default function ItemsPage() {
         const datas = await mockItems();
         if(Array.isArray(datas)){
           setItems(datas)
+          
         }
       }finally{
         setLoading(false)
@@ -37,18 +38,18 @@ export default function ItemsPage() {
 
 
 
- const filteredItems =  useMemo(() => {
-
-    return  items.filter((item) => {
-      const matchesSearch = 
-        searchQuery === "" ||
-        item?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item?.provider_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item?.internalId?.toLowerCase().includes(searchQuery.toLowerCase())
+   const filteredItems =  useMemo(() => {
+      
+      return  items.filter((item) => {
+        const matchesSearch = 
+          searchQuery === "" ||
+          item?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item?.provider_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item?.internalId?.toLowerCase().includes(searchQuery.toLowerCase())
     
-      return matchesSearch 
-    })
-  }, [searchQuery, categoryFilter, stockFilter])
+        return matchesSearch 
+      })
+    }, [items,searchQuery, categoryFilter, stockFilter])
 
   const handleSelectItem = (id: string) => {
     setSelectedItems((prev) =>

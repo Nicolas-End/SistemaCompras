@@ -1,5 +1,7 @@
 import { Thasadith } from "next/font/google";
-import { getTokenFromCookies } from "./cookies";
+import { deleteAllUserCookies, getTokenFromCookies } from "./cookies";
+
+
 
 const  apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -12,11 +14,13 @@ async function request <T>(endpoint:string,
     
     // Para chamadas client-side, não obtém token do servidor
     let authHeader = "";
-    if (typeof window === "undefined") {
+    
         // Lado servidor - pode acessar cookies
-        const token = await getTokenFromCookies();
-        authHeader = token ? `Bearer ${token}` : "";
-    }
+    const token = await getTokenFromCookies();
+        
+    authHeader = token ? `Bearer ${token}` : "";
+        
+    
 
     const response = await fetch(`${apiUrl}${endpoint}`, {
         ...rest,
@@ -28,7 +32,9 @@ async function request <T>(endpoint:string,
         
     });
     
-
+    if (response.status === 401){
+        console.log("Não Autorizado")
+    }
     return response.json() as Promise<T>;
 
 }

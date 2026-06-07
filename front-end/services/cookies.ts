@@ -1,6 +1,7 @@
 "use server";
 
 import { UserSys, UserRole } from "@/lib/types";
+import { Chokokutai } from "next/font/google";
 import { cookies } from "next/headers";
 
 interface StaffCookiesInfos {
@@ -116,10 +117,14 @@ Promise<StaffCookiesInfos> {
     };
 }
 
-export async function deleteTokenFromCookies():
+export async function deleteAllUserCookies():
 Promise<void> {
 
     const cookieStore = await cookies();
 
     cookieStore.delete("token");
+    cookieStore.delete("staffRole")
+    cookieStore.delete("staffName")
+    cookieStore.delete("staffEmail")
+
 }

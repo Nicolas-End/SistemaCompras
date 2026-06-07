@@ -11,6 +11,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -58,7 +59,7 @@ public class TokenService {
 
     private Instant genExpirationDate(){
 
-        return LocalDateTime.now().plusHours(48).toInstant(ZoneOffset.of("-3"));
+        return Instant.now().plus(Duration.ofDays(30));
     }
 
 
@@ -66,7 +67,7 @@ public class TokenService {
     private void validateSecret(){
         if (secret == null){
 
-            throw  new RuntimeException("A variavel secret não esta configurada");
+            throw  new RuntimeException("A variavel de ambiente TOKEN_PASSWORD não esta configurada");
         }
 
     }
