@@ -125,11 +125,10 @@ export function ItemsTable({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <code className="rounded bg-muted px-2 py-1 text-sm">
                       {item.provider_name? (
                         <p className="font-medium">{item.provider_name}</p>
                       ): <p className="font-medium">Não Informado</p>}
-                    </code>
+                    
                   </TableCell>
 
                   <TableCell className="text-right font-medium">

@@ -6,21 +6,21 @@ import { Input } from "@/components/ui/input"
 import { UsersTable } from "@/components/users/users-table"
 import { UserDialog, NewUserButton } from "@/components/users/user-dialog"
 import { mockUsers } from "@/lib/mock-data"
-import type { User } from "@/lib/types"
+import type { UserSys } from "@/lib/types"
 
 export default function UsersPage() {
   const [users, setUsers] = useState(mockUsers)
   const [searchQuery, setSearchQuery] = useState("")
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [editingUser, setEditingUser] = useState<UserSys | null>(null)
 
   const filteredUsers = users.filter(
     (user) =>
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+      user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleEditUser = (user: User) => {
+  const handleEditUser = (user: UserSys) => {
     setEditingUser(user)
     setDialogOpen(true)
   }
@@ -30,7 +30,7 @@ export default function UsersPage() {
     setDialogOpen(true)
   }
 
-  const handleSaveUser = async (userData: Partial<User>) => {
+  const handleSaveUser = async (userData: Partial<UserSys>) => {
     // Simulating API call
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -43,11 +43,11 @@ export default function UsersPage() {
       )
     } else {
       // Create new user
-      const newUser: User = {
-        id: String(users.length + 1),
+      const newUser: UserSys = {
+        id: userData.id,
         name: userData.name || "",
         email: userData.email || "",
-        role: userData.role || "employee",
+        role: userData.role ||undefined,
         avatar: `https://api.dicebear.com/9.x/avataaars/svg?seed=${userData.name}`,
         createdAt: new Date(),
       }

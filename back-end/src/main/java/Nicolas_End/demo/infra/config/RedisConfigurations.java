@@ -1,0 +1,40 @@
+package Nicolas_End.demo.infra.config;
+
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
+
+@Slf4j
+@Configuration
+@EnableCaching
+@EnableScheduling
+public class RedisConfigurations {
+
+
+    public static final String ITEMS_CACHE = "items";
+
+
+
+    @CacheEvict(allEntries = true, value = ITEMS_CACHE)
+    @Scheduled(fixedDelayString = "60000")
+    public void evictItemCache(){
+        log.warn("Deleting Item's caches ");
+    }
+    @Bean
+    public RedisCacheConfiguration cacheConfiguration() {
+        return RedisCacheConfiguration.defaultCacheConfig()
+                .disableCachingNullValues()
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+    }
+
+
+}

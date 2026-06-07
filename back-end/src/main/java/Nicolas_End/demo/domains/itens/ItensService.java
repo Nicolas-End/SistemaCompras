@@ -4,17 +4,22 @@ import Nicolas_End.demo.domains.provider.ProviderEntity;
 import Nicolas_End.demo.domains.provider.ProviderService;
 import Nicolas_End.demo.dtos.itens.ItemNamePriceAndProviderCNPJDTO;
 import Nicolas_End.demo.dtos.itens.ItemNamePriceProviderEnityDTO;
+import Nicolas_End.demo.infra.config.RedisConfigurations;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import Nicolas_End.demo.dtos.itens.ItensListDTO;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 public class ItensService {
 
@@ -28,10 +33,14 @@ public class ItensService {
         this.providerService = providerService;
     }
 
-    public <T> ApiResponse getAllItens(){
+    // salva os itens no cache do sistema
+    @Cacheable(value = RedisConfigurations.ITEMS_CACHE)
+    public <T> List<ItensListDTO> getAllItens() {
+
         List<ItensListDTO> itensList = this.getListItens() ;
 
-        return responseUtil.sucess(itensList, "Itens Capturados com sucesso", HttpStatus.OK);
+        return itensList;
+
     }
 
 
@@ -70,7 +79,6 @@ public class ItensService {
         if (datas.itemName() == null || datas.itemPrice() == null) {
             return responseUtil.error("User invalid input", "Algum dos valores enviados é invalido", HttpStatus.BAD_REQUEST);
         }
-
 
         else if (itemAlreadyRegisteredByName(datas.itemName()))
         {

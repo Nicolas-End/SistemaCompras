@@ -30,6 +30,5 @@ build/
 !**/src/test/**/build/
 
 ### MYSFEL ###
-/src/main/resources/.env
+**/src/main/resources/.env
 
-.env
