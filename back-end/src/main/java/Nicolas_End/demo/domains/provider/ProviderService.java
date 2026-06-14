@@ -28,9 +28,11 @@ public class ProviderService {
 
 
     public ApiResponse registerNewProvider(ProviderInfosRequest providerDatas){
-        Optional<ProviderEntity> findProvider = this.findProviderEntityByCnpj(providerDatas.cnpj());
-        if(findProvider.isPresent()){
-            return this.responseUtil.error("Provider Already registered", "Fornecedor com este cpnj já cadastrado", HttpStatus.CONFLICT);
+
+        // verifica se o fornecedor esta no tamanho correto ou se ja esta cadastrado no sistema
+        ApiResponse validateProviderEntity = this.providerGeneralValidate(providerDatas);
+        if(!validateProviderEntity.getSucess()){
+            return validateProviderEntity;
         }
 
         // registra e cria um nova entidade de provedor no banco de dados
@@ -50,6 +52,32 @@ public class ProviderService {
 
     private Optional<ProviderEntity> registerNewProviderEntity(ProviderEntity provider){
         return this.providerRepository.save(provider);
+    }
+
+    private ApiResponse providerGeneralValidate(ProviderInfosRequest providerDatas){
+        String telephone;
+        Optional<ProviderEntity> findProvider = this.findProviderEntityByCnpj(providerDatas.cnpj());
+        if(findProvider.isPresent()){
+            return this.responseUtil.error("Provider Already registered", "Fornecedor com este cpnj já cadastrado", HttpStatus.CONFLICT);
+        }
+
+        if(providerDatas.telephone().isPresent()){
+            telephone = providerDatas.telephone().get();
+        }else{
+            telephone = null;
+        }
+
+        if (!validateCpnjAndTelephoneLenght(providerDatas.cnpj(), telephone)){
+            return this.responseUtil.error("Invalid Lenght format", "Tamanho enviado do telephone ou cnpj é invalido", HttpStatus.BAD_REQUEST);
+        }
+
+        return  this.responseUtil.sucess(null,null,null);
+
+
+    }
+
+    private boolean validateCpnjAndTelephoneLenght(String cnpj, String telephone){
+        return (cnpj.length() == 14 || (telephone.length() == 11)) && telephone == null;
     }
 
 }
