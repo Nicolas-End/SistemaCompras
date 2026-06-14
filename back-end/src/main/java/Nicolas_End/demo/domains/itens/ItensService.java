@@ -107,7 +107,7 @@ public class ItensService {
         if (datas.providerCNPJ().isEmpty()){
             return Optional.empty();
         }
-            return this.providerService.findProviderEntityByCnpjToItensEntity(datas.providerCNPJ().get());
+            return this.providerService.findProviderEntityByCnpj(datas.providerCNPJ().get());
     }
 
 

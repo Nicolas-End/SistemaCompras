@@ -1,11 +1,12 @@
 package Nicolas_End.demo.domains.provider;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import Nicolas_End.demo.infra.util.clock.ApiClockUtil;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.util.Optional;
 
 @Entity
 @Table(name = "TB_PROVIDER")
@@ -13,7 +14,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProviderEntity {
+public class ProviderEntity implements Serializable {
+
+    public ProviderEntity(String cnpj, String name, Optional<String> telephone, Optional<String> address){
+        this.cnpj = cnpj;
+        this.name = name;
+        telephone.ifPresent(telephoneString -> this.telephone = telephoneString);
+        address.ifPresent(addressString -> this.address = addressString);
+
+    }
 
     @Id
     @Column(length = 14)
@@ -26,6 +35,26 @@ public class ProviderEntity {
     private String telephone;
 
     @Column
-    private  String adrress;
+    private  String address;
+
+    @Column
+    private String createdAt;
+
+    @Column
+    private String updatedAt;
+
+
+
+    @PrePersist
+    public void prePersist(){
+        this.createdAt = ApiClockUtil.getPresentDay();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        this.updatedAt = ApiClockUtil.getPresentDay();
+
+    }
+
 
 }

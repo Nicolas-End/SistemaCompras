@@ -2,6 +2,7 @@ package Nicolas_End.demo.domains.itens;
 
 
 import Nicolas_End.demo.domains.provider.ProviderEntity;
+import Nicolas_End.demo.infra.util.clock.ApiClockUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,17 +52,13 @@ public class ItensEntity implements Serializable {
 
     @PrePersist
     public void prePersist(){
-        this.createdAt = this.getPresentTime();
+        this.createdAt = ApiClockUtil.getPresentDay();
     }
 
     @PreUpdate
     public void preUpdate(){
-        this.updatedAt = this.getPresentTime();
+        this.updatedAt = ApiClockUtil.getPresentDay();
 
     }
 
-    private String getPresentTime() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
-        return LocalDateTime.now().format(formatter);
-    }
 }

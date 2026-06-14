@@ -1,5 +1,6 @@
 package Nicolas_End.demo.infra.util.response;
 
+import Nicolas_End.demo.infra.util.clock.ApiClockUtil;
 import Nicolas_End.demo.infra.util.path.ApiPathUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class ResponseUtil {
         apiResponse.setMessage(message);
         apiResponse.setDatas(datas);
         apiResponse.setError(null);
-        apiResponse.setTime(this.getPresentTime());
+        apiResponse.setTime(ApiClockUtil.getPresentHour());
         apiResponse.setPath(this.apiPathUtil.getContextPath());
         apiResponse.setStatus(httpStatus);
 
@@ -38,14 +39,12 @@ public class ResponseUtil {
         apiResponse.setMessage(message);
         apiResponse.setDatas(null);
         apiResponse.setError(error);
-        apiResponse.setTime(this.getPresentTime());
+        apiResponse.setTime(ApiClockUtil.getPresentHour());
         apiResponse.setPath(this.apiPathUtil.getContextPath());
         apiResponse.setStatus(statusCode);
 
         return apiResponse;
     }
 
-    private String getPresentTime(){
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss"));
-    }
+
 }
