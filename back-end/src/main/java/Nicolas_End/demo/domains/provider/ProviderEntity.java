@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.UUID;
 
 @Entity
 @Table(name = "TB_PROVIDER")
@@ -25,7 +26,12 @@ public class ProviderEntity implements Serializable {
     }
 
     @Id
-    @Column(length = 14)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+
+
+    @Column(length = 14, unique = true)
     private String cnpj;
 
     @Column(nullable = false)

@@ -21,7 +21,7 @@ public class ProviderService {
     }
 
     public Optional<ProviderEntity> findProviderEntityByCnpj(String cnpj){
-        return this.providerRepository.findById(cnpj);
+        return this.providerRepository.findByCnpj(cnpj);
     }
 
 
@@ -35,14 +35,11 @@ public class ProviderService {
             return validateProviderEntity;
         }
 
-        // registra e cria um nova entidade de provedor no banco de dados
-        Optional<ProviderEntity> provider = registerNewProviderEntity(createNewProviderEntity(providerDatas));
+        ProviderEntity newProvider = this.registerNewProviderEntity(createNewProviderEntity(providerDatas));
 
-        if(provider.isPresent()){
-            return  this.responseUtil.sucess(null,"Fornecedor Cadastrado com sucesso", HttpStatus.OK);
-        }
 
-        return this.responseUtil.error("Internal Error","Erro Interno no sisteam",HttpStatus.INTERNAL_SERVER_ERROR);
+        return  this.responseUtil.sucess(newProvider,"Fornecedor Cadastrado com sucesso", HttpStatus.OK);
+
     }
 
 
@@ -50,23 +47,27 @@ public class ProviderService {
         return new ProviderEntity(providerInfosRequest.cnpj(), providerInfosRequest.name(),providerInfosRequest.telephone(),providerInfosRequest.address());
     }
 
-    private Optional<ProviderEntity> registerNewProviderEntity(ProviderEntity provider){
+    private ProviderEntity registerNewProviderEntity(ProviderEntity provider){
         return this.providerRepository.save(provider);
     }
 
     private ApiResponse providerGeneralValidate(ProviderInfosRequest providerDatas){
         String telephone;
-        Optional<ProviderEntity> findProvider = this.findProviderEntityByCnpj(providerDatas.cnpj());
-        if(findProvider.isPresent()){
+        Optional<ProviderEntity> providerDatabase = this.findProviderEntityByCnpj(providerDatas.cnpj());
+        if(providerDatabase.isPresent()){
             return this.responseUtil.error("Provider Already registered", "Fornecedor com este cpnj já cadastrado", HttpStatus.CONFLICT);
         }
 
+
+        // verifica se foi registrado algum telefone
         if(providerDatas.telephone().isPresent()){
             telephone = providerDatas.telephone().get();
         }else{
             telephone = null;
         }
 
+
+        //verifica o tamanho do CNPJ E TELEFONE
         if (!validateCpnjAndTelephoneLenght(providerDatas.cnpj(), telephone)){
             return this.responseUtil.error("Invalid Lenght format", "Tamanho enviado do telephone ou cnpj é invalido", HttpStatus.BAD_REQUEST);
         }
@@ -77,7 +78,7 @@ public class ProviderService {
     }
 
     private boolean validateCpnjAndTelephoneLenght(String cnpj, String telephone){
-        return (cnpj.length() == 14 || (telephone.length() == 11)) && telephone == null;
+        return (cnpj.length() == 14 && (telephone.length() == 11) || telephone == null  );
     }
 
 }
