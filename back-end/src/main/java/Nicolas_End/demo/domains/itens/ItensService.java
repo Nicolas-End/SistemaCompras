@@ -2,8 +2,8 @@ package Nicolas_End.demo.domains.itens;
 
 import Nicolas_End.demo.domains.provider.ProviderEntity;
 import Nicolas_End.demo.domains.provider.ProviderService;
-import Nicolas_End.demo.dtos.itens.ItemNamePriceAndProviderCNPJDTO;
-import Nicolas_End.demo.dtos.itens.ItemNamePriceProviderEnityDTO;
+import Nicolas_End.demo.dtos.itens.ItemAndProviderCnpjDTO;
+import Nicolas_End.demo.dtos.itens.ItemAndProviderEnityDTO;
 import Nicolas_End.demo.infra.config.RedisConfigurations;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import Nicolas_End.demo.dtos.itens.ItensListDTO;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -35,7 +34,7 @@ public class ItensService {
 
     // salva os itens no cache do sistema
     @Cacheable(value = RedisConfigurations.ITEMS_CACHE)
-    public <T> List<ItensListDTO> getAllItens() {
+    public  List<ItensListDTO> getAllItens() {
 
         List<ItensListDTO> itensList = this.getListItens() ;
 
@@ -44,20 +43,21 @@ public class ItensService {
     }
 
 
-    public  <T> ApiResponse registerNewItem(ItemNamePriceAndProviderCNPJDTO datas){
+    public  <T> ApiResponse registerNewItem(ItemAndProviderCnpjDTO datas){
 
         // verifica se o item ja esta cadastrado ou se não esta com valores invalidos
-        ApiResponse validateItemName = this.validateItemNameAndPriceDTO(datas);
-        if(!validateItemName.getSucess()){
-            return validateItemName;
+        ApiResponse validatedItem = this.ValidateItemInfos(datas);
+        if(!validatedItem.getSucess()){
+            return validatedItem;
         }
 
         // cria e gerencia o dados do item para ser adicionado ao banco de dados
         Optional<ProviderEntity> providerEntity = this.searchForProviderByCnpj(datas);
-        ItemNamePriceProviderEnityDTO internalItensDatasWithProviderEntity = this.setItemNamePriceProviderEnitty(datas, providerEntity);
+
+        ItemAndProviderEnityDTO itemDTOSet = this.createItemDTOWithProvider(datas, providerEntity);
 
         // cria a entidade do item a ser adicionado ao banco de dados
-        ItensEntity itemEntity = this.createItemEntity(internalItensDatasWithProviderEntity);
+        ItensEntity itemEntity = this.createItemEntity(itemDTOSet);
 
         ItensEntity itemEntityRegistered = this.itensRepository.save(itemEntity);
 
@@ -74,7 +74,7 @@ public class ItensService {
         return this.itensRepository.findAllBy();
     }
 
-    private ApiResponse validateItemNameAndPriceDTO(ItemNamePriceAndProviderCNPJDTO datas){
+    private ApiResponse ValidateItemInfos(ItemAndProviderCnpjDTO datas){
 
         if (datas.itemName() == null || datas.itemPrice() == null) {
             return responseUtil.error("User invalid input", "Algum dos valores enviados é invalido", HttpStatus.BAD_REQUEST);
@@ -92,7 +92,7 @@ public class ItensService {
         return this.itensRepository.existsByName(name);
     }
 
-    private  ItensEntity createItemEntity(ItemNamePriceProviderEnityDTO datas){
+    private  ItensEntity createItemEntity(ItemAndProviderEnityDTO datas){
 
         return  new ItensEntity(datas.name(), datas.price(), datas.providerEntity()) ;
     }
@@ -102,20 +102,20 @@ public class ItensService {
 
 
     // retorna a entidade do destibuidor
-    private Optional<ProviderEntity> searchForProviderByCnpj(ItemNamePriceAndProviderCNPJDTO datas) {
+    private Optional<ProviderEntity> searchForProviderByCnpj(ItemAndProviderCnpjDTO datas) {
 
         if (datas.providerCNPJ().isEmpty()){
             return Optional.empty();
         }
-            return this.providerService.findProviderEntityByCnpj(datas.providerCNPJ().get());
+        return this.providerService.findProviderEntityByCnpj(datas.providerCNPJ().get());
     }
 
 
-    private ItemNamePriceProviderEnityDTO setItemNamePriceProviderEnitty(ItemNamePriceAndProviderCNPJDTO datas, Optional<ProviderEntity> provider){
+    private ItemAndProviderEnityDTO createItemDTOWithProvider(ItemAndProviderCnpjDTO datas, Optional<ProviderEntity> provider){
         if(provider.isEmpty()){
-            return new ItemNamePriceProviderEnityDTO(datas.itemName(), datas.itemPrice(), null);
+            return new ItemAndProviderEnityDTO(datas.itemName(), datas.itemPrice(), null);
         }
-        return new ItemNamePriceProviderEnityDTO(datas.itemName(),datas.itemPrice(),provider.get());
+        return new ItemAndProviderEnityDTO(datas.itemName(),datas.itemPrice(),provider.get());
 
     }
 }

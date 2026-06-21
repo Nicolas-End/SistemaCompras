@@ -1,9 +1,11 @@
 package Nicolas_End.demo.domains.provider;
 
-import Nicolas_End.demo.dtos.provider.ProviderInfosRequest;
+import Nicolas_End.demo.dtos.provider.BasicProviderInfosDTO;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/provider")
@@ -15,9 +17,16 @@ public class ProviderController {
     }
 
     @PostMapping
-    public ResponseEntity registerNewProvider(@RequestBody ProviderInfosRequest providerDatas){
+    public ResponseEntity registerNewProvider(@RequestBody BasicProviderInfosDTO providerDatas){
 
         ApiResponse apiResponse = this.providerService.registerNewProvider(providerDatas);
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity getAllRegisteredProvider(){
+        ApiResponse apiResponse = this.providerService.getAllProvider();
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }

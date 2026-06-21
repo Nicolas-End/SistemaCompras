@@ -47,6 +47,8 @@ public class QuoteEntity {
     private ProviderEntity provider;
 
 
+    //relação para os anexos
+    //  como pdf, imagem e afins
     @ManyToMany
     @JoinTable(
             name ="TB_ANEXX_QUOTE",

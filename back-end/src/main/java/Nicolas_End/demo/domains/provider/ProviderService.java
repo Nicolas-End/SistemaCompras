@@ -1,12 +1,13 @@
 package Nicolas_End.demo.domains.provider;
 
 
-import Nicolas_End.demo.dtos.provider.ProviderInfosRequest;
+import Nicolas_End.demo.dtos.provider.BasicProviderInfosDTO;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -27,7 +28,7 @@ public class ProviderService {
 
 
 
-    public ApiResponse registerNewProvider(ProviderInfosRequest providerDatas){
+    public ApiResponse registerNewProvider(BasicProviderInfosDTO providerDatas){
 
         // verifica se o fornecedor esta no tamanho correto ou se ja esta cadastrado no sistema
         ApiResponse validateProviderEntity = this.providerGeneralValidate(providerDatas);
@@ -35,23 +36,36 @@ public class ProviderService {
             return validateProviderEntity;
         }
 
-        ProviderEntity newProvider = this.registerNewProviderEntity(createNewProviderEntity(providerDatas));
+        ProviderEntity providerRegisteredInDataBase = this.registerNewProviderEntity(createNewProviderEntity(providerDatas));
 
 
-        return  this.responseUtil.sucess(newProvider,"Fornecedor Cadastrado com sucesso", HttpStatus.OK);
+        return  this.responseUtil.sucess(null,"Fornecedor Cadastrado com sucesso", HttpStatus.OK);
 
     }
 
 
-    private ProviderEntity createNewProviderEntity(ProviderInfosRequest providerInfosRequest){
-        return new ProviderEntity(providerInfosRequest.cnpj(), providerInfosRequest.name(),providerInfosRequest.telephone(),providerInfosRequest.address());
+    public ApiResponse getAllProvider(){
+        List<BasicProviderInfosDTO> providers = this.providerRepository.findAllBy();
+
+        return this.responseUtil.sucess(providers, "Usuario encontrado com sucesso", HttpStatus.OK);
+    }
+
+
+
+    private ProviderEntity createNewProviderEntity(BasicProviderInfosDTO basicProviderInfos){
+        return new ProviderEntity(basicProviderInfos.cnpj(), basicProviderInfos.name(), basicProviderInfos.telephone().orElse(null), basicProviderInfos.address().orElse(null));
     }
 
     private ProviderEntity registerNewProviderEntity(ProviderEntity provider){
         return this.providerRepository.save(provider);
     }
 
-    private ApiResponse providerGeneralValidate(ProviderInfosRequest providerDatas){
+
+
+
+
+
+    private ApiResponse providerGeneralValidate(BasicProviderInfosDTO providerDatas){
         String telephone;
         Optional<ProviderEntity> providerDatabase = this.findProviderEntityByCnpj(providerDatas.cnpj());
         if(providerDatabase.isPresent()){
@@ -80,5 +94,7 @@ public class ProviderService {
     private boolean validateCpnjAndTelephoneLenght(String cnpj, String telephone){
         return (cnpj.length() == 14 && (telephone.length() == 11) || telephone == null  );
     }
+
+
 
 }

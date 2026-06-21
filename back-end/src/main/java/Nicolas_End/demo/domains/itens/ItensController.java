@@ -1,7 +1,7 @@
 package Nicolas_End.demo.domains.itens;
 
 
-import Nicolas_End.demo.dtos.itens.ItemNamePriceAndProviderCNPJDTO;
+import Nicolas_End.demo.dtos.itens.ItemAndProviderCnpjDTO;
 import Nicolas_End.demo.dtos.itens.ItensListDTO;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
 import Nicolas_End.demo.infra.util.response.ResponseUtil;
@@ -37,7 +37,7 @@ public class ItensController {
     }
 
     @PostMapping()
-    public  ResponseEntity registerNewItem(@RequestBody ItemNamePriceAndProviderCNPJDTO data ){
+    public  ResponseEntity registerNewItem(@RequestBody ItemAndProviderCnpjDTO data ){
         ApiResponse apiResponse = this.itensService.registerNewItem(data);
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
