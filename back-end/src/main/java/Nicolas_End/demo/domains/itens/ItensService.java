@@ -57,7 +57,7 @@ public class ItensService {
         ItemAndProviderEnityDTO itemDTOSet = this.createItemDTOWithProvider(datas, providerEntity);
 
         // cria a entidade do item a ser adicionado ao banco de dados
-        ItensEntity itemEntity = this.createItemEntity(itemDTOSet);
+        ItensEntity itemEntity =  ItensEntity.createInstanceWithDTO(itemDTOSet);
 
         ItensEntity itemEntityRegistered = this.itensRepository.save(itemEntity);
 
@@ -90,11 +90,6 @@ public class ItensService {
 
     private boolean itemAlreadyRegisteredByName(String name){
         return this.itensRepository.existsByName(name);
-    }
-
-    private  ItensEntity createItemEntity(ItemAndProviderEnityDTO datas){
-
-        return  new ItensEntity(datas.name(), datas.price(), datas.providerEntity()) ;
     }
 
 

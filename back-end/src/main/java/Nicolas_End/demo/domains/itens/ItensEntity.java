@@ -2,9 +2,11 @@ package Nicolas_End.demo.domains.itens;
 
 
 import Nicolas_End.demo.domains.provider.ProviderEntity;
+import Nicolas_End.demo.dtos.itens.ItemAndProviderEnityDTO;
 import Nicolas_End.demo.infra.util.clock.ApiClockUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -17,12 +19,17 @@ import java.util.UUID;
 @Table(name = "tb_itens")
 @Getter
 @Setter
+@NoArgsConstructor
 public class ItensEntity implements Serializable {
 
-    public ItensEntity(String name, Double price, ProviderEntity providerEntity){
+    private ItensEntity(String name, Double price, ProviderEntity providerEntity){
         this.name = name;
         this.price = price;
         this.provider = providerEntity;
+    }
+
+    public static ItensEntity createInstanceWithDTO(ItemAndProviderEnityDTO datas){
+        return  new ItensEntity(datas.name(), datas.price(), datas.providerEntity());
     }
 
     @Id

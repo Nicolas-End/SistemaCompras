@@ -36,7 +36,8 @@ public class ProviderService {
             return validateProviderEntity;
         }
 
-        ProviderEntity providerRegisteredInDataBase = this.registerNewProviderEntity(createNewProviderEntity(providerDatas));
+        ProviderEntity provider = ProviderEntity.createInstanceByBasicDTO(providerDatas);
+        this.registerNewProviderEntity(provider);
 
 
         return  this.responseUtil.sucess(null,"Fornecedor Cadastrado com sucesso", HttpStatus.OK);
@@ -52,12 +53,9 @@ public class ProviderService {
 
 
 
-    private ProviderEntity createNewProviderEntity(BasicProviderInfosDTO basicProviderInfos){
-        return new ProviderEntity(basicProviderInfos.cnpj(), basicProviderInfos.name(), basicProviderInfos.telephone().orElse(null), basicProviderInfos.address().orElse(null));
-    }
-
-    private ProviderEntity registerNewProviderEntity(ProviderEntity provider){
-        return this.providerRepository.save(provider);
+    private void registerNewProviderEntity(ProviderEntity provider){
+        this.providerRepository.save(provider);
+        return;
     }
 
 
@@ -74,8 +72,8 @@ public class ProviderService {
 
 
         // verifica se foi registrado algum telefone
-        if(providerDatas.telephone().isPresent()){
-            telephone = providerDatas.telephone().get();
+        if(providerDatas.telephone() != null){
+            telephone = providerDatas.telephone();
         }else{
             telephone = null;
         }

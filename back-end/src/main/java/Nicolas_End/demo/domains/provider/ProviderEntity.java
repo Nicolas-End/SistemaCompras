@@ -1,5 +1,6 @@
 package Nicolas_End.demo.domains.provider;
 
+import Nicolas_End.demo.dtos.provider.BasicProviderInfosDTO;
 import Nicolas_End.demo.infra.util.clock.ApiClockUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,12 +17,16 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ProviderEntity implements Serializable {
-
-    public ProviderEntity (String cnpj, String name, String telephone, String address){
+    
+    private ProviderEntity (String cnpj, String name, String telephone, String address){
         this.cnpj = cnpj;
         this.name = name;
         this.telephone = telephone;
         this.address = address;
+    }
+
+    public static ProviderEntity createInstanceByBasicDTO(BasicProviderInfosDTO datas){
+        return new ProviderEntity(datas.cnpj(), datas.name(), datas.telephone(), datas.address());
     }
 
 
