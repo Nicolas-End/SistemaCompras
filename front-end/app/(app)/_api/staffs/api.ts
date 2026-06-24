@@ -18,12 +18,12 @@ export const getStaffLogin = async (datas: LoginDatas): Promise< ResponseFront> 
     try {
         const staffDatas = await api.post<LoginResponse>("/staff/login", datas);
 
-        if (!staffDatas.sucess || staffDatas.datas.token === null) {
+        if (!staffDatas.success || staffDatas.datas.token === null) {
             if (staffDatas.status === "401 UNAUTHORIZED") {
-                return {sucess:false,title:"Login Invalido",message:"E-mail ou senha incorretos. Verifique suas credenciais e tente novamente."};
+                return {success:false,title:"Login Invalido",message:"E-mail ou senha incorretos. Verifique suas credenciais e tente novamente."};
             }
             
-            return {sucess:false,title:"Sistema Indesponivel", message:"Tente novamente mais tarde, estamos solucionando problema em questão"};
+            return {success:false,title:"Sistema Indesponivel", message:"Tente novamente mais tarde, estamos solucionando problema em questão"};
         }
 
         // Salva o token nos cookies
@@ -36,10 +36,10 @@ export const getStaffLogin = async (datas: LoginDatas): Promise< ResponseFront> 
             role: staffDatas.datas.role || undefined,
         });
 
-        return {sucess:true}; 
+        return {success:true}; 
 
     } catch (error) {
         
-        return {sucess:false, title:"Sistema Indesponivel", message:"Tente novamente mais tarde, estamos solucionando problema em questão"}
+        return {success:false, title:"Sistema Indesponivel", message:"Tente novamente mais tarde, estamos solucionando problema em questão"}
     }
 }

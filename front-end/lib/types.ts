@@ -69,7 +69,7 @@ export interface ApiResponse{
   message:string | null,
   path:string | null,
   status: string | null,
-  sucess: boolean | null,
+  success: boolean | null,
   time: Date | null
 }
 
@@ -91,17 +91,25 @@ export interface Item {
   name:string,
   price:number,
   createdAt:String,
-  provider_name?: string
+  providerName?: string
 }
 
 
 export interface ResponseFront{
-    sucess: boolean,
+    success: boolean,
     datas?:any
     path?:string; 
     title? : string,
     message?: string,
 }
+
+export interface ProviderDatas{
+    cnpj:string ,
+    name:string | null, 
+    telephone?:string |null, 
+    address?:string |null, 
+}
+
 
 
 export type ItemCategory = "materiais" | "equipamentos" | "escritorio" | "limpeza" | "outros"

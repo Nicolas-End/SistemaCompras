@@ -26,7 +26,6 @@ export default function ItemsPage() {
         const datas = await mockItems();
         if(Array.isArray(datas)){
           setItems(datas)
-          
         }
       }finally{
         setLoading(false)
@@ -43,9 +42,10 @@ export default function ItemsPage() {
       return  items.filter((item) => {
         const matchesSearch = 
           searchQuery === "" ||
+          
           item?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item?.provider_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item?.internalId?.toLowerCase().includes(searchQuery.toLowerCase())
+          item?.providerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item?.internalId?.toLowerCase().includes(searchQuery.toLowerCase()) 
     
         return matchesSearch 
       })

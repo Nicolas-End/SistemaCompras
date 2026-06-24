@@ -21,7 +21,7 @@ public class ResponseUtil {
     public <T> ApiResponse<T> sucess(T datas, String message,  HttpStatus httpStatus){
         ApiResponse<T> apiResponse = new ApiResponse<>();
 
-        apiResponse.setSucess(true);
+        apiResponse.setSuccess(true);
         apiResponse.setMessage(message);
         apiResponse.setDatas(datas);
         apiResponse.setError(null);
@@ -35,7 +35,7 @@ public class ResponseUtil {
     public <T> ApiResponse<T> error(String error , String message,  HttpStatus statusCode){
         ApiResponse<T> apiResponse = new ApiResponse<>();
 
-        apiResponse.setSucess(false);
+        apiResponse.setSuccess(false);
         apiResponse.setMessage(message);
         apiResponse.setDatas(null);
         apiResponse.setError(error);

@@ -31,7 +31,7 @@ public class StaffController {
 
             ApiResponse staffStatus = this.staffService.registerNewStaff(staff);
 
-            if (staffStatus.getSucess()){
+            if (staffStatus.getSuccess()){
                 return ResponseEntity.ok(staffStatus);
             }
             return ResponseEntity.status(staffStatus.getStatus()).body(staffStatus);

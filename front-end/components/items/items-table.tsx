@@ -125,8 +125,8 @@ export function ItemsTable({
                     </div>
                   </TableCell>
                   <TableCell>
-                      {item.provider_name? (
-                        <p className="font-medium">{item.provider_name}</p>
+                      {item.providerName? (
+                        <p className="font-medium">{item.providerName}</p>
                       ): <p className="font-medium">Não Informado</p>}
                     
                   </TableCell>

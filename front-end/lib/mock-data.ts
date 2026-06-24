@@ -1,7 +1,10 @@
 import { getStaffInfosFromCookies } from "@/services/cookies";
-import type { Order, UserSys, Notification, DashboardMetrics, Item } from "./types"
+import type { Order, UserSys, Notification, DashboardMetrics, Item, ProviderDatas } from "./types"
 import { getAllItens } from "@/app/(app)/_api/items/get-routes";
 import { ApiError } from "next/dist/server/api-utils";
+import { getAllProviders } from "@/app/(app)/_api/provider/get-routes";
+import { ResponseCookies } from "next/dist/compiled/@edge-runtime/cookies";
+import { tr } from "date-fns/locale";
 
 interface MockReponse{
   success:false,
@@ -33,20 +36,42 @@ export async function currentUser(): Promise<UserSys> {
   }
 } 
 
-export  const  mockItems = async():Promise<Item[ ] | void> => {
-  try{ 
-    const itensInfos= await getAllItens ();
-
-    if(!itensInfos.sucess){
-      return ; 
+export const mockItems = async (): Promise<Item[] | null> => {
+  try {
+    const response = await getAllItens()
+    if (!response.success) {
+      
+      return null
     }
-    return itensInfos.datas
-
-  }catch (error) {
-    console.error("Erro Captura de informações de itens: ", error);
-    return 
+    
+    return response.datas
+  } catch (error) {
+    console.error("Erro ao capturar informações de itens: ", error)
+    return null
   }
+}
 
+export const mockProviders = async (): Promise<ProviderDatas[] | null> => {
+  try {
+    const response = await getAllProviders()
+   
+    if (!response.success) {
+
+      return null
+    
+    }
+
+    const nullProvider:ProviderDatas = {
+      cnpj:"Não informar",
+      name:"Não Informar",
+    
+    }
+    
+    return  [... response.datas, nullProvider]
+  } catch (error) {
+    console.error("Erro ao buscar fornecedores: ", error)
+    return null
+  }
 }
 
 

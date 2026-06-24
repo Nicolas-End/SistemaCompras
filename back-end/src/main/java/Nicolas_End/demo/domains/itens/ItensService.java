@@ -47,7 +47,7 @@ public class ItensService {
 
         // verifica se o item ja esta cadastrado ou se não esta com valores invalidos
         ApiResponse validatedItem = this.ValidateItemInfos(datas);
-        if(!validatedItem.getSucess()){
+        if(!validatedItem.getSuccess()){
             return validatedItem;
         }
 

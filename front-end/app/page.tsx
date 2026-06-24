@@ -35,7 +35,7 @@ export default function LoginPage() {
     
     // Simulating authentication
     const isAuthenticated = await getStaffLogin({email, password})
-    if (!isAuthenticated.sucess ){
+    if (!isAuthenticated.success ){
       
       setErrorMessage(isAuthenticated.message?isAuthenticated.message:'LOGIN INVALIDO')
       setErrorTitle(isAuthenticated.title?isAuthenticated.title:"LOGIN INVALIDADO")

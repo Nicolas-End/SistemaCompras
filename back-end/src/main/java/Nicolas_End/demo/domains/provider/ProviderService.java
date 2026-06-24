@@ -32,11 +32,14 @@ public class ProviderService {
 
         // verifica se o fornecedor esta no tamanho correto ou se ja esta cadastrado no sistema
         ApiResponse validateProviderEntity = this.providerGeneralValidate(providerDatas);
-        if(!validateProviderEntity.getSucess()){
+        if(!validateProviderEntity.getSuccess()){
             return validateProviderEntity;
         }
 
-        ProviderEntity provider = ProviderEntity.createInstanceByBasicDTO(providerDatas);
+        ProviderEntity provider = new ProviderEntity.Builder(providerDatas.cnpj(),providerDatas.name())
+                .telephone(providerDatas.telephone())
+                .address(providerDatas.address())
+                .build();
         this.registerNewProviderEntity(provider);
 
 

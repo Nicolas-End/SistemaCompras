@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Plus, Upload } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -22,23 +21,56 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import type { ItemCategory } from "@/lib/types"
+import type { ItemCategory, ProviderDatas } from "@/lib/types"
+import { mockProviders } from "@/lib/mock-data"
 
-const units = ["un", "kg", "l", "m", "cx", "pc", "par"]
+// Mock: substitua pela URL real quando tiver o endpoint
+// Ex: const SUPPLIERS_URL = "/api/suppliers"
+async function fetchSuppliers(): Promise<{ id: string; name: string }[]> {
+  await new Promise((resolve) => setTimeout(resolve, 800)) // simula latência
+  return [
+    { id: "1", name: "Fornecedor A" },
+    { id: "2", name: "Fornecedor B" },
+    { id: "3", name: "Fornecedor C" },
+  ]
+  // Quando tiver endpoint real, troque por:
+  // const res = await fetch(SUPPLIERS_URL)
+  // if (!res.ok) throw new Error("Erro ao buscar fornecedores")
+  // return res.json()
+}
 
 export function NewItemDialog() {
   const [open, setOpen] = useState(false)
+  const [suppliers, setSuppliers] = useState<ProviderDatas[]>([])
+  const [suppliersLoading, setSuppliersLoading] = useState(false)
+  const [suppliersError, setSuppliersError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
-    sku: "",
+    code: "",
     category: "" as ItemCategory | "",
     price: "",
-    quantity: "",
-    minStock: "",
-    unit: "un",
     supplier: "",
   })
+
+  // Busca fornecedores ao abrir o modal
+  useEffect(() => {
+    async function loadItens() {
+          try {
+            const datas = await mockProviders();
+            if(Array.isArray(datas)){
+              setSuppliers(datas)
+              
+            }
+          }finally{
+            setSuppliersLoading(false)
+          }
+    
+        }
+        loadItens()
+    if (!open) return
+    setSuppliersLoading(true)
+    setSuppliersError(null)
+  }, [open])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,13 +79,9 @@ export function NewItemDialog() {
     setOpen(false)
     setFormData({
       name: "",
-      description: "",
-      sku: "",
+      code: "",
       category: "",
       price: "",
-      quantity: "",
-      minStock: "",
-      unit: "un",
       supplier: "",
     })
   }
@@ -66,33 +94,18 @@ export function NewItemDialog() {
           Novo Item
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Cadastrar Novo Item</DialogTitle>
           <DialogDescription>
-            Preencha as informacoes do item para adiciona-lo ao catalogo.
+            Preencha as informações do item para adicioná-lo ao catálogo.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Imagem */}
-          <div className="space-y-2">
-            <Label>Imagem do Produto</Label>
-            <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted transition-colors">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">
-                    Clique para fazer upload ou arraste uma imagem
-                  </p>
-                </div>
-                <input type="file" className="hidden" accept="image/*" />
-              </label>
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            {/* Nome */}
+        <form onSubmit={handleSubmit} className="space-y-4 py-2">
+          {/* Nome + Código */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Nome do Item *</Label>
               <Input
@@ -104,50 +117,53 @@ export function NewItemDialog() {
               />
             </div>
 
-            {/* SKU */}
             <div className="space-y-2">
-              <Label htmlFor="sku">SKU / Codigo *</Label>
+              <Label htmlFor="sku">Código *</Label>
               <Input
                 id="sku"
                 placeholder="Ex: PAP-A4-001"
-                value={formData.sku}
-                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                value={formData.code}
+                onChange={(e) => setFormData({ ...formData, code: e.target.value })}
                 required
               />
             </div>
           </div>
 
-          {/* Descricao */}
-          <div className="space-y-2">
-            <Label htmlFor="description">Descricao</Label>
-            <Textarea
-              id="description"
-              placeholder="Descreva o item..."
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
-            />
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-           
-
-            {/* Fornecedor */}
+          {/* Fornecedor + Preço */}
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="supplier">Fornecedor</Label>
-              <Input
-                id="supplier"
-                placeholder="Nome do fornecedor"
+              <Select
                 value={formData.supplier}
-                onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-              />
+                onValueChange={(value) => setFormData({ ...formData, supplier: value })}
+                disabled={suppliersLoading || !!suppliersError}
+              >
+                <SelectTrigger id="supplier">
+                  <SelectValue
+                    placeholder={
+                      suppliersLoading
+                        ? "Carregando..."
+                        : suppliersError
+                        ? "Erro ao carregar"
+                        : "Selecione o fornecedor"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {suppliers.map((s) => (
+                    <SelectItem key={s.cnpj} value={s.cnpj}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {suppliersError && (
+                <p className="text-xs text-destructive">{suppliersError}</p>
+              )}
             </div>
-          </div>
 
-          <div className="grid gap-4 sm:grid-cols-4">
-            {/* Preco */}
             <div className="space-y-2">
-              <Label htmlFor="price">Preco (R$) *</Label>
+              <Label htmlFor="price">Preço (R$) *</Label>
               <Input
                 id="price"
                 type="number"
@@ -159,56 +175,9 @@ export function NewItemDialog() {
                 required
               />
             </div>
-
-            {/* Quantidade */}
-            <div className="space-y-2">
-              <Label htmlFor="quantity">Quantidade *</Label>
-              <Input
-                id="quantity"
-                type="number"
-                min="0"
-                placeholder="0"
-                value={formData.quantity}
-                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                required
-              />
-            </div>
-
-            {/* Estoque Minimo */}
-            <div className="space-y-2">
-              <Label htmlFor="minStock">Estoque Min.</Label>
-              <Input
-                id="minStock"
-                type="number"
-                min="0"
-                placeholder="0"
-                value={formData.minStock}
-                onChange={(e) => setFormData({ ...formData, minStock: e.target.value })}
-              />
-            </div>
-
-            {/* Unidade */}
-            <div className="space-y-2">
-              <Label>Unidade</Label>
-              <Select
-                value={formData.unit}
-                onValueChange={(value) => setFormData({ ...formData, unit: value })}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {units.map((unit) => (
-                    <SelectItem key={unit} value={unit}>
-                      {unit}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="pt-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancelar
             </Button>

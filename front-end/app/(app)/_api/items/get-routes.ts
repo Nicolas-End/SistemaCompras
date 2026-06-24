@@ -16,14 +16,14 @@ export async function getAllItens(): Promise<ResponseFront> {
         const itensDatas: ApiItensReponse = await api.get('/itens'); 
        
     
-        if (!itensDatas.sucess){
-            return {sucess:false,title:"Erro Interno",message:"Houve erro Interno no sistema"};
+        if (!itensDatas.success){
+            return {success:false,title:"Erro Interno",message:"Houve erro Interno no sistema"};
         }
         
-        return {sucess:true, datas:itensDatas.datas};
+        return {success:true, datas:itensDatas.datas};
     }catch(error ) {
         
-        return {sucess:false, title:"Sistema Indesponivel", message:"Tente novamente mais tarde, estamos solucionando problema em questão"}
+        return {success:false, title:"Sistema Indesponivel", message:"Tente novamente mais tarde, estamos solucionando problema em questão"}
     }
     
    
