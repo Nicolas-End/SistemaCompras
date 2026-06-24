@@ -9,6 +9,9 @@ import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import Nicolas_End.demo.dtos.itens.ItensListDTO;
 import Nicolas_End.demo.infra.util.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.cache.autoconfigure.CacheProperties;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 
@@ -43,21 +46,24 @@ public class ItensService {
     }
 
 
-    public  <T> ApiResponse registerNewItem(ItemAndProviderCnpjDTO datas){
+    @CacheEvict(value = RedisConfigurations.ITEMS_CACHE, allEntries = true)
+    public  <T> ApiResponse registerNewItem(ItemAndProviderCnpjDTO item){
 
         // verifica se o item ja esta cadastrado ou se não esta com valores invalidos
-        ApiResponse validatedItem = this.ValidateItemInfos(datas);
+        ApiResponse validatedItem = this.ValidateItemInfos(item);
         if(!validatedItem.getSuccess()){
             return validatedItem;
         }
 
         // cria e gerencia o dados do item para ser adicionado ao banco de dados
-        Optional<ProviderEntity> providerEntity = this.searchForProviderByCnpj(datas);
-
-        ItemAndProviderEnityDTO itemDTOSet = this.createItemDTOWithProvider(datas, providerEntity);
+        Optional<ProviderEntity> providerEntity = this.searchForProviderByCnpj(item);
 
         // cria a entidade do item a ser adicionado ao banco de dados
-        ItensEntity itemEntity =  ItensEntity.createInstanceWithDTO(itemDTOSet);
+        ItensEntity itemEntity = new ItensEntity
+                .Builder(item.name(), item.price())
+                .internalCode(item.code().orElse(null))
+                .provider(providerEntity.orElse(null))
+                .build();
 
         ItensEntity itemEntityRegistered = this.itensRepository.save(itemEntity);
 
@@ -74,13 +80,13 @@ public class ItensService {
         return this.itensRepository.findAllBy();
     }
 
-    private ApiResponse ValidateItemInfos(ItemAndProviderCnpjDTO datas){
+    private ApiResponse ValidateItemInfos(ItemAndProviderCnpjDTO item){
 
-        if (datas.itemName() == null || datas.itemPrice() == null) {
+        if (item.name() == null || item.price() == null) {
             return responseUtil.error("User invalid input", "Algum dos valores enviados é invalido", HttpStatus.BAD_REQUEST);
         }
 
-        else if (itemAlreadyRegisteredByName(datas.itemName()))
+        else if (itemAlreadyRegisteredByName(item.name()))
         {
             return responseUtil.error("Item already registered", "Item com este nome ja registrado", HttpStatus.CONFLICT);
         }
@@ -106,11 +112,11 @@ public class ItensService {
     }
 
 
-    private ItemAndProviderEnityDTO createItemDTOWithProvider(ItemAndProviderCnpjDTO datas, Optional<ProviderEntity> provider){
+    private ItemAndProviderEnityDTO createItemDTOWithProvider(ItemAndProviderCnpjDTO item, Optional<ProviderEntity> provider){
         if(provider.isEmpty()){
-            return new ItemAndProviderEnityDTO(datas.itemName(), datas.itemPrice(), null);
+            return new ItemAndProviderEnityDTO(item.name(), item.price(), null);
         }
-        return new ItemAndProviderEnityDTO(datas.itemName(),datas.itemPrice(),provider.get());
+        return new ItemAndProviderEnityDTO(item.name(),item.price(),provider.get());
 
     }
 }

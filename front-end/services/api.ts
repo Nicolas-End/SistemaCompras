@@ -1,5 +1,8 @@
 import { Thasadith } from "next/font/google";
-import { deleteAllUserCookies, getTokenFromCookies } from "./cookies";
+import {  getTokenFromCookies, logout } from "./cookies";
+import { redirect } from "next/navigation";
+
+
 
 
 
@@ -17,7 +20,6 @@ async function request <T>(endpoint:string,
     
         // Lado servidor - pode acessar cookies
     const token = await getTokenFromCookies();
-        
     authHeader = token ? `Bearer ${token}` : "";
         
     
@@ -33,7 +35,7 @@ async function request <T>(endpoint:string,
     });
     
     if (response.status === 401){
-        console.log("Não Autorizado")
+        logout(); 
     }
     return response.json() as Promise<T>;
 

@@ -45,7 +45,7 @@ export default function ItemsPage() {
           
           item?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           item?.providerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item?.internalId?.toLowerCase().includes(searchQuery.toLowerCase()) 
+          item?.internalCode?.includes(searchQuery) 
     
         return matchesSearch 
       })

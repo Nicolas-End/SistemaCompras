@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus } from "lucide-react"
+import { Plus, AlertCircle, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -23,71 +24,85 @@ import {
 } from "@/components/ui/select"
 import type { ItemCategory, ProviderDatas } from "@/lib/types"
 import { mockProviders } from "@/lib/mock-data"
+import { registerNewItem } from "@/app/(app)/_api/items/post-routes"
 
-// Mock: substitua pela URL real quando tiver o endpoint
-// Ex: const SUPPLIERS_URL = "/api/suppliers"
-async function fetchSuppliers(): Promise<{ id: string; name: string }[]> {
-  await new Promise((resolve) => setTimeout(resolve, 800)) // simula latência
-  return [
-    { id: "1", name: "Fornecedor A" },
-    { id: "2", name: "Fornecedor B" },
-    { id: "3", name: "Fornecedor C" },
-  ]
-  // Quando tiver endpoint real, troque por:
-  // const res = await fetch(SUPPLIERS_URL)
-  // if (!res.ok) throw new Error("Erro ao buscar fornecedores")
-  // return res.json()
-}
+type SubmitStatus = "idle" | "loading" | "success" | "error"
 
 export function NewItemDialog() {
   const [open, setOpen] = useState(false)
   const [suppliers, setSuppliers] = useState<ProviderDatas[]>([])
   const [suppliersLoading, setSuppliersLoading] = useState(false)
   const [suppliersError, setSuppliersError] = useState<string | null>(null)
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle")
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
   const [formData, setFormData] = useState({
     name: "",
     code: "",
-    category: "" as ItemCategory | "",
-    price: "",
-    supplier: "",
+    price: 0,
+    providerCNPJ: "",
   })
 
   // Busca fornecedores ao abrir o modal
   useEffect(() => {
-    async function loadItens() {
-          try {
-            const datas = await mockProviders();
-            if(Array.isArray(datas)){
-              setSuppliers(datas)
-              
-            }
-          }finally{
-            setSuppliersLoading(false)
-          }
-    
-        }
-        loadItens()
     if (!open) return
+
     setSuppliersLoading(true)
     setSuppliersError(null)
+
+    async function loadSuppliers() {
+      try {
+        const datas = await mockProviders()
+        if (Array.isArray(datas)) {
+          setSuppliers(datas)
+        }
+      } catch {
+        setSuppliersError("Não foi possível carregar os fornecedores.")
+      } finally {
+        setSuppliersLoading(false)
+      }
+    }
+
+    loadSuppliers()
   }, [open])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const resetForm = () => {
+    setFormData({ name: "", code: "", price: 0, providerCNPJ: "" })
+    setSubmitStatus("idle")
+    setSubmitError(null)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement item creation
-    console.log("Item data:", formData)
-    setOpen(false)
-    setFormData({
-      name: "",
-      code: "",
-      category: "",
-      price: "",
-      supplier: "",
-    })
+    setSubmitStatus("loading")
+    setSubmitError(null)
+
+    try {
+      const response = await registerNewItem(formData)
+      if (response.success === true){
+        setSubmitStatus("success")
+      }else{
+        setSubmitStatus("error")
+        setSubmitError(response.message)
+      }
+      
+      // Fecha o modal após 1.5s mostrando o sucesso
+      setTimeout(() => {
+      
+        resetForm()
+      }, 2500)
+    } catch (error) {
+      setSubmitStatus("error")
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Erro inesperado ao cadastrar o item. Tente novamente."
+      )
+    }
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(value) => { setOpen(value); if (!value) resetForm() }}>
       <DialogTrigger asChild>
         <Button className="gap-2">
           <Plus className="h-4 w-4" />
@@ -104,6 +119,24 @@ export function NewItemDialog() {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-2">
+          {/* Feedback de erro */}
+          {submitStatus === "error" && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Erro ao cadastrar</AlertTitle>
+              <AlertDescription>{submitError}</AlertDescription>
+            </Alert>
+          )}
+
+          {/* Feedback de sucesso */}
+          {submitStatus === "success" && (
+            <Alert className="border-green-500 text-green-600">
+              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <AlertTitle>Item cadastrado!</AlertTitle>
+              <AlertDescription>O item foi adicionado ao catálogo com sucesso.</AlertDescription>
+            </Alert>
+          )}
+
           {/* Nome + Código */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -134,8 +167,8 @@ export function NewItemDialog() {
             <div className="space-y-2">
               <Label htmlFor="supplier">Fornecedor</Label>
               <Select
-                value={formData.supplier}
-                onValueChange={(value) => setFormData({ ...formData, supplier: value })}
+                value={formData.providerCNPJ}
+                onValueChange={(value) => setFormData({ ...formData, providerCNPJ: value })}
                 disabled={suppliersLoading || !!suppliersError}
               >
                 <SelectTrigger id="supplier">
@@ -166,12 +199,15 @@ export function NewItemDialog() {
               <Label htmlFor="price">Preço (R$) *</Label>
               <Input
                 id="price"
-                type="number"
-                step="0.01"
-                min="0"
+                inputMode="decimal"
                 placeholder="0,00"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                value={formData.price || ""}
+                onChange={(e) => {
+                  const value = e.target.value
+                    .replace(/[^0-9,]/g, "")
+                    .replace(",", ".")
+                  setFormData({ ...formData, price: Number(value) })
+                }}
                 required
               />
             </div>
@@ -181,7 +217,9 @@ export function NewItemDialog() {
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancelar
             </Button>
-            <Button type="submit">Cadastrar Item</Button>
+            <Button type="submit" disabled={submitStatus === "loading" || submitStatus === "success"}>
+              {submitStatus === "loading" ? "Cadastrando..." : "Cadastrar Item"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

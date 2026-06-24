@@ -87,7 +87,7 @@ export interface Notification {
 
 export interface Item {
   id:UUID,
-  internalId?: string, 
+  internalCode?: string, 
   name:string,
   price:number,
   createdAt:String,

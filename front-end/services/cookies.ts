@@ -3,6 +3,7 @@
 import { UserSys, UserRole } from "@/lib/types";
 import { Chokokutai } from "next/font/google";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 interface StaffCookiesInfos {
     staffName?: string;
@@ -117,7 +118,7 @@ Promise<StaffCookiesInfos> {
     };
 }
 
-export async function deleteAllUserCookies():
+export async function logout():
 Promise<void> {
 
     const cookieStore = await cookies();
@@ -127,4 +128,6 @@ Promise<void> {
     cookieStore.delete("staffName")
     cookieStore.delete("staffEmail")
 
+    redirect("/")
 }
+

@@ -20,6 +20,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { logout } from "@/services/cookies"
 
 interface SidebarProps {
   collapsed: boolean
@@ -30,7 +31,7 @@ const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/pedidos", icon: Package, label: "Pedidos" },
   { href: "/usuarios", icon: Users, label: "Usuários" },
-  {href: "/itens", icon: ShoppingCart, label: "Itens" },
+  { href: "/itens", icon: ShoppingCart, label: "Itens" },
   { href: "/configuracoes", icon: Settings, label: "Configurações" },
 ]
 
@@ -135,15 +136,16 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 <ChevronLeft className="h-5 w-5" />
                 <span className="text-sm font-medium">Recolher</span>
               </Button>
-              <Link href="/">
+              <form action={logout}>
                 <Button
+                  type="submit"
                   variant="ghost"
                   className="mt-1 w-full justify-start gap-3 text-sidebar-foreground/70 hover:bg-destructive/20 hover:text-destructive"
                 >
                   <LogOut className="h-5 w-5" />
                   <span className="text-sm font-medium">Sair</span>
                 </Button>
-              </Link>
+              </form>
             </>
           )}
         </div>
