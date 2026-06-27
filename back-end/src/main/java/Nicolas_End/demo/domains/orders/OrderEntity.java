@@ -2,6 +2,7 @@ package Nicolas_End.demo.domains.orders;
 
 import Nicolas_End.demo.domains.quote.QuoteEntity;
 import Nicolas_End.demo.enums.order.OrderStatus;
+import Nicolas_End.demo.infra.util.model.BasicEntityModel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,14 +15,12 @@ import java.util.UUID;
 @Getter
 @Setter
 
-public class OrderEntity {
+public class OrderEntity extends BasicEntityModel {
 
     @Id
     @GeneratedValue( strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column
-    private LocalDateTime createdAt;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -36,7 +35,6 @@ public class OrderEntity {
 
     @PrePersist
     private void PrePersist(){
-        this.createdAt = LocalDateTime.now();
         this.orderStatus = OrderStatus.CHEGANDO;
     }
 

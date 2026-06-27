@@ -2,7 +2,7 @@ package Nicolas_End.demo.domains.itens;
 
 
 import Nicolas_End.demo.domains.provider.ProviderEntity;
-import Nicolas_End.demo.infra.util.clock.ApiClockUtil;
+import Nicolas_End.demo.infra.util.model.BasicEntityModel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItensEntity implements Serializable {
+public class ItensEntity extends BasicEntityModel implements Serializable {
 
     private ItensEntity(String name, Double price, ProviderEntity providerEntity, String code ){
         this.name = name;
@@ -64,11 +64,6 @@ public class ItensEntity implements Serializable {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column
-    private String createdAt;
-
-    @Column
-    private String updatedAt;
 
     @ManyToOne
     @JoinColumn(insertable = true)
@@ -78,15 +73,6 @@ public class ItensEntity implements Serializable {
     @Column
     private double price;
 
-    @PrePersist
-    public void prePersist(){
-        this.createdAt = ApiClockUtil.getPresentDay();
-    }
 
-    @PreUpdate
-    public void preUpdate(){
-        this.updatedAt = ApiClockUtil.getPresentDay();
-
-    }
 
 }

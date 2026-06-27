@@ -1,15 +1,12 @@
 package Nicolas_End.demo.domains.provider;
 
-import Nicolas_End.demo.dtos.provider.BasicProviderInfosDTO;
-import Nicolas_End.demo.infra.util.clock.ApiClockUtil;
+import Nicolas_End.demo.infra.util.model.BasicEntityModel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 
 import java.io.Serializable;
-import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -17,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProviderEntity implements Serializable {
+public class ProviderEntity extends BasicEntityModel implements Serializable {
     
 
 
@@ -73,24 +70,7 @@ public class ProviderEntity implements Serializable {
     @Column
     private  String address;
 
-    @Column
-    private String createdAt;
 
-    @Column
-    private String updatedAt;
-
-
-
-    @PrePersist
-    public void prePersist(){
-        this.createdAt = ApiClockUtil.getPresentDay();
-    }
-
-    @PreUpdate
-    public void preUpdate(){
-        this.updatedAt = ApiClockUtil.getPresentDay();
-
-    }
 
 
 }
