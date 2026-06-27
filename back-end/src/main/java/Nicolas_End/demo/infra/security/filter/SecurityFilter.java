@@ -5,7 +5,6 @@ import Nicolas_End.demo.domains.staff.StaffRepository;
 import Nicolas_End.demo.infra.exception.CustomAuthenticationEntryPoint;
 import Nicolas_End.demo.infra.exception.ExpiredTokenException;
 import Nicolas_End.demo.infra.security.token.TokenService;
-import Nicolas_End.demo.infra.util.response.ResponseUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

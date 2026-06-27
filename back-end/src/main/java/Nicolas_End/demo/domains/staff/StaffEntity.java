@@ -2,7 +2,7 @@ package Nicolas_End.demo.domains.staff;
 
 
 import Nicolas_End.demo.enums.staff.StaffRoles;
-import Nicolas_End.demo.infra.util.clock.DateUtil;
+import Nicolas_End.demo.infra.util.date.DateUtil;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

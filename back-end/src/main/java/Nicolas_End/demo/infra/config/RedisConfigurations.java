@@ -24,11 +24,6 @@ public class RedisConfigurations {
 
 
 
-    @CacheEvict(allEntries = true, value = ITEMS_CACHE)
-    @Scheduled(fixedDelayString = "60000")
-    public void evictItemCache(){
-        log.info("Deleting Item's caches ");
-    }
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()

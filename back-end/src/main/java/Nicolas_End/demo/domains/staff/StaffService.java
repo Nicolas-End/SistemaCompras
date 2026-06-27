@@ -4,8 +4,8 @@ import Nicolas_End.demo.dtos.staff.StaffDatasDTO;
 import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
 import Nicolas_End.demo.dtos.staff.StaffTokenDTO;
 import Nicolas_End.demo.dtos.staff.StaffTokenEmailNameAndRole;
-import Nicolas_End.demo.infra.util.response.ApiResponse;
-import Nicolas_End.demo.infra.util.response.ResponseUtil;
+import Nicolas_End.demo.infra.util.model.response.ApiResponse;
+import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import Nicolas_End.demo.infra.security.token.TokenService;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -38,7 +38,7 @@ public class StaffService {
             // gera a Entidade para eu conseguir salvar seus dados
             StaffEntity staff = this.createStaffEntity(datas);
 
-            this.staffRespository.save(staff);
+            this.staffRespository.saveAndFlush(staff);
 
 
             return responseUtil.sucess(null, "Usuario Cadastrado com Sucesso",HttpStatus.CREATED);

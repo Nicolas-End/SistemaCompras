@@ -1,6 +1,6 @@
 package Nicolas_End.demo.infra.util.model;
 
-import Nicolas_End.demo.infra.util.clock.DateUtil;
+import Nicolas_End.demo.infra.util.date.DateUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
@@ -15,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter
 @Setter
+// Modelo com informações basicas para quase todas as entidades
 public class BasicEntityModel {
 
 

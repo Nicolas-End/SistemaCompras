@@ -2,8 +2,8 @@ package Nicolas_End.demo.domains.provider;
 
 
 import Nicolas_End.demo.dtos.provider.BasicProviderInfosDTO;
-import Nicolas_End.demo.infra.util.response.ApiResponse;
-import Nicolas_End.demo.infra.util.response.ResponseUtil;
+import Nicolas_End.demo.infra.util.model.response.ApiResponse;
+import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package Nicolas_End.demo.infra.exception;
 
-import Nicolas_End.demo.infra.util.response.ApiResponse;
-import Nicolas_End.demo.infra.util.response.ResponseUtil;
+import Nicolas_End.demo.infra.util.model.response.ApiResponse;
+import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

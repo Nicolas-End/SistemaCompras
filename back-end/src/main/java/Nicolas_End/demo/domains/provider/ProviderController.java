@@ -1,11 +1,9 @@
 package Nicolas_End.demo.domains.provider;
 
 import Nicolas_End.demo.dtos.provider.BasicProviderInfosDTO;
-import Nicolas_End.demo.infra.util.response.ApiResponse;
+import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/provider")
