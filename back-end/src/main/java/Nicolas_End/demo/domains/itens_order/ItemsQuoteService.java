@@ -1,7 +1,5 @@
 package Nicolas_End.demo.domains.itens_order;
 
-
-import Nicolas_End.demo.domains.items.ItemsEntity;
 import Nicolas_End.demo.domains.quote.QuoteEntity;
 import Nicolas_End.demo.dtos.items.ItemEntityAndQuantityDTO;
 import org.springframework.stereotype.Service;

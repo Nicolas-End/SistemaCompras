@@ -40,12 +40,6 @@ public class QuoteService {
     @Transactional
     public ApiResponse registerNewQuote(QuotePostDatasDTO userQuote){
 
-        if(userQuote.annexes().isEmpty() && userQuote.items().isEmpty()){
-
-           return responseUtil.error("Bad Request", "Formato enviado invalido", HttpStatus.BAD_REQUEST);
-
-        }
-        
         List<ItemsQuoteEntity> itemsQuoteEntities;
         List<AnnexEntity> annexEntities = this.saveAnnexes(userQuote.annexes());
         QuoteEntity  quoteEntity = new QuoteEntity.Builder().annex(annexEntities).build();
