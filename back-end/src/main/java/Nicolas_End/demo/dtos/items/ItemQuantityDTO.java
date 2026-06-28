@@ -9,9 +9,8 @@ import jakarta.validation.constraints.Positive;
 import java.util.UUID;
 
 public record ItemQuantityDTO(
-        @NotBlank
+
         UUID id,
-        @Positive
         int quantity ) {
 
 }

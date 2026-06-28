@@ -9,6 +9,7 @@ import Nicolas_End.demo.domains.itens_order.ItemsQuoteService;
 import Nicolas_End.demo.dtos.annex.AnnexPostDTO;
 import Nicolas_End.demo.dtos.items.ItemEntityAndQuantityDTO;
 import Nicolas_End.demo.dtos.items.ItemQuantityDTO;
+import Nicolas_End.demo.dtos.quotes.QuoteBasicInfosDTO;
 import Nicolas_End.demo.dtos.quotes.QuotePostDatasDTO;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
@@ -51,9 +52,9 @@ public class QuoteService {
         }
 
         QuoteEntity quote = this.quoteRepository.save(quoteEntity);
-        
-        
-        return this.responseUtil.sucess(quote, "Orçamento cadatrado com sucesso", HttpStatus.OK);
+        QuoteBasicInfosDTO basicInfosDTO = this.createRetunableQuoteUserInfos(quote);
+
+        return this.responseUtil.sucess(basicInfosDTO, "Orçamento cadatrado com sucesso", HttpStatus.OK);
 
 
     }
@@ -72,5 +73,21 @@ public class QuoteService {
         return this.itemsService.getManyItemByItemQuantityDTO(uuidItemsList);
     }
 
+    private  QuoteBasicInfosDTO createRetunableQuoteUserInfos(QuoteEntity quote){
+        QuoteBasicInfosDTO basicInfosDTO;
+        if(quote.getAnnexes() == null){
+            basicInfosDTO = new QuoteBasicInfosDTO(quote.getId(),quote.getRequestFor().getName(),quote.getCreatedAt(),0, quote.getItems().size());
+
+        }else if(quote.getItems() == null){
+            basicInfosDTO = new QuoteBasicInfosDTO(quote.getId(),quote.getRequestFor().getName(),quote.getCreatedAt(),quote.getAnnexes().size(), 0);
+
+        }
+        else {
+            basicInfosDTO = new QuoteBasicInfosDTO(quote.getId(), quote.getRequestFor().getName(), quote.getCreatedAt(), quote.getAnnexes().size(), quote.getItems().size());
+        }
+
+        return basicInfosDTO;
+
+    }
 
 }

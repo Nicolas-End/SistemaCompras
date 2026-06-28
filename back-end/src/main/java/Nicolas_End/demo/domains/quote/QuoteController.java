@@ -29,7 +29,7 @@ public class QuoteController {
 
         ApiResponse apiResponse;
 
-        if(userQuote.annexes().isEmpty() && userQuote.items().isEmpty()){
+        if(userQuote.annexes() == null && userQuote.items() == null ){
 
             apiResponse =  responseUtil.error("Bad Request", "Formato enviado invalido", HttpStatus.BAD_REQUEST);
 
