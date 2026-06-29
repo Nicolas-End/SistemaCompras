@@ -59,6 +59,15 @@ public class QuoteService {
 
     }
 
+    public ApiResponse getAllQuotes(){
+
+
+        return this.responseUtil.sucess(null,null,HttpStatus.OK);
+
+
+    }
+
+
     private List<AnnexEntity> saveAnnexes(List<AnnexPostDTO> annexes){
         if (annexes.isEmpty()){
             return null;
@@ -74,19 +83,13 @@ public class QuoteService {
     }
 
     private  QuoteBasicInfosDTO createRetunableQuoteUserInfos(QuoteEntity quote){
-        QuoteBasicInfosDTO basicInfosDTO;
-        if(quote.getAnnexes() == null){
-            basicInfosDTO = new QuoteBasicInfosDTO(quote.getId(),quote.getRequestFor().getName(),quote.getCreatedAt(),0, quote.getItems().size());
 
-        }else if(quote.getItems() == null){
-            basicInfosDTO = new QuoteBasicInfosDTO(quote.getId(),quote.getRequestFor().getName(),quote.getCreatedAt(),quote.getAnnexes().size(), 0);
 
-        }
-        else {
-            basicInfosDTO = new QuoteBasicInfosDTO(quote.getId(), quote.getRequestFor().getName(), quote.getCreatedAt(), quote.getAnnexes().size(), quote.getItems().size());
-        }
+       return new QuoteBasicInfosDTO.Builder(quote.getId(), quote.getRequestFor().getName(), quote.getCreatedAt())
+               .annexListCounter(quote.getAnnexes())
+               .itemsListCounter(quote.getItems())
+               .build();
 
-        return basicInfosDTO;
 
     }
 
