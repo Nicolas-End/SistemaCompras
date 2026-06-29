@@ -3,6 +3,7 @@ package Nicolas_End.demo.infra.exception;
 
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +40,16 @@ public class CustomExceptions {
         this.errorResponse = responseUtil.error("Internal Error","Erro Iterno no sistema", HttpStatus.INTERNAL_SERVER_ERROR);
 
         log.error("Erro: "+e.getMessage());
-        log.error("Causa: "+e.getCause().getMessage());
         return ResponseEntity.status(errorResponse.getStatus()).body(this.errorResponse);
 
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity EntityNotFoundException(Exception notFoundException){
+        this.errorResponse = this.responseUtil.error("Entidade enviada não encontrada no sistema", notFoundException.getMessage(), HttpStatus.NOT_FOUND);
+
+        log.error("Erro ao Encontrar Entidade: "+notFoundException.getMessage());
+        return  ResponseEntity.status(errorResponse.getStatus()).body(this.errorResponse);
     }
 
 

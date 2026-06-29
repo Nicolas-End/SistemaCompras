@@ -10,7 +10,6 @@ import java.util.UUID;
 @EnableJpaRepositories
 public interface ItemsRepository extends JpaRepository<ItemsEntity, UUID> {
 
-    ItemsEntity findByName(String name);
 
     List<ItensListDTO> findAllBy();
 
