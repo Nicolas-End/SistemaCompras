@@ -43,19 +43,16 @@ public class QuoteBasicInfosDTO  {
             this.createdAt = createdAt;
         }
 
-        public Builder annexListCounter(List<AnnexEntity> annexEntityList) {
-            if(annexEntityList != null){
-                this.annexQuantity = annexEntityList.size();
-            }
+        public Builder annexQuantity(int annexQuantity) {
+            this.annexQuantity = annexQuantity;
 
             return  this;
         }
 
-        public  Builder itemsListCounter(List<ItemsQuoteEntity> itemsEntitiesList){
-            if(itemsEntitiesList != null){
-                this.itemsQuantity = itemsEntitiesList.size();
-            }
-            return  this;
+        public  Builder itemsQuantity(int itemsQuantity){
+            this.itemsQuantity = itemsQuantity ;
+
+            return this;
         }
 
 

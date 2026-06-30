@@ -6,14 +6,17 @@ import Nicolas_End.demo.domains.items.ItemsEntity;
 import Nicolas_End.demo.domains.items.ItemsService;
 import Nicolas_End.demo.domains.itens_order.ItemsQuoteEntity;
 import Nicolas_End.demo.domains.itens_order.ItemsQuoteService;
+import Nicolas_End.demo.domains.staff.StaffEntity;
 import Nicolas_End.demo.dtos.annex.AnnexPostDTO;
 import Nicolas_End.demo.dtos.items.ItemEntityAndQuantityDTO;
 import Nicolas_End.demo.dtos.items.ItemQuantityDTO;
 import Nicolas_End.demo.dtos.quotes.QuoteBasicInfosDTO;
 import Nicolas_End.demo.dtos.quotes.QuotePostDatasDTO;
+import Nicolas_End.demo.infra.security.auth.AutheticatedStaff;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import jakarta.transaction.Transactional;
+import jdk.jshell.spi.ExecutionControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
@@ -60,9 +63,25 @@ public class QuoteService {
     }
 
     public ApiResponse getAllQuotes(){
+        List<QuoteEntity> quote = this.quoteRepository.findAll();
+        List<QuoteBasicInfosDTO> basicInfosList = quote.stream().map(
+                this::createRetunableQuoteUserInfos
+        ).toList();
+
+        return this.responseUtil.sucess(basicInfosList,"Orçamentos Encontrados",HttpStatus.OK);
 
 
-        return this.responseUtil.sucess(null,null,HttpStatus.OK);
+    }
+
+    public ApiResponse getOwnStaffQuotes(){
+        StaffEntity staffDatas = AutheticatedStaff.Get();
+        List<QuoteEntity> quoteEntities = this.quoteRepository.findAllByRequestFor(staffDatas);
+
+        List<QuoteBasicInfosDTO> basicInfosList = quoteEntities.stream().map(
+                this::createRetunableQuoteUserInfos
+        ).toList();
+
+        return this.responseUtil.sucess(basicInfosList,"Orçamentos Encontrados",HttpStatus.OK);
 
 
     }
@@ -85,9 +104,10 @@ public class QuoteService {
     private  QuoteBasicInfosDTO createRetunableQuoteUserInfos(QuoteEntity quote){
 
 
+
        return new QuoteBasicInfosDTO.Builder(quote.getId(), quote.getRequestFor().getName(), quote.getCreatedAt())
-               .annexListCounter(quote.getAnnexes())
-               .itemsListCounter(quote.getItems())
+               .annexQuantity(quote.getAnnexQuantity())
+               .itemsQuantity(quote.getItemQuantity())
                .build();
 
 

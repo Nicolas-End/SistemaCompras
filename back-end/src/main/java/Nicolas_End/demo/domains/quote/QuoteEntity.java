@@ -11,10 +11,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Entity
 @Table(name = "TB_QUOTE", schema = "compras")
 @Getter
@@ -22,27 +24,40 @@ import java.util.UUID;
 @NoArgsConstructor
 public class QuoteEntity extends BasicEntityModel {
 
-    private QuoteEntity (List<ItemsQuoteEntity> items, List<AnnexEntity>annexes){
-        this.items = items;
-        this.annexes = annexes;
+    private QuoteEntity (Builder builder){
+        this.items = builder.items;
+        this.annexes = builder.annexes;
+        this.annexQuantity = builder.annexQuantity;
+        this.itemQuantity = builder.itemQuantity;
     }
     public static class Builder{
-
+        private int itemQuantity = 0;
+        private int annexQuantity = 0;
         private  List<ItemsQuoteEntity> items = null;
         private  List<AnnexEntity> annexes = null;
 
         public Builder items(List<ItemsQuoteEntity> items){
-            this.items = items;
+
+            if(items != null){
+                this.items = items;
+                this.itemQuantity = items.size();
+            }
+
             return this;
         }
 
         public Builder annex(List<AnnexEntity> annexes){
-            this.annexes = annexes;
+            if(annexes != null){
+                this.annexes = annexes;
+                this.annexQuantity = annexes.size();
+
+            }
+
             return this ;
         }
 
         public QuoteEntity build(){
-            return new QuoteEntity(this.items, this.annexes);
+            return new QuoteEntity(this);
         }
 
     }
@@ -50,7 +65,11 @@ public class QuoteEntity extends BasicEntityModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    @Column(name = "annex_quantity")
+    private int annexQuantity;
 
+    @Column(name = "item_quantity")
+    private int itemQuantity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -69,6 +88,12 @@ public class QuoteEntity extends BasicEntityModel {
     private ProviderEntity provider;
 
 
+    public void setItems(List<ItemsQuoteEntity> items){
+        if(items != null){
+            this.items = items;
+            this.itemQuantity = items.size();
+        }
+    }
     //relação para os anexos
     //  como pdf, imagem e afins
     @ManyToMany

@@ -35,8 +35,20 @@ public class QuoteController {
 
         }
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
 
+    @GetMapping
+    public ResponseEntity getAllQuotes(){
+        ApiResponse apiResponse = this.quoteService.getAllQuotes();
 
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @GetMapping("/my-quotes")
+    public ResponseEntity getOwnQuotes(){
+        ApiResponse apiResponse = this.quoteService.getOwnStaffQuotes();
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
 
