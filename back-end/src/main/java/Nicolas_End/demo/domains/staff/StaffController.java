@@ -6,6 +6,7 @@ import Nicolas_End.demo.dtos.staff.StaffEmailAndPasswordDTO;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 
 
+import jakarta.validation.Valid;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 
@@ -27,13 +28,11 @@ public class StaffController {
     }
 
     @PostMapping
-    public ResponseEntity registerStaff(@RequestBody StaffDatasDTO staff){
+    public ResponseEntity registerStaff(@Valid @RequestBody StaffDatasDTO staff){
 
             ApiResponse staffStatus = this.staffService.registerNewStaff(staff);
 
-            if (staffStatus.getSuccess()){
-                return ResponseEntity.ok(staffStatus);
-            }
+
             return ResponseEntity.status(staffStatus.getStatus()).body(staffStatus);
 
     }

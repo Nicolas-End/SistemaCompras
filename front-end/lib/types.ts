@@ -6,7 +6,6 @@ export type OrcamentoStatus =
   | "aguardando_aprovacao"
   | "aprovado"
   | "rejeitado"
-  | "finalizado"
 
 export interface OrcamentoItem {
   id: string
@@ -28,9 +27,7 @@ export interface OrcamentoAnexo {
 
 export interface Orcamento {
   id: string
-  numero: string
   solicitante: string
-  centroCusto?: string
   observacoes?: string
   itens: OrcamentoItem[]
   anexos: OrcamentoAnexo[]
@@ -83,17 +80,11 @@ export const STATUS_CONFIG: Record<
     bg: "bg-red-50",
     border: "border-red-200",
     dot: "bg-red-500",
-  },
-  finalizado: {
-    label: "Finalizado",
-    color: "text-slate-600",
-    bg: "bg-slate-100",
-    border: "border-slate-200",
-    dot: "bg-slate-400",
-  },
+  }
+
 }
 
-export type OrderStatus = "CHEGANDO" | "RECEBIDO" | "CANCELADO " | "completed" | "cancelled"
+export type OrderStatus = "CHEGANDO" | "RECEBIDO" | "CANCELADO" 
 
 export type Priority = "low" | "medium" | "high"
 

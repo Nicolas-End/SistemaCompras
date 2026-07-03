@@ -5,6 +5,7 @@ import Nicolas_End.demo.infra.security.filter.SecurityFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -40,6 +41,7 @@ public class SecutiryConfigurations {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
         return httpSecurity
+                .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .cors(Customizer.withDefaults())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(this.authenticationEntryPoint))
                 .csrf(csrf -> csrf.disable())
@@ -48,10 +50,12 @@ public class SecutiryConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
 
                  .requestMatchers("/staff/login").permitAll()
-                        .anyRequest().authenticated()
+                 .requestMatchers(HttpMethod.POST, "/staff").hasRole("COMPRADOR")
+                 .requestMatchers(HttpMethod.GET, "/quote/all").hasRole("COMPRADOR")
+                 .anyRequest().authenticated()
                 )
 
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+
 
                 .build();
     }

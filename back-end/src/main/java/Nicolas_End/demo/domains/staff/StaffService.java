@@ -29,7 +29,6 @@ public class StaffService {
 
     public <T>ApiResponse<T> registerNewStaff(StaffDatasDTO datas ){
 
-
             if(this.staffIsRegistered(datas.email())){
                 return  responseUtil.error("User already registered", "Usuario Já cadastrado no sistema",  HttpStatus.CONFLICT);
             }

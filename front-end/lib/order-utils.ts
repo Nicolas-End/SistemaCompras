@@ -1,11 +1,9 @@
 import type { OrderStatus, Priority } from "./types"
 
 export const statusConfig: Record<OrderStatus, { label: string; color: string; bgColor: string }> = {
-  pending: { label: "Pendente", color: "text-amber-600", bgColor: "bg-amber-100" },
-  production: { label: "Em Produção", color: "text-blue-600", bgColor: "bg-blue-100" },
-  shipped: { label: "Enviado", color: "text-purple-600", bgColor: "bg-purple-100" },
-  completed: { label: "Concluído", color: "text-green-600", bgColor: "bg-green-100" },
-  cancelled: { label: "Cancelado", color: "text-red-600", bgColor: "bg-red-100" },
+  CHEGANDO: { label: "Pendente", color: "text-amber-600", bgColor: "bg-amber-100" },
+  RECEBIDO: { label: "Em Produção", color: "text-blue-600", bgColor: "bg-blue-100" },
+  CANCELADO: { label: "Enviado", color: "text-purple-600", bgColor: "bg-purple-100" }
 }
 
 export const priorityConfig: Record<Priority, { label: string; color: string; bgColor: string }> = {

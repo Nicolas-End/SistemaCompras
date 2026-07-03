@@ -15,6 +15,7 @@ import { StatusBadge } from "@/components/orcamento/status-badge"
 import { fetchOrcamentos } from "@/lib/mock-data"
 import type { Orcamento, OrcamentoStatus } from "@/lib/types"
 import { STATUS_CONFIG } from "@/lib/types"
+import { Sidebar } from "@/components/layout/sidebar"
 
 const STATUS_FILTER_OPTIONS: { value: OrcamentoStatus | "all"; label: string }[] = [
   { value: "all", label: "Todos os status" },
@@ -22,8 +23,7 @@ const STATUS_FILTER_OPTIONS: { value: OrcamentoStatus | "all"; label: string }[]
   { value: "em_cotacao", label: "Em Cotação" },
   { value: "aguardando_aprovacao", label: "Aguard. Aprovação" },
   { value: "aprovado", label: "Aprovado" },
-  { value: "rejeitado", label: "Rejeitado" },
-  { value: "finalizado", label: "Finalizado" },
+  { value: "rejeitado", label: "Rejeitado" }
 ]
 
 export default function OrcamentosPage() {
@@ -46,9 +46,8 @@ export default function OrcamentosPage() {
       const q = search.toLowerCase()
       const matchSearch =
         q === "" ||
-        o.numero.toLowerCase().includes(q) ||
         o.solicitante.toLowerCase().includes(q) ||
-        o.centroCusto?.toLowerCase().includes(q)
+        o.status
       const matchStatus = statusFilter === "all" || o.status === statusFilter
       return matchSearch && matchStatus
     })
@@ -58,7 +57,6 @@ export default function OrcamentosPage() {
   const total = orcamentos.length
   const pendentes = orcamentos.filter((o) => o.status === "pendente").length
   const emCotacao = orcamentos.filter((o) => o.status === "em_cotacao").length
-  const finalizados = orcamentos.filter((o) => o.status === "finalizado").length
   const totalItens = orcamentos.reduce((acc, o) => acc + o.itens.length, 0)
 
   const handleSelectOne = (id: string) =>
@@ -133,13 +131,7 @@ export default function OrcamentosPage() {
               sub="em andamento"
               color="bg-blue-50 text-blue-600"
             />
-            <MetricCard
-              icon={<CheckCircle2 className="w-4 h-4" />}
-              label="Finalizados"
-              value={finalizados}
-              sub="concluídos"
-              color="bg-[#f0faf0] text-[#2E7D32]"
-            />
+
             <MetricCard
               icon={<Package className="w-4 h-4" />}
               label="Total de Itens"

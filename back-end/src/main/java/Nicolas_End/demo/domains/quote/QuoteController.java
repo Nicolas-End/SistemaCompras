@@ -37,15 +37,16 @@ public class QuoteController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity getAllQuotes(){
         ApiResponse apiResponse = this.quoteService.getAllQuotes();
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
-    @GetMapping("/my-quotes")
+    @GetMapping("/my")
     public ResponseEntity getOwnQuotes(){
+        System.out.println("AQUIII");
         ApiResponse apiResponse = this.quoteService.getOwnStaffQuotes();
 
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);

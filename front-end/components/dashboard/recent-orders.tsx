@@ -32,7 +32,6 @@ export function RecentOrders({ orders }: RecentOrdersProps) {
         <div className="space-y-4">
           {orders.map((order) => {
             const status = statusConfig[order.status]
-            const priority = priorityConfig[order.priority]
 
             return (
               <Link
@@ -48,15 +47,13 @@ export function RecentOrders({ orders }: RecentOrdersProps) {
                         variant="outline"
                         className={cn(
                           "text-xs",
-                          priority.color,
-                          priority.bgColor,
+                          
                           "border-transparent"
                         )}
                       >
-                        {priority.label}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">{order.clientName}</p>
+                    <p className="text-sm text-muted-foreground">{order.employeerName}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">

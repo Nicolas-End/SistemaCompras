@@ -3,11 +3,13 @@ package Nicolas_End.demo.infra.exception;
 
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -32,13 +34,20 @@ public class CustomExceptions {
 
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiResponse> MethodNotSupportedException(){
+        this.errorResponse = responseUtil.error("Requested Method Not Supported","Endpoint enviado não suporta este metodo", HttpStatus.METHOD_NOT_ALLOWED);
 
+        return ResponseEntity.status(errorResponse.getStatus()).body(this.errorResponse);
+
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> GeneralErroException(Exception e){
 
 
         this.errorResponse = responseUtil.error("Internal Error","Erro Iterno no sistema", HttpStatus.INTERNAL_SERVER_ERROR);
 
+        log.error("Exception: "+e);
         log.error("Erro: "+e.getMessage());
         return ResponseEntity.status(errorResponse.getStatus()).body(this.errorResponse);
 

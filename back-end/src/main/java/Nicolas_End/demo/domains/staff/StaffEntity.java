@@ -64,7 +64,7 @@ public class StaffEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == StaffRoles.ADMINISTRADOR) return List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"), new SimpleGrantedAuthority("ROLE_COMRPADOR"), new SimpleGrantedAuthority("ROLE_VENDEDOR"), new SimpleGrantedAuthority("ROLE_MOTORISTA"));
+        if (this.role == StaffRoles.ADMINISTRADOR) return List.of(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"), new SimpleGrantedAuthority("ROLE_COMPRADOR"), new SimpleGrantedAuthority("ROLE_VENDEDOR"), new SimpleGrantedAuthority("ROLE_MOTORISTA"));
         else if (this.role == StaffRoles.COMPRADOR) return List.of(new SimpleGrantedAuthority("ROLE_COMPRADOR"), new SimpleGrantedAuthority("ROLE_VENDEDOR"));
         else if( this.role == StaffRoles.MOTORISTA) return List.of(new SimpleGrantedAuthority("ROLE_MOTORISTA"));
         else return List.of(new SimpleGrantedAuthority("ROLE_VENDEDOR"));
