@@ -5,6 +5,7 @@ import { getAllProviders } from "@/app/(app)/_api/provider/get-routes";
 
 
 import type {  } from "./types"
+import { getQuotes } from "@/app/(app)/_api/quote/get-routes";
 
 
 export const mockProdutos: Produto[] = [
@@ -20,30 +21,21 @@ export const mockProdutos: Produto[] = [
   { id: "10", nome: "Caixa de Arquivo Morto", codigo: "ESC-ARQ-010" },
 ]
 
-export const mockOrcamentos: Orcamento[] = [
-  {
-    id:crypto.randomUUID(),
-    solicitante: "Ana Souza",
+export const  mockMyQuotes = async (): Promise<Orcamento[]> =>{
 
-    observacoes: "Urgente para o projeto X.",
-    itens: [
-      { id: "i1", produtoId: "1", produtoNome: "Papel A4 Resma 500fls", quantidade: 10 },
-      { id: "i2", produtoId: "4", produtoNome: "Notebook Dell Inspiron 15", quantidade: 2 },
-    ],
-    anexos: [
-      { id: "a1", nome: "requisicao.pdf", tipo: "application/pdf", tamanho: 204800 },
-    ],
-    status: "aprovado",
-    createdAt: "2025-06-01T10:00:00Z",
-    updatedAt: "2025-06-02T09:00:00Z",
-  },
-  
-]
+  try{
+    const quotesResponse = await getQuotes();
+    if(quotesResponse.success !== true){
+      return []
+    }
 
-export async function fetchOrcamentos(): Promise<Orcamento[]> {
-  await new Promise((r) => setTimeout(r, 800))
-  return mockOrcamentos
+    return quotesResponse.datas
+
+  }catch(error){
+    throw error
+  }
 }
+
 
 export async function fetchProdutos(): Promise<Produto[]> {
   await new Promise((r) => setTimeout(r, 400))

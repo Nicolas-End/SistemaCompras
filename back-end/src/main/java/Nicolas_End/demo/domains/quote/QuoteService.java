@@ -105,7 +105,7 @@ public class QuoteService {
 
 
 
-       return new QuoteBasicInfosDTO.Builder(quote.getId(), quote.getRequestFor().getName(), quote.getCreatedAt())
+       return new QuoteBasicInfosDTO.Builder(quote.getId(), quote.getRequestFor().getName(), quote.getCreatedAt(),quote.getStatus())
                .annexQuantity(quote.getAnnexQuantity())
                .itemsQuantity(quote.getItemQuantity())
                .build();

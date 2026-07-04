@@ -5,25 +5,25 @@ import { useRouter } from "next/navigation"
 import {
   ClipboardList, Plus, Search, X, SlidersHorizontal,
   Filter, TrendingUp, Clock, CheckCircle2, XCircle, Package,
+  TrendingDownIcon,
+  SunIcon,
+  TrendingDown,
 } from "lucide-react"
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select"
 import { MetricCard, MetricSkeleton } from "@/components/orcamento/metric-cards"
 import { OrcamentosTable } from "@/components/orcamento/orcamento-table"
-import { StatusBadge } from "@/components/orcamento/status-badge"
-import { fetchOrcamentos } from "@/lib/mock-data"
+import { mockMyQuotes } from "@/lib/mock-data"
 import type { Orcamento, OrcamentoStatus } from "@/lib/types"
-import { STATUS_CONFIG } from "@/lib/types"
-import { Sidebar } from "@/components/layout/sidebar"
 
 const STATUS_FILTER_OPTIONS: { value: OrcamentoStatus | "all"; label: string }[] = [
   { value: "all", label: "Todos os status" },
-  { value: "pendente", label: "Pendente" },
-  { value: "em_cotacao", label: "Em Cotação" },
-  { value: "aguardando_aprovacao", label: "Aguard. Aprovação" },
-  { value: "aprovado", label: "Aprovado" },
-  { value: "rejeitado", label: "Rejeitado" }
+  { value: "SOLICITADO", label: "Pendente" },
+  { value: "EM_COTACAO", label: "Em Cotação" },
+  { value: "AGUARDANDO_APROVACAO", label: "Aguard. Aprovação" },
+  { value: "APROVADO", label: "Aprovado" },
+  { value: "REJEITADO", label: "Rejeitado" }
 ]
 
 export default function OrcamentosPage() {
@@ -35,7 +35,8 @@ export default function OrcamentosPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
 
   useEffect(() => {
-    fetchOrcamentos().then((data) => {
+
+    mockMyQuotes().then((data:Orcamento[]) => {
       setOrcamentos(data)
       setLoading(false)
     })
@@ -46,7 +47,6 @@ export default function OrcamentosPage() {
       const q = search.toLowerCase()
       const matchSearch =
         q === "" ||
-        o.solicitante.toLowerCase().includes(q) ||
         o.status
       const matchStatus = statusFilter === "all" || o.status === statusFilter
       return matchSearch && matchStatus
@@ -55,9 +55,12 @@ export default function OrcamentosPage() {
 
   // Metrics
   const total = orcamentos.length
-  const pendentes = orcamentos.filter((o) => o.status === "pendente").length
-  const emCotacao = orcamentos.filter((o) => o.status === "em_cotacao").length
-  const totalItens = orcamentos.reduce((acc, o) => acc + o.itens.length, 0)
+  const pendentes = orcamentos.filter((o) => o.status === "SOLICITADO").length
+  const emCotacao = orcamentos.filter((o) => o.status === "EM_COTACAO").length
+  const aguardandoAprovacao = orcamentos.filter((o) => o.status === "AGUARDANDO_APROVACAO").length
+  const aprovado = orcamentos.filter((o) => o.status === "APROVADO").length
+  const rejeitado = orcamentos.filter((o) => o.status === "REJEITADO").length
+  
 
   const handleSelectOne = (id: string) =>
     setSelectedIds((prev) => prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id])
@@ -125,20 +128,20 @@ export default function OrcamentosPage() {
               color="bg-amber-50 text-amber-600"
             />
             <MetricCard
-              icon={<TrendingUp className="w-4 h-4" />}
-              label="Em Cotação"
-              value={emCotacao}
-              sub="em andamento"
-              color="bg-blue-50 text-blue-600"
+              icon={<SunIcon className="w-4 h-4" />}
+              label="Aprovado"
+              value={aprovado}
+              sub="aprovado"
+              color="bg-green-50 text-green-600"
+            />
+            <MetricCard
+              icon={<TrendingDown className="w-4 h-4" />}
+              label="Rejeitado"
+              value={rejeitado}
+              sub="rejeitado"
+              color="bg-red-50 text-red-600"
             />
 
-            <MetricCard
-              icon={<Package className="w-4 h-4" />}
-              label="Total de Itens"
-              value={totalItens}
-              sub="itens solicitados"
-              color="bg-purple-50 text-purple-600"
-            />
           </>
         )}
       </div>

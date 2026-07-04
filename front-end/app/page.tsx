@@ -93,20 +93,14 @@ export default function LoginPage() {
             <Package className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-white font-bold text-[17px] tracking-tight leading-none">ProcureSync</p>
+            <p className="text-white font-bold text-[17px] tracking-tight leading-none">Projeto Compras</p>
             <p className="text-white/45 text-[11px] font-normal uppercase tracking-widest mt-0.5">Sistema de Compras</p>
           </div>
         </div>
 
         {/* Hero */}
         <div className="relative z-10 flex flex-col gap-5">
-          {/* Eyebrow */}
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4CAF50] animate-pulse" />
-            <span className="text-[#81C784] text-[11px] font-semibold uppercase tracking-widest">
-              Plataforma Enterprise
-            </span>
-          </div>
+
 
           <h1 className="text-[38px] font-extrabold text-white leading-[1.1] tracking-[-0.04em]">
             Gestão de compras<br />
@@ -120,9 +114,9 @@ export default function LoginPage() {
           {/* Stats */}
           <div className="flex items-center gap-6 mt-1">
             {[
-              { val: "98%", lbl: "Uptime SLA" },
-              { val: "3×", lbl: "Mais rápido" },
-              { val: "ISO", lbl: "27001 Cert." },
+              { val: "100%", lbl: "Developer Java" },
+              { val: "Posgresql", lbl: "O banco de dados otimizado" },
+              { val: "Git", lbl: "versionamento garantido" },
             ].map(({ val, lbl }, i) => (
               <div key={lbl} className="flex items-center gap-6">
                 {i > 0 && <div className="w-px h-8 bg-white/12" />}

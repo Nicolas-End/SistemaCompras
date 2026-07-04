@@ -51,7 +51,7 @@ public class SecutiryConfigurations {
 
                  .requestMatchers("/staff/login").permitAll()
                  .requestMatchers(HttpMethod.POST, "/staff").hasRole("COMPRADOR")
-                 .requestMatchers(HttpMethod.GET, "/quote/all").hasRole("COMPRADOR")
+                 .requestMatchers(HttpMethod.GET, "/quote").hasAnyRole("COMPRADOR", "ADMINISTRADOR")
                  .anyRequest().authenticated()
                 )
 

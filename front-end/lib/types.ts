@@ -1,11 +1,11 @@
 import { UUID } from "crypto"
 
 export type OrcamentoStatus =
-  | "pendente"
-  | "em_cotacao"
-  | "aguardando_aprovacao"
-  | "aprovado"
-  | "rejeitado"
+  | "SOLICITADO"
+  | "EM_COTACAO"
+  | "AGUARDANDO_APROVACAO"
+  | "APROVADO"
+  | "REJEITADO"
 
 export interface OrcamentoItem {
   id: string
@@ -27,10 +27,12 @@ export interface OrcamentoAnexo {
 
 export interface Orcamento {
   id: string
-  solicitante: string
   observacoes?: string
-  itens: OrcamentoItem[]
-  anexos: OrcamentoAnexo[]
+  requestFor:String
+  itens?: OrcamentoItem[]
+  anexos?: OrcamentoAnexo[]
+  itemsQuantity?:number
+  annexQuantity?:number
   status: OrcamentoStatus
   createdAt: string
   updatedAt: string
@@ -46,35 +48,35 @@ export const STATUS_CONFIG: Record<
   OrcamentoStatus,
   { label: string; color: string; bg: string; border: string; dot: string }
 > = {
-  pendente: {
+  SOLICITADO: {
     label: "Pendente",
     color: "text-amber-700",
     bg: "bg-amber-50",
     border: "border-amber-200",
     dot: "bg-amber-500",
   },
-  em_cotacao: {
+  EM_COTACAO: {
     label: "Em Cotação",
     color: "text-blue-700",
     bg: "bg-blue-50",
     border: "border-blue-200",
     dot: "bg-blue-500",
   },
-  aguardando_aprovacao: {
+  AGUARDANDO_APROVACAO: {
     label: "Aguard. Aprovação",
     color: "text-purple-700",
     bg: "bg-purple-50",
     border: "border-purple-200",
     dot: "bg-purple-500",
   },
-  aprovado: {
+  APROVADO: {
     label: "Aprovado",
     color: "text-[#2E7D32]",
     bg: "bg-[#E8F5E9]",
     border: "border-[#C8E6C9]",
     dot: "bg-[#4CAF50]",
   },
-  rejeitado: {
+  REJEITADO: {
     label: "Rejeitado",
     color: "text-red-700",
     bg: "bg-red-50",

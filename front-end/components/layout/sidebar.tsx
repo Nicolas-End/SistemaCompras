@@ -69,7 +69,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           {!collapsed && (
             <div className="min-w-0">
               <p className="text-white font-bold text-[14px] leading-none tracking-[-0.02em] truncate">
-                ProcureSync
+                Projeto Compras
               </p>
               <p className="text-white/40 text-[10px] font-normal uppercase tracking-widest mt-0.5">
                 Compras

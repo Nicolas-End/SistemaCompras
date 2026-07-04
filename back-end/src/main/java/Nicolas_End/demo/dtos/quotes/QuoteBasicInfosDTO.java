@@ -4,6 +4,7 @@ import Nicolas_End.demo.domains.annex.AnnexEntity;
 import Nicolas_End.demo.domains.annex.AnnexService;
 import Nicolas_End.demo.domains.items.ItemsEntity;
 import Nicolas_End.demo.domains.itens_order.ItemsQuoteEntity;
+import Nicolas_End.demo.enums.quotes.QuoteStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,7 @@ public class QuoteBasicInfosDTO  {
     private Date createdAt;
     private  int annexQuantity;
     private int itemsQuantity;
+    private QuoteStatus status;
 
     private QuoteBasicInfosDTO (Builder builder){
         this.id = builder.id;
@@ -28,19 +30,22 @@ public class QuoteBasicInfosDTO  {
         this.createdAt = builder.createdAt;
         this.annexQuantity = builder.annexQuantity;
         this.itemsQuantity = builder.itemsQuantity;
+        this.status = builder.status;
     }
 
     public static class Builder{
         private final UUID id;
         private final String requestFor;
         private final Date createdAt;
+        private final QuoteStatus status;
         private int annexQuantity = 0;
         private int itemsQuantity = 0;
 
-        public Builder(UUID id, String requestFor, Date createdAt){
+        public Builder(UUID id, String requestFor, Date createdAt, QuoteStatus status){
             this.id = id;
             this.requestFor = requestFor;
             this.createdAt = createdAt;
+            this.status = status;
         }
 
         public Builder annexQuantity(int annexQuantity) {
