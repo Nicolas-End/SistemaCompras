@@ -20,6 +20,7 @@ export interface OrcamentoAnexo {
   nome: string
   tipo: string
   tamanho: number
+  arquivo: File
   url?: string
   progresso?: number
   preview?: string

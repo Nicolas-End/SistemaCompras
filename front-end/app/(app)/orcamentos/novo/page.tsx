@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import type { OrcamentoItem, OrcamentoAnexo, Produto } from "@/lib/types"
 import { mockProdutos, formatFileSize } from "@/lib/mock-data"
+import { uploadFiles } from "../../_api/upload/post-route"
 
 type SubmitMode = "rascunho" | "enviar"
 type SubmitStatus = "idle" | "loading" | "success" | "error"
@@ -166,6 +167,7 @@ export default function NovoOrcamentoPage() {
     const newAnexos: OrcamentoAnexo[] = valid.map((f) => ({
       id: `${Date.now()}-${Math.random()}`,
       nome: f.name,
+      arquivo:f,
       tipo: f.type,
       tamanho: f.size,
       progresso: 100,
@@ -193,7 +195,7 @@ export default function NovoOrcamentoPage() {
     setErrorMsg("")
     setSubmitMode(mode)
     setSubmitStatus("loading")
-    await new Promise((r) => setTimeout(r, 1800))
+    await uploadFiles(anexos)
     setSubmitStatus("success")
     setTimeout(() => router.push("/orcamentos"), 1500)
   }
