@@ -1,9 +1,9 @@
 package Nicolas_End.demo.infra.exception;
 
 
+import Nicolas_End.demo.infra.exception.costumExceptions.DataLimitLenghtException;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,14 +25,23 @@ public class CustomExceptions {
 
     ApiResponse errorResponse;
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiResponse> BadRequestExceptionHandler(){
+    public ResponseEntity<ApiResponse> BadRequestExceptionHandler(Exception badRequest){
 
 
-        this.errorResponse = responseUtil.error("Bad Request", "Formato enviado invalido", HttpStatus.BAD_REQUEST);
+        this.errorResponse = responseUtil.error("Bad Request", badRequest.getMessage() , HttpStatus.BAD_REQUEST);
 
         return ResponseEntity.status(errorResponse.getStatus()).body(this.errorResponse);
 
     }
+
+    @ExceptionHandler(DataLimitLenghtException.class)
+    public ResponseEntity DataLimitLenghtExceptionHandler(Exception dataException){
+        this.errorResponse = responseUtil.error("Bad Request", dataException.getMessage() , HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.status(errorResponse.getStatus()).body(this.errorResponse);
+
+    }
+
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ApiResponse> MethodNotSupportedException(){

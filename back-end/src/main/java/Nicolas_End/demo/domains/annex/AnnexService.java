@@ -21,8 +21,12 @@ public class AnnexService {
 
     public List<AnnexEntity> registerManyAnnex(List<AnnexPostDTO> annexesList){
 
+
+
         List<AnnexEntity> annexesEntity = annexesList.stream().map(annex -> {
-           return new AnnexEntity.Builder(annex.url())
+      
+           return new AnnexEntity.Builder(annex.url(), annex.key())
+                   .name(annex.name())
                     .type(annex.type())
                     .build();
 

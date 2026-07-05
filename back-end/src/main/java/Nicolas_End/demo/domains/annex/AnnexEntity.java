@@ -19,20 +19,28 @@ public class AnnexEntity extends BasicEntityModel {
     public AnnexEntity(Builder builder){
         this.annexType = builder.type;
         this.url = builder.url ;
+        this.key = builder.annexKey;
+        this.name = builder.annexName;
     }
 
     public static class Builder{
         private final String url;
         private  AnnexTypes type = null;
+        private String annexName = null;
+        private final String annexKey;
 
-        public Builder(String url){
+        public Builder(String url, String annexKey){
             this.url = url;
+            this.annexKey = annexKey;
         }
         public Builder type(AnnexTypes type){
             this.type = type;
             return this;
         }
-
+        public Builder name(String fileName){
+            this.annexName = fileName;
+            return this;
+        }
         public AnnexEntity build(){
             return new AnnexEntity(this);
         }
@@ -41,6 +49,12 @@ public class AnnexEntity extends BasicEntityModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    @Column
+    private String name;
+
+    @Column
+    private String key;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

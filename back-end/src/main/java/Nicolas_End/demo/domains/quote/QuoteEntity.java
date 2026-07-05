@@ -5,6 +5,7 @@ import Nicolas_End.demo.domains.itens_order.ItemsQuoteEntity;
 import Nicolas_End.demo.domains.provider.ProviderEntity;
 import Nicolas_End.demo.domains.staff.StaffEntity;
 import Nicolas_End.demo.enums.quotes.QuoteStatus;
+import Nicolas_End.demo.infra.exception.costumExceptions.DataLimitLenghtException;
 import Nicolas_End.demo.infra.security.auth.AutheticatedStaff;
 import Nicolas_End.demo.infra.util.model.BasicEntityModel;
 import jakarta.persistence.*;
@@ -12,7 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Type;
 
+import javax.naming.SizeLimitExceededException;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,10 +32,12 @@ public class QuoteEntity extends BasicEntityModel {
         this.annexes = builder.annexes;
         this.annexQuantity = builder.annexQuantity;
         this.itemQuantity = builder.itemQuantity;
+        this.observation = builder.observation;
     }
     public static class Builder{
         private int itemQuantity = 0;
         private int annexQuantity = 0;
+        private String observation = null;
         private  List<ItemsQuoteEntity> items = null;
         private  List<AnnexEntity> annexes = null;
 
@@ -43,6 +48,14 @@ public class QuoteEntity extends BasicEntityModel {
                 this.itemQuantity = items.size();
             }
 
+            return this;
+        }
+
+        public Builder observation(String observation) {
+            if(this.observation.length() > 1000){
+                throw new DataLimitLenghtException("Campo obersavação recebeu um tamanho invalido");
+            }
+            this.observation = observation;
             return this;
         }
 
@@ -70,6 +83,9 @@ public class QuoteEntity extends BasicEntityModel {
 
     @Column(name = "item_quantity")
     private int itemQuantity;
+
+    @Column(length = 1000)
+    private String observation;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

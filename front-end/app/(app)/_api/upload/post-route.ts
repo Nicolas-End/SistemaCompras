@@ -36,6 +36,5 @@ export async function uploadFiles(anexos: OrcamentoAnexo[]) {
   }
 
 
-  console.log( uploadedFiles)
   return uploadedFiles;
 }

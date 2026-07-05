@@ -46,7 +46,7 @@ public class QuoteService {
 
         List<ItemsQuoteEntity> itemsQuoteEntities;
         List<AnnexEntity> annexEntities = this.saveAnnexes(userQuote.annexes());
-        QuoteEntity  quoteEntity = new QuoteEntity.Builder().annex(annexEntities).build();
+        QuoteEntity  quoteEntity = new QuoteEntity.Builder().annex(annexEntities).observation(userQuote.observation()).build();
 
         List<ItemEntityAndQuantityDTO> itemsEntities = this.getAllItems(userQuote.items());
         if(itemsEntities != null) {

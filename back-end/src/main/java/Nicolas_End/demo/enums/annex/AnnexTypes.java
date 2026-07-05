@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public enum AnnexTypes {
-    PDF("PDF"),
-    LINK("LINK"),
-    IMAGEM("IMAGEM");
+    PDF("application/pdf"),
+    PNG("image/png"),
+    JPEG("image/jpeg");
 
     private final String annexType;
 
