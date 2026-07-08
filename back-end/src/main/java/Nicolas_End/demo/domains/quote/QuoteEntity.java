@@ -52,7 +52,7 @@ public class QuoteEntity extends BasicEntityModel {
         }
 
         public Builder observation(String observation) {
-            if(this.observation.length() > 1000){
+            if(this.observation.length() > 1500){
                 throw new DataLimitLenghtException("Campo obersavação recebeu um tamanho invalido");
             }
             this.observation = observation;

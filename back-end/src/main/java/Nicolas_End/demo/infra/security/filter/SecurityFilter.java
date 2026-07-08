@@ -3,7 +3,8 @@ package Nicolas_End.demo.infra.security.filter;
 
 import Nicolas_End.demo.domains.staff.StaffRepository;
 import Nicolas_End.demo.infra.exception.CustomAuthenticationEntryPoint;
-import Nicolas_End.demo.infra.exception.ExpiredTokenException;
+
+import Nicolas_End.demo.infra.exception.costumExceptions.ExpiredTokenException;
 import Nicolas_End.demo.infra.security.token.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.rmi.server.ExportException;
 
 
 @Component

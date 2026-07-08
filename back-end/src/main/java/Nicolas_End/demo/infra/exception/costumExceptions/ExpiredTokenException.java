@@ -1,4 +1,4 @@
-package Nicolas_End.demo.infra.exception;
+package Nicolas_End.demo.infra.exception.costumExceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
