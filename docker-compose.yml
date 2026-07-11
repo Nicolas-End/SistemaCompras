@@ -1,0 +1,68 @@
+
+services:
+
+  java-development: 
+    build: ./back-end/
+
+    networks:
+      - public_net
+      - private_net
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=pass
+      - DATABASE_URL=jdbc:postgresql://db:5432/empresa
+      - TOKEN_PASSWORD=MINH4ULTAW9Op
+      - ORIGIN_URL=http://next-js:3000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+    depends_on:
+      - db
+      - redis
+
+  next-js: 
+    build: ./front-end/
+
+    networks:
+      - public_net
+    environment:
+      NEXT_PUBLIC_API_URL=http://java-development:8080
+      
+    env_file:
+      - ./front-end/.env.local
+    ports:
+      - 3000:3000
+
+    depends_on:
+      - java-development
+
+  redis:
+    image: redis:latest
+
+    networks:
+      - private_net
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    networks:
+      - private_net
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=empresa
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+networks:
+  public_net:
+    driver: bridge
+  private_net: 
+    driver: bridge
+  
+volumes:
+  db_data:
