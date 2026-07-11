@@ -1,5 +1,4 @@
 package Nicolas_End.demo.enums.quotes;
-
 public enum QuoteEmergency {
 
     MAXIMA("MAXIMA"),

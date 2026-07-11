@@ -12,6 +12,8 @@ import { AnexosSection } from "@/components/orcamento/novo/anexos-section"
 import { ResumoCard } from "@/components/orcamento/novo/resumo-card"
 import { FooterActions } from "@/components/orcamento/novo/footer-actions"
 import { ACCEPTED_TYPES, type SubmitMode, type SubmitStatus } from "@/components/orcamento/novo/styles"
+import { registerNewQuote } from "../../_api/quote/post-routes"
+import { api } from "@/services/api"
 
 // ── Página de novo orçamento ────────────────────────────────────────────────
 export default function NovoOrcamentoPage() {
@@ -19,7 +21,6 @@ export default function NovoOrcamentoPage() {
 
   // Estado do formulário
   const [solicitante, setSolicitante] = useState("")
-  const [centroCusto, setCentroCusto] = useState("")
   const [observacoes, setObservacoes] = useState("")
   const [itens, setItens] = useState<OrcamentoItem[]>([
     { id: Date.now().toString(), produtoId: "", produtoNome: "", quantidade: 1 },
@@ -56,20 +57,58 @@ export default function NovoOrcamentoPage() {
 
   const removeAnexo = (id: string) => setAnexos((prev) => prev.filter((a) => a.id !== id))
 
+  function getFileType(tipo: string){
+    switch (tipo){
+       case "application/pdf":
+      return "PDF";
+
+    case "image/png":
+      return "PNG";
+
+    case "image/jpeg":
+      return "JPEG";
+
+    default:
+      setErrorMsg("Tipo da imgem invalido")
+      return ""
+      
+  }
+
+
+    }
+  
   // Envio
   const handleSubmit = async (mode: SubmitMode) => {
-    if (!solicitante.trim()) {
-      setErrorMsg("Informe o solicitante.")
-      return
-    }
     if (itens.some((i) => !i.produtoId)) {
       setErrorMsg("Selecione um produto para cada item.")
       return
     }
+
     setErrorMsg("")
     setSubmitMode(mode)
     setSubmitStatus("loading")
-    await uploadFiles(anexos)
+    const itemsApi = itens.map(
+      (item) => {
+        return{
+        id: item.produtoId,
+        quantity: item.quantidade
+        }
+      }
+    )
+    const annexes = await (await uploadFiles(anexos)).map((a) =>  {
+      return{
+      url:a.url,
+      type:getFileType(a.fileType),
+      key :   a.key,
+      name: a.fileName,
+      }
+    })
+    
+    const apiResponse = await registerNewQuote("Solicitado por: "+solicitante?solicitante:"Ninguem" + " "+ observacoes , itemsApi, annexes)
+    if (apiResponse.sucess !== true){
+      setErrorMsg(apiResponse.message?apiResponse.message: "Erro Interno");
+      return
+    }
     setSubmitStatus("success")
     setTimeout(() => router.push("/orcamentos"), 1500)
   }
@@ -97,10 +136,9 @@ export default function NovoOrcamentoPage() {
           <div className="flex-1 flex flex-col gap-5 min-w-0">
             <InformacoesGeraisSection
               solicitante={solicitante}
-              centroCusto={centroCusto}
               observacoes={observacoes}
               onSolicitanteChange={setSolicitante}
-              onCentroCustoChange={setCentroCusto}
+
               onObservacoesChange={setObservacoes}
             />
 
@@ -123,7 +161,7 @@ export default function NovoOrcamentoPage() {
           {/* Direita: card de resumo */}
           <ResumoCard
             solicitante={solicitante}
-            centroCusto={centroCusto}
+
             totalItens={totalItens}
             totalAnexos={totalAnexos}
             itens={itens}

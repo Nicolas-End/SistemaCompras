@@ -43,7 +43,6 @@ public class QuoteService {
 
     @Transactional
     public ApiResponse registerNewQuote(QuotePostDatasDTO userQuote){
-
         List<ItemsQuoteEntity> itemsQuoteEntities;
         List<AnnexEntity> annexEntities = this.saveAnnexes(userQuote.annexes());
         QuoteEntity  quoteEntity = new QuoteEntity.Builder().annex(annexEntities).observation(userQuote.observation()).build();
@@ -95,6 +94,7 @@ public class QuoteService {
     }
 
     private List<ItemEntityAndQuantityDTO> getAllItems(List<ItemQuantityDTO> uuidItemsList){
+
         if(uuidItemsList.isEmpty()){
             return null;
         }

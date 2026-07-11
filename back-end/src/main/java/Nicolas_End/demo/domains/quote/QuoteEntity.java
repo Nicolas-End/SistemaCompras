@@ -13,9 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Type;
-
-import javax.naming.SizeLimitExceededException;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,9 +49,11 @@ public class QuoteEntity extends BasicEntityModel {
         }
 
         public Builder observation(String observation) {
-            if(this.observation.length() > 1500){
+
+            if (observation.length() > 1500) {
                 throw new DataLimitLenghtException("Campo obersavação recebeu um tamanho invalido");
             }
+
             this.observation = observation;
             return this;
         }

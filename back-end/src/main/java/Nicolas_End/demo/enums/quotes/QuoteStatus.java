@@ -1,8 +1,6 @@
 package Nicolas_End.demo.enums.quotes;
 
-
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum QuoteStatus {

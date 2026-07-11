@@ -7,17 +7,17 @@ import { inputClass, textareaClass, labelClass, sectionClass } from "./styles"
 // ── Seção de informações gerais (solicitante, centro de custo, observações) ──
 export function InformacoesGeraisSection({
   solicitante,
-  centroCusto,
+
   observacoes,
   onSolicitanteChange,
-  onCentroCustoChange,
+
   onObservacoesChange,
 }: {
   solicitante: string
-  centroCusto: string
+
   observacoes: string
   onSolicitanteChange: (value: string) => void
-  onCentroCustoChange: (value: string) => void
+
   onObservacoesChange: (value: string) => void
 }) {
   return (
@@ -45,19 +45,7 @@ export function InformacoesGeraisSection({
               />
             </div>
           </div>
-          <div>
-            <label className={labelClass}>Centro de Custo</label>
-            <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9aad9b] pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Ex: TI, Financeiro, RH..."
-                value={centroCusto}
-                onChange={(e) => onCentroCustoChange(e.target.value)}
-                className={`${inputClass} pl-9`}
-              />
-            </div>
-          </div>
+
         </div>
         <div>
           <label className={labelClass}>Observações Gerais</label>

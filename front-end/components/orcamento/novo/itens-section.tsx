@@ -1,7 +1,7 @@
 "use client"
 
 import { Package, Plus, Trash2 } from "lucide-react"
-import type { OrcamentoItem, Produto } from "@/lib/types"
+import type { Item, OrcamentoItem, Produto } from "@/lib/types"
 import { SectionHeader } from "./section-header"
 import { ProductSelect } from "./product-select"
 import { inputClass, sectionClass } from "./styles"
@@ -47,7 +47,7 @@ export function ItensSection({
               <ProductSelect
                 value={item.produtoId}
                 excludeIds={itens.filter((i) => i.id !== item.id).map((i) => i.produtoId)}
-                onChange={(p: Produto) => onUpdateItem(item.id, { produtoId: p.id, produtoNome: p.nome })}
+                onChange={(p: Item) => onUpdateItem(item.id, { produtoId: p.id, produtoNome: p.name })}
               />
             </div>
 

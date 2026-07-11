@@ -4,21 +4,20 @@ import type { OrcamentoItem } from "@/lib/types"
 // ── Card lateral de resumo da solicitação ───────────────────────────────────
 export function ResumoCard({
   solicitante,
-  centroCusto,
+
   totalItens,
   totalAnexos,
   itens,
 }: {
   solicitante: string
-  centroCusto: string
+
   totalItens: number
   totalAnexos: number
   itens: OrcamentoItem[]
 }) {
   const resumo = [
     { icon: <User className="w-3.5 h-3.5" />, label: "Solicitante", value: solicitante || "—" },
-    { icon: <Building2 className="w-3.5 h-3.5" />, label: "Centro de Custo", value: centroCusto || "—" },
-    { icon: <Package className="w-3.5 h-3.5" />, label: "Total de Itens", value: `${totalItens} produto(s)` },
+   { icon: <Package className="w-3.5 h-3.5" />, label: "Total de Itens", value: `${totalItens} produto(s)` },
     { icon: <Paperclip className="w-3.5 h-3.5" />, label: "Anexos", value: `${totalAnexos} arquivo(s)` },
     { icon: <ClipboardList className="w-3.5 h-3.5" />, label: "Data", value: new Date().toLocaleDateString("pt-BR") },
   ]
