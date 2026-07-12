@@ -49,7 +49,7 @@ public class SecutiryConfigurations {
                 // Configura as permissões de cada endpoint:
                 .authorizeHttpRequests(authorize -> authorize
 
-                 .requestMatchers("/staff/login").permitAll()
+                 .requestMatchers("/staff/login", "/health").permitAll()
                  .requestMatchers(HttpMethod.POST, "/staff").hasRole("COMPRADOR")
                  .requestMatchers(HttpMethod.GET, "/quote").hasAnyRole("COMPRADOR", "ADMINISTRADOR")
                  .anyRequest().authenticated()
