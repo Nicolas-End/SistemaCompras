@@ -1,7 +1,7 @@
 
 services:
 
-  java-development: 
+  spring-development: 
     build: ./back-end/
 
     networks:
@@ -30,7 +30,7 @@ services:
     networks:
       - public_net
     environment:
-      NEXT_PUBLIC_API_URL=http://java-development:8080
+      NEXT_PUBLIC_API_URL=http://spring-development:8080
       
     env_file:
       - ./front-end/.env.local
@@ -38,7 +38,7 @@ services:
       - 3000:3000
 
     depends_on:
-      - java-development
+      - spring-development
 
   redis:
     image: redis:latest
