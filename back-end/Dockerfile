@@ -11,7 +11,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 #=== ETAPA PARA RODAR A APLICAÇÃO SPRING ===
-FROM eclipse-temurin:17-jre AS development
+FROM eclipse-temurin:17-jre AS runner
 
 WORKDIR /spring-development
 

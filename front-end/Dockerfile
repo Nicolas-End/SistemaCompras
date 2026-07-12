@@ -1,25 +1,35 @@
 
+# Instalar dependências
 
-FROM node:22
-#------- CONFIGURANDO AMBIENTE DE TRABALHO ------
+FROM node:22-alpine AS deps
 
-WORKDIR /front-end
+WORKDIR /next-app
 
 COPY package*.json ./
 
+RUN npm install
 
+#  Build da aplicação
 
-#------  BAIXANDO DEPRENDENCIAS -------
+FROM node:22 AS builder
 
-RUN npm install 
+WORKDIR /next-app
 
+COPY --from=deps /next-app/node_modules ./node_modules
 
-#------ RODANDO PROGAMA --------
-
-COPY . . 
+COPY . .
 
 RUN npm run build
 
-EXPOSE 3000
+
+# Executar a aplicação
+
+FROM node:22-alpine AS runner
+
+WORKDIR /next-app
+
+COPY --from=builder /next-app/.next/standalone ./
+COPY --from=builder /next-app/.next/static ./.next/static
+COPY --from=builder /next-app/public ./public
 
 CMD ["npm", "start"]
