@@ -1,6 +1,8 @@
 package Nicolas_End.demo.infra.config;
 
 
+import Nicolas_End.demo.infra.util.model.response.ApiResponse;
+import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,6 +15,7 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -22,22 +25,26 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class RedisConfigurations {
 
-    public RedisConfigurations(RedisTemplate redisTemplate){
+    public RedisConfigurations(RedisTemplate redisTemplate, ResponseUtil responseUtil){
         this.redisTemplate = redisTemplate;
+        this.responseUtil = responseUtil;
     }
-
+    private final ResponseUtil responseUtil;
     private final RedisTemplate<String, Object> redisTemplate;
 
     public static final String ITEMS_CACHE = "items";
 
-    @Scheduled(initialDelay = 5000, fixedDelay = 60000)
-    public void validateRedisConnection() {
+    public ApiResponse validateRedisConnection() {
         try {
-            String pong = redisTemplate.execute((RedisCallback<String>) RedisConnectionCommands::ping);
 
-            log.info("Redis conectado! Resposta: {}", pong);
+
+            redisTemplate.execute((RedisCallback<String>) RedisConnectionCommands::ping);
+
+            return this.responseUtil.sucess("REDIS CONECTADO",null, HttpStatus.OK );
+
+
         } catch (Exception e) {
-            log.error("Erro ao conectar ao Redis", e);
+            return  this.responseUtil.error("CONEXÃO FALHOU",e.toString(),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

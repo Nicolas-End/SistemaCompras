@@ -17,5 +17,7 @@ WORKDIR /spring-development
 
 COPY --from=builder /spring-development/target/*.jar spring-app.jar
 
+EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "spring-app.jar"]
 
