@@ -12,6 +12,7 @@ import Nicolas_End.demo.dtos.items.ItemEntityAndQuantityDTO;
 import Nicolas_End.demo.dtos.items.ItemQuantityDTO;
 import Nicolas_End.demo.dtos.quotes.QuoteBasicInfosDTO;
 import Nicolas_End.demo.dtos.quotes.QuotePostDatasDTO;
+import Nicolas_End.demo.dtos.quotes.StatusRequestPutDTO;
 import Nicolas_End.demo.infra.security.auth.AutheticatedStaff;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
@@ -85,6 +86,20 @@ public class QuoteService {
 
     }
 
+    public ApiResponse setContextQuoteStatus(StatusRequestPutDTO quoteDatas) {
+        StaffEntity staffContext = AutheticatedStaff.Get();
+        Optional<QuoteEntity> quote = this.quoteRepository.findById(quoteDatas.id());
+        if(quote.isEmpty()){
+            return  this.responseUtil.error("INVALID QUOTE","Orçamento enviado invalido", HttpStatus.NOT_FOUND);
+        }
+
+        if(!QuoteEntity.IS_A_NEXT_ALLOWED_STATUS_TRANSITION(quote.get().getStatus(), quoteDatas.newStatus()) || !QuoteEntity.IS_ALLOWED_STATUS_TRANSITION_BY_STAFF_ROLE(quote.get().getStatus(), AutheticatedStaff.Get().getRole())){
+        return this.responseUtil.error("INVALID QUOTE STATUS CHANGE", "Troca de status de orçamento invalido", HttpStatus.BAD_REQUEST);
+        }
+
+        return this.responseUtil.sucess("VALID CHANGE", "TROCA DO ORÇAMENTO VALIDA", HttpStatus.OK);
+
+    }
 
     private List<AnnexEntity> saveAnnexes(List<AnnexPostDTO> annexes){
         if (annexes.isEmpty()){
@@ -92,6 +107,8 @@ public class QuoteService {
         }
         return this.annexService.registerManyAnnex(annexes);
     }
+
+
 
     private List<ItemEntityAndQuantityDTO> getAllItems(List<ItemQuantityDTO> uuidItemsList){
 

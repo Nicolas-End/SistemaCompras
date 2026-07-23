@@ -5,6 +5,7 @@ import Nicolas_End.demo.domains.itens_order.ItemsQuoteEntity;
 import Nicolas_End.demo.domains.provider.ProviderEntity;
 import Nicolas_End.demo.domains.staff.StaffEntity;
 import Nicolas_End.demo.enums.quotes.QuoteStatus;
+import Nicolas_End.demo.enums.staff.StaffRoles;
 import Nicolas_End.demo.infra.exception.costumExceptions.DataLimitLenghtException;
 import Nicolas_End.demo.infra.security.auth.AutheticatedStaff;
 import Nicolas_End.demo.infra.util.model.BasicEntityModel;
@@ -14,6 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -73,6 +76,27 @@ public class QuoteEntity extends BasicEntityModel {
         }
 
     }
+    private static final Map<QuoteStatus, Set<QuoteStatus>> NEXT_ALLOWED_TRANSITIONS = Map.of(
+            QuoteStatus.SOLICITADO, Set.of(QuoteStatus.EM_COTACAO),
+            QuoteStatus.EM_COTACAO, Set.of(QuoteStatus.AGUARDANDO_APROVACAO),
+            QuoteStatus.AGUARDANDO_APROVACAO, Set.of(QuoteStatus.APROVADO,QuoteStatus.REJEITADO)
+    );
+
+    private static final Map<QuoteStatus, Set<StaffRoles>> ALLOWED_TRANSITION_BY_STAFF_ROLE = Map.of(
+            QuoteStatus.SOLICITADO, Set.of(StaffRoles.COMPRADOR, StaffRoles.ADMINISTRADOR),
+            QuoteStatus.EM_COTACAO, Set.of(StaffRoles.COMPRADOR, StaffRoles.ADMINISTRADOR),
+            QuoteStatus.AGUARDANDO_APROVACAO, Set.of(StaffRoles.values())
+    );
+
+    public static boolean IS_A_NEXT_ALLOWED_STATUS_TRANSITION(QuoteStatus currentStatus, QuoteStatus newStatus){
+        return NEXT_ALLOWED_TRANSITIONS.getOrDefault(currentStatus,Set.of()).contains(newStatus);
+    }
+
+    public static boolean IS_ALLOWED_STATUS_TRANSITION_BY_STAFF_ROLE(QuoteStatus currentStatus, StaffRoles staffRole){
+        return ALLOWED_TRANSITION_BY_STAFF_ROLE.getOrDefault(currentStatus,Set.of()).contains(staffRole);
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
