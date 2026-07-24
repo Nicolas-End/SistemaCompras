@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface QuoteRepository extends JpaRepository<QuoteEntity, UUID>{
 
     List<QuoteEntity> findAllByRequestFor(StaffEntity staffEntity);
+    QuoteEntity findBy(UUID id);
 }

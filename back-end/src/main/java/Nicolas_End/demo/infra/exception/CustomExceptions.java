@@ -5,6 +5,7 @@ import Nicolas_End.demo.infra.exception.costumExceptions.DataLimitLenghtExceptio
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.UnexpectedTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,16 @@ public class CustomExceptions {
     ApiResponse errorResponse;
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse> BadRequestExceptionHandler(Exception badRequest){
+
+
+        this.errorResponse = responseUtil.error("Bad Request", badRequest.getMessage() , HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.status(errorResponse.getStatus()).body(this.errorResponse);
+
+    }
+
+    @ExceptionHandler(UnexpectedTypeException.class)
+    public ResponseEntity<ApiResponse> InvalidInputType(Exception badRequest){
 
 
         this.errorResponse = responseUtil.error("Bad Request", badRequest.getMessage() , HttpStatus.BAD_REQUEST);

@@ -7,7 +7,6 @@ import java.util.List;
 
 public record QuotePostDatasDTO(
         List<ItemQuantityDTO> items,
-
         List<AnnexPostDTO> annexes,
 
         String observation

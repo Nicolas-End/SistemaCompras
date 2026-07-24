@@ -1,6 +1,7 @@
 package Nicolas_End.demo.domains.quote;
 
 
+import Nicolas_End.demo.dtos.quotes.QuoteEditableDatasDTO;
 import Nicolas_End.demo.dtos.quotes.QuotePostDatasDTO;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
@@ -51,6 +52,13 @@ public class QuoteController {
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
+
+    @PatchMapping()
+    public ResponseEntity partialQuoteEdit(@RequestBody @Valid QuoteEditableDatasDTO quotesDatas){
+
+        this.quoteService.editQuoteDatas(quotesDatas);
+        return  ResponseEntity.ok("Tudo bem");
+    }
 
 
 }

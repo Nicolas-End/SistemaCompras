@@ -76,12 +76,15 @@ public class QuoteEntity extends BasicEntityModel {
         }
 
     }
+
+    // verifica se o proximo pedido é valido
     private static final Map<QuoteStatus, Set<QuoteStatus>> NEXT_ALLOWED_TRANSITIONS = Map.of(
-            QuoteStatus.SOLICITADO, Set.of(QuoteStatus.EM_COTACAO),
-            QuoteStatus.EM_COTACAO, Set.of(QuoteStatus.AGUARDANDO_APROVACAO),
+            QuoteStatus.SOLICITADO, Set.of(QuoteStatus.EM_COTACAO, QuoteStatus.REJEITADO),
+            QuoteStatus.EM_COTACAO, Set.of(QuoteStatus.AGUARDANDO_APROVACAO, QuoteStatus.REJEITADO),
             QuoteStatus.AGUARDANDO_APROVACAO, Set.of(QuoteStatus.APROVADO,QuoteStatus.REJEITADO)
     );
 
+    // verificas se o cargo do usuario é valido apra fazer a troca de Status
     private static final Map<QuoteStatus, Set<StaffRoles>> ALLOWED_TRANSITION_BY_STAFF_ROLE = Map.of(
             QuoteStatus.SOLICITADO, Set.of(StaffRoles.COMPRADOR, StaffRoles.ADMINISTRADOR),
             QuoteStatus.EM_COTACAO, Set.of(StaffRoles.COMPRADOR, StaffRoles.ADMINISTRADOR),

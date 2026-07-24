@@ -2,7 +2,6 @@ package Nicolas_End.demo.domains.quote;
 
 import Nicolas_End.demo.domains.annex.AnnexEntity;
 import Nicolas_End.demo.domains.annex.AnnexService;
-import Nicolas_End.demo.domains.items.ItemsEntity;
 import Nicolas_End.demo.domains.items.ItemsService;
 import Nicolas_End.demo.domains.itens_order.ItemsQuoteEntity;
 import Nicolas_End.demo.domains.itens_order.ItemsQuoteService;
@@ -11,21 +10,18 @@ import Nicolas_End.demo.dtos.annex.AnnexPostDTO;
 import Nicolas_End.demo.dtos.items.ItemEntityAndQuantityDTO;
 import Nicolas_End.demo.dtos.items.ItemQuantityDTO;
 import Nicolas_End.demo.dtos.quotes.QuoteBasicInfosDTO;
+import Nicolas_End.demo.dtos.quotes.QuoteEditableDatasDTO;
 import Nicolas_End.demo.dtos.quotes.QuotePostDatasDTO;
 import Nicolas_End.demo.dtos.quotes.StatusRequestPutDTO;
+import Nicolas_End.demo.enums.quotes.QuoteStatus;
 import Nicolas_End.demo.infra.security.auth.AutheticatedStaff;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import jakarta.transaction.Transactional;
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class QuoteService {
@@ -61,6 +57,20 @@ public class QuoteService {
 
 
     }
+    public ApiResponse editQuoteDatas(QuoteEditableDatasDTO userQuote){
+        QuoteEntity quote = this.quoteRepository.findBy(userQuote.id());
+        if(userQuote.status() != null){
+            ApiResponse isAValidQuoteTransition = this.validateStatusQuoteTransition(quote.getStatus(), userQuote.status());
+            if (!isAValidQuoteTransition.getSuccess()){
+                return isAValidQuoteTransition;
+            }
+            quote.setStatus(userQuote.status());
+        }
+
+        return this.responseUtil.sucess(null,null,HttpStatus.OK); 
+
+
+    }
 
     public ApiResponse getAllQuotes(){
         List<QuoteEntity> quote = this.quoteRepository.findAll();
@@ -86,18 +96,12 @@ public class QuoteService {
 
     }
 
-    public ApiResponse setContextQuoteStatus(StatusRequestPutDTO quoteDatas) {
-        StaffEntity staffContext = AutheticatedStaff.Get();
-        Optional<QuoteEntity> quote = this.quoteRepository.findById(quoteDatas.id());
-        if(quote.isEmpty()){
-            return  this.responseUtil.error("INVALID QUOTE","Orçamento enviado invalido", HttpStatus.NOT_FOUND);
+    private ApiResponse validateStatusQuoteTransition(QuoteStatus currentQuote, QuoteStatus newQuoteStatus) {
+        if(!QuoteEntity.IS_A_NEXT_ALLOWED_STATUS_TRANSITION(currentQuote, newQuoteStatus) || !QuoteEntity.IS_ALLOWED_STATUS_TRANSITION_BY_STAFF_ROLE(newQuoteStatus, AutheticatedStaff.Get().getRole())){
+        return this.responseUtil.error("INVALID QUOTE STATUS CHANGE", "Troca de status de orçamento invalido", HttpStatus.CONFLICT);
         }
 
-        if(!QuoteEntity.IS_A_NEXT_ALLOWED_STATUS_TRANSITION(quote.get().getStatus(), quoteDatas.newStatus()) || !QuoteEntity.IS_ALLOWED_STATUS_TRANSITION_BY_STAFF_ROLE(quote.get().getStatus(), AutheticatedStaff.Get().getRole())){
-        return this.responseUtil.error("INVALID QUOTE STATUS CHANGE", "Troca de status de orçamento invalido", HttpStatus.BAD_REQUEST);
-        }
-
-        return this.responseUtil.sucess("VALID CHANGE", "TROCA DO ORÇAMENTO VALIDA", HttpStatus.OK);
+        return this.responseUtil.sucess(null, null ,HttpStatus.OK);
 
     }
 
