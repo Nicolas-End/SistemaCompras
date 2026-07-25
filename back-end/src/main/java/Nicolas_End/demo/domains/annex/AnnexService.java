@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class AnnexService {
@@ -35,6 +36,17 @@ public class AnnexService {
 
         return this.annexRepository.saveAll(annexesEntity);
 
+
+    }
+
+    public List<AnnexEntity> findAnnexByAnnexPostDTO(List<AnnexPostDTO> annexesList){
+        /* converte a lista de annexos enviada pelo usuario
+        * em uma lista das chave destes anexos*/
+        List<String> annexesKeys = annexesList.stream().map(
+                AnnexPostDTO::key
+        ).toList();
+
+        return this.annexRepository.findAllByKey(annexesKeys);
 
     }
 

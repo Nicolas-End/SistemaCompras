@@ -56,8 +56,8 @@ public class QuoteController {
     @PatchMapping()
     public ResponseEntity partialQuoteEdit(@RequestBody @Valid QuoteEditableDatasDTO quotesDatas){
 
-        this.quoteService.editQuoteDatas(quotesDatas);
-        return  ResponseEntity.ok("Tudo bem");
+        ApiResponse apiResponse = this.quoteService.editQuoteDatas(quotesDatas);
+        return  ResponseEntity.status(apiResponse.getStatus()).body(apiResponse); 
     }
 
 

@@ -12,7 +12,6 @@ import Nicolas_End.demo.dtos.items.ItemQuantityDTO;
 import Nicolas_End.demo.dtos.quotes.QuoteBasicInfosDTO;
 import Nicolas_End.demo.dtos.quotes.QuoteEditableDatasDTO;
 import Nicolas_End.demo.dtos.quotes.QuotePostDatasDTO;
-import Nicolas_End.demo.dtos.quotes.StatusRequestPutDTO;
 import Nicolas_End.demo.enums.quotes.QuoteStatus;
 import Nicolas_End.demo.infra.security.auth.AutheticatedStaff;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
@@ -21,7 +20,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class QuoteService {
@@ -40,15 +38,12 @@ public class QuoteService {
 
     @Transactional
     public ApiResponse registerNewQuote(QuotePostDatasDTO userQuote){
-        List<ItemsQuoteEntity> itemsQuoteEntities;
         List<AnnexEntity> annexEntities = this.saveAnnexes(userQuote.annexes());
         QuoteEntity  quoteEntity = new QuoteEntity.Builder().annex(annexEntities).observation(userQuote.observation()).build();
 
-        List<ItemEntityAndQuantityDTO> itemsEntities = this.getAllItems(userQuote.items());
-        if(itemsEntities != null) {
-            itemsQuoteEntities = this.itemsQuoteService.creatItemsQuoteEntitiesList(itemsEntities,quoteEntity);
-            quoteEntity.setItems(itemsQuoteEntities);
-        }
+        /* cria uma lista dos items para cadastrar juntamente com o orçamento*/
+        List<ItemsQuoteEntity> itemsQuoteEntities = this.convertItemQuantityToItemQuoteEntity(userQuote.items(), quoteEntity);
+        quoteEntity.setItems(itemsQuoteEntities);
 
         QuoteEntity quote = this.quoteRepository.save(quoteEntity);
         QuoteBasicInfosDTO basicInfosDTO = this.createRetunableQuoteUserInfos(quote);
@@ -57,17 +52,24 @@ public class QuoteService {
 
 
     }
+
+    @Transactional
     public ApiResponse editQuoteDatas(QuoteEditableDatasDTO userQuote){
-        QuoteEntity quote = this.quoteRepository.findBy(userQuote.id());
-        if(userQuote.status() != null){
-            ApiResponse isAValidQuoteTransition = this.validateStatusQuoteTransition(quote.getStatus(), userQuote.status());
-            if (!isAValidQuoteTransition.getSuccess()){
-                return isAValidQuoteTransition;
-            }
-            quote.setStatus(userQuote.status());
+        QuoteEntity dataBaseQuote = this.quoteRepository.findBy(userQuote.id());
+
+        // valida se a troca é valida se a troca status é valida
+        if(!this.editQuoteStatusIfDistinctOfDataBase(dataBaseQuote, userQuote.status())){
+            return this.responseUtil.error("Invalid Quote Status Change", "Verifique se seu cargo ou status são validos", HttpStatus.UNPROCESSABLE_CONTENT);
         }
 
-        return this.responseUtil.sucess(null,null,HttpStatus.OK); 
+        // verica se o items são diferentes e edita os dados
+        this.editQuoteItemsIfDistinctOfDataBase(dataBaseQuote, userQuote.items());
+
+        this.editQuoteAnnexIfDistinctOfDatabase(dataBaseQuote,userQuote.annexes());
+
+        this.quoteRepository.save(dataBaseQuote);
+
+        return this.responseUtil.sucess("Quote Updated","Orçamento atualizado com sucesso",HttpStatus.OK);
 
 
     }
@@ -82,6 +84,19 @@ public class QuoteService {
 
 
     }
+
+    /*cria as entidades dos items para cadastra no orçamento em questão
+    * precisando do orçamento
+    * e de uma lista de uuid de items com a quantitdade */
+    private List<ItemsQuoteEntity> convertItemQuantityToItemQuoteEntity(List<ItemQuantityDTO> items, QuoteEntity dataBaseQuote){
+        List<ItemEntityAndQuantityDTO> itemsEntities = this.getAllItems(items);
+        if(itemsEntities != null) {
+
+            return this.itemsQuoteService.creatItemsQuoteEntitiesList(itemsEntities, dataBaseQuote);
+        }
+        return  null;
+    }
+
 
     public ApiResponse getOwnStaffQuotes(){
         StaffEntity staffDatas = AutheticatedStaff.Get();
@@ -133,5 +148,42 @@ public class QuoteService {
 
 
     }
+
+    private boolean editQuoteStatusIfDistinctOfDataBase(QuoteEntity databaseQuote,   QuoteStatus newQuoteStatus){
+        if(newQuoteStatus != null && newQuoteStatus != databaseQuote.getStatus()){
+            // verifica se é possivel realizar a troca de status
+            ApiResponse isAValidQuoteTransition = this.validateStatusQuoteTransition(databaseQuote.getStatus(), newQuoteStatus);
+
+            if (!isAValidQuoteTransition.getSuccess()){
+                return false;
+            }
+            databaseQuote.setStatus(newQuoteStatus);
+        }
+        return true ;
+
+    }
+
+    private void editQuoteItemsIfDistinctOfDataBase(QuoteEntity databaseQuote, List<ItemQuantityDTO> items){
+        if(items != null) {
+            List<ItemsQuoteEntity> convertedItemQuoteEntity = this.convertItemQuantityToItemQuoteEntity(items, databaseQuote);
+            if ((convertedItemQuoteEntity != null && !convertedItemQuoteEntity.isEmpty()) && !convertedItemQuoteEntity.equals(databaseQuote.getItems())) {
+                databaseQuote.setItems(convertedItemQuoteEntity);
+
+            }
+        }
+    }
+
+    private void editQuoteAnnexIfDistinctOfDatabase(QuoteEntity databaseQuote, List<AnnexPostDTO> annexes){
+
+        if(annexes != null) {
+
+            List<AnnexEntity> annexEntities = this.annexService.findAnnexByAnnexPostDTO(annexes);
+            if ((annexEntities != null && !annexEntities.isEmpty()) && !annexEntities.equals(databaseQuote.getAnnexes())) {
+                databaseQuote.setAnnexes(annexEntities);
+            }
+        }
+
+    }
+
 
 }
