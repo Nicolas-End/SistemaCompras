@@ -37,6 +37,7 @@ public class QuoteEntity extends BasicEntityModel {
     public static class Builder{
         private int itemQuantity = 0;
         private int annexQuantity = 0;
+        private ProviderEntity provider = null;
         private String observation = null;
         private  List<ItemsQuoteEntity> items = null;
         private  List<AnnexEntity> annexes = null;
@@ -59,6 +60,11 @@ public class QuoteEntity extends BasicEntityModel {
 
             this.observation = observation;
             return this;
+        }
+        public Builder provider(ProviderEntity provider){
+            this.provider = provider;
+
+            return  this;
         }
 
         public Builder annex(List<AnnexEntity> annexes){

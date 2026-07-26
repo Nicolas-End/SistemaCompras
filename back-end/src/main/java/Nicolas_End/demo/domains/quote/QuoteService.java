@@ -5,6 +5,7 @@ import Nicolas_End.demo.domains.annex.AnnexService;
 import Nicolas_End.demo.domains.items.ItemsService;
 import Nicolas_End.demo.domains.itens_order.ItemsQuoteEntity;
 import Nicolas_End.demo.domains.itens_order.ItemsQuoteService;
+import Nicolas_End.demo.domains.provider.ProviderEntity;
 import Nicolas_End.demo.domains.staff.StaffEntity;
 import Nicolas_End.demo.dtos.annex.AnnexPostDTO;
 import Nicolas_End.demo.dtos.items.ItemEntityAndQuantityDTO;
@@ -20,6 +21,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class QuoteService {
@@ -55,20 +58,24 @@ public class QuoteService {
 
     @Transactional
     public ApiResponse editQuoteDatas(QuoteEditableDatasDTO userQuote){
-        QuoteEntity dataBaseQuote = this.quoteRepository.findBy(userQuote.id());
+
+        QuoteEntity dataBaseQuote = this.quoteRepository.findById(userQuote.id()).orElse(null);
+        if(dataBaseQuote == null)
+            return this.responseUtil.error("Quote Not Found", "Não foi possivel encontrar o orçamento solicitado", HttpStatus.NOT_FOUND);
 
         // valida se a troca é valida se a troca status é valida
         if(!this.editQuoteStatusIfDistinctOfDataBase(dataBaseQuote, userQuote.status())){
             return this.responseUtil.error("Invalid Quote Status Change", "Verifique se seu cargo ou status são validos", HttpStatus.UNPROCESSABLE_CONTENT);
         }
 
+
         // verica se o items são diferentes e edita os dados
         this.editQuoteItemsIfDistinctOfDataBase(dataBaseQuote, userQuote.items());
 
         this.editQuoteAnnexIfDistinctOfDatabase(dataBaseQuote,userQuote.annexes());
 
-        this.quoteRepository.save(dataBaseQuote);
 
+        this.quoteRepository.save(dataBaseQuote);
         return this.responseUtil.sucess("Quote Updated","Orçamento atualizado com sucesso",HttpStatus.OK);
 
 
@@ -151,6 +158,7 @@ public class QuoteService {
 
     private boolean editQuoteStatusIfDistinctOfDataBase(QuoteEntity databaseQuote,   QuoteStatus newQuoteStatus){
         if(newQuoteStatus != null && newQuoteStatus != databaseQuote.getStatus()){
+
             // verifica se é possivel realizar a troca de status
             ApiResponse isAValidQuoteTransition = this.validateStatusQuoteTransition(databaseQuote.getStatus(), newQuoteStatus);
 
@@ -164,6 +172,7 @@ public class QuoteService {
     }
 
     private void editQuoteItemsIfDistinctOfDataBase(QuoteEntity databaseQuote, List<ItemQuantityDTO> items){
+
         if(items != null) {
             List<ItemsQuoteEntity> convertedItemQuoteEntity = this.convertItemQuantityToItemQuoteEntity(items, databaseQuote);
             if ((convertedItemQuoteEntity != null && !convertedItemQuoteEntity.isEmpty()) && !convertedItemQuoteEntity.equals(databaseQuote.getItems())) {
@@ -183,6 +192,13 @@ public class QuoteService {
             }
         }
 
+    }
+
+    private void editQuoteProviderIfDistinctOfDataBase(QuoteEntity databaseQuote, UUID providerId){
+
+        if(providerId != databaseQuote.getProvider().getId()){
+
+        }
     }
 
 

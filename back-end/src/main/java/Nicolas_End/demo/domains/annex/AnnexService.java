@@ -13,10 +13,8 @@ import java.util.UUID;
 @Service
 public class AnnexService {
     private final AnnexRepository annexRepository;
-    private final ResponseUtil responseUtil;
-    public AnnexService(AnnexRepository annexRepository, ResponseUtil responseUtil){
+    public AnnexService(AnnexRepository annexRepository){
         this.annexRepository = annexRepository;
-        this.responseUtil = responseUtil;
 
     }
 

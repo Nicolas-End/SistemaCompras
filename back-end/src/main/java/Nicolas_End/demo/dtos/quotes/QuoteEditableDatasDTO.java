@@ -15,6 +15,9 @@ public record QuoteEditableDatasDTO (
         UUID id,
 
         @Valid
+        UUID providerId,
+
+        @Valid
         List<ItemQuantityDTO> items,
 
         @Valid

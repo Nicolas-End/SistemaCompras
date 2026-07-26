@@ -11,8 +11,10 @@ import java.util.UUID;
 @EnableJpaRepositories
 public interface AnnexRepository extends JpaRepository<AnnexEntity, UUID> {
 
-    /*Query para procuar annex com base em uma lista de keys*/
-    @Query("SELECT a FROM AnnexEntity a WHERE a.key in :keys")
+    /*Query para procuar annex com base em uma lista de keys]
+    * obs: fiz um query apenas para treinar*/
+
+    @Query("SELECT a FROM AnnexEntity a WHERE a.key in (:keys)")
     List<AnnexEntity> findAllByKey(@Param("keys")List<String> keys);
 
 }

@@ -57,7 +57,7 @@ public class QuoteController {
     public ResponseEntity partialQuoteEdit(@RequestBody @Valid QuoteEditableDatasDTO quotesDatas){
 
         ApiResponse apiResponse = this.quoteService.editQuoteDatas(quotesDatas);
-        return  ResponseEntity.status(apiResponse.getStatus()).body(apiResponse); 
+        return  ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 
 
