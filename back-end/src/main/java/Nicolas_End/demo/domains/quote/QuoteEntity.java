@@ -14,10 +14,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Entity
@@ -94,8 +93,7 @@ public class QuoteEntity extends BasicEntityModel {
     private static final Map<QuoteStatus, Set<StaffRoles>> ALLOWED_TRANSITION_BY_STAFF_ROLE = Map.of(
             QuoteStatus.SOLICITADO, Set.of(StaffRoles.COMPRADOR, StaffRoles.ADMINISTRADOR),
             QuoteStatus.EM_COTACAO, Set.of(StaffRoles.COMPRADOR, StaffRoles.ADMINISTRADOR),
-            QuoteStatus.AGUARDANDO_APROVACAO, Set.of(StaffRoles.values())
-    );
+            QuoteStatus.AGUARDANDO_APROVACAO, Set.copyOf(Arrays.stream(StaffRoles.values()).toList()));
 
     public static boolean IS_A_NEXT_ALLOWED_STATUS_TRANSITION(QuoteStatus currentStatus, QuoteStatus newStatus){
         return NEXT_ALLOWED_TRANSITIONS.getOrDefault(currentStatus,Set.of()).contains(newStatus);
@@ -155,9 +153,12 @@ public class QuoteEntity extends BasicEntityModel {
     )
     private List<AnnexEntity> annexes;
 
+    @Column
+    private boolean deletedStatus;
 
     @PrePersist
     public void initialize(){
+        this.deletedStatus= false ;
         this.requestFor = AutheticatedStaff.Get();
         this.status = QuoteStatus.SOLICITADO;
     };

@@ -56,8 +56,6 @@ export default function OrcamentosPage() {
   // Metrics
   const total = orcamentos.length
   const pendentes = orcamentos.filter((o) => o.status === "SOLICITADO").length
-  const emCotacao = orcamentos.filter((o) => o.status === "EM_COTACAO").length
-  const aguardandoAprovacao = orcamentos.filter((o) => o.status === "AGUARDANDO_APROVACAO").length
   const aprovado = orcamentos.filter((o) => o.status === "APROVADO").length
   const rejeitado = orcamentos.filter((o) => o.status === "REJEITADO").length
   
@@ -69,6 +67,7 @@ export default function OrcamentosPage() {
     setSelectedIds(selectedIds.length === filtered.length ? [] : filtered.map((o) => o.id))
 
   const handleDelete = (id: string) => {
+    console.log(id)
     setOrcamentos((prev) => prev.filter((o) => o.id !== id))
     setSelectedIds((prev) => prev.filter((i) => i !== id))
   }

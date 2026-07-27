@@ -11,6 +11,7 @@ import java.util.UUID;
 @EnableJpaRepositories
 public interface QuoteRepository extends JpaRepository<QuoteEntity, UUID>{
 
-    List<QuoteEntity> findAllByRequestFor(StaffEntity staffEntity);
+    List<QuoteEntity> findAllByRequestForAndDeletedStatus(StaffEntity staffEntity, boolean deletedStatus);
+    List<QuoteEntity> findAllByDeletedStatus(boolean deletedStatus);
     QuoteEntity findBy(UUID id);
 }

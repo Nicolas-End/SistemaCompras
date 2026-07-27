@@ -20,7 +20,7 @@ export interface OrcamentoAnexo {
   nome: string
   tipo: string
   tamanho: number
-  arquivo: File
+  arquivo?: File
   url?: string
   progresso?: number
   preview?: string
@@ -29,7 +29,7 @@ export interface OrcamentoAnexo {
 export interface Orcamento {
   id: string
   observacoes?: string
-  requestFor:String
+  requestFor:string
   itens?: OrcamentoItem[]
   anexos?: OrcamentoAnexo[]
   itemsQuantity?:number
@@ -44,7 +44,13 @@ export interface Produto {
   nome: string
   codigo: string
 }
-
+export function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  })
+}
 export const STATUS_CONFIG: Record<
   OrcamentoStatus,
   { label: string; color: string; bg: string; border: string; dot: string }
@@ -86,7 +92,11 @@ export const STATUS_CONFIG: Record<
   }
 
 }
-
+export function formatFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
 export type OrderStatus = "CHEGANDO" | "RECEBIDO" | "CANCELADO" 
 
 export type Priority = "low" | "medium" | "high"
@@ -99,6 +109,12 @@ export interface LoginDatas{
     password:string;
 }
 
+export function canTransformToPedido(
+  status: OrcamentoStatus,
+  role: UserRole
+): boolean {
+  return status === "APROVADO" && (role === "ADMINISTRADOR" || role === "COMPRADOR")
+}
 
 export interface UserSys {
   id?: UUID

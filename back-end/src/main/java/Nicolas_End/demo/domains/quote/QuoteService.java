@@ -63,7 +63,7 @@ public class QuoteService {
         if(dataBaseQuote == null)
             return this.responseUtil.error("Quote Not Found", "Não foi possivel encontrar o orçamento solicitado", HttpStatus.NOT_FOUND);
 
-        // valida se a troca é valida se a troca status é valida
+        // valida se a troca  status é valida
         if(!this.editQuoteStatusIfDistinctOfDataBase(dataBaseQuote, userQuote.status())){
             return this.responseUtil.error("Invalid Quote Status Change", "Verifique se seu cargo ou status são validos", HttpStatus.UNPROCESSABLE_CONTENT);
         }
@@ -81,8 +81,10 @@ public class QuoteService {
 
     }
 
+    
+
     public ApiResponse getAllQuotes(){
-        List<QuoteEntity> quote = this.quoteRepository.findAll();
+        List<QuoteEntity> quote = this.quoteRepository.findAllByDeletedStatus(false);
         List<QuoteBasicInfosDTO> basicInfosList = quote.stream().map(
                 this::createRetunableQuoteUserInfos
         ).toList();
@@ -104,10 +106,11 @@ public class QuoteService {
         return  null;
     }
 
-
+    /* RETORNAR APENAS OS ORÇAMENTOS DE UM DETERMINADO FUNCINARIO
+    *   SERVE PARA QUEM TEM CARGO "BAIXO" COMO O VENDEDOR */
     public ApiResponse getOwnStaffQuotes(){
         StaffEntity staffDatas = AutheticatedStaff.Get();
-        List<QuoteEntity> quoteEntities = this.quoteRepository.findAllByRequestFor(staffDatas);
+        List<QuoteEntity> quoteEntities = this.quoteRepository.findAllByRequestForAndDeletedStatus(staffDatas,false);
 
         List<QuoteBasicInfosDTO> basicInfosList = quoteEntities.stream().map(
                 this::createRetunableQuoteUserInfos
@@ -119,7 +122,7 @@ public class QuoteService {
     }
 
     private ApiResponse validateStatusQuoteTransition(QuoteStatus currentQuote, QuoteStatus newQuoteStatus) {
-        if(!QuoteEntity.IS_A_NEXT_ALLOWED_STATUS_TRANSITION(currentQuote, newQuoteStatus) || !QuoteEntity.IS_ALLOWED_STATUS_TRANSITION_BY_STAFF_ROLE(newQuoteStatus, AutheticatedStaff.Get().getRole())){
+        if( !QuoteEntity.IS_ALLOWED_STATUS_TRANSITION_BY_STAFF_ROLE(currentQuote, AutheticatedStaff.Get().getRole()) || !QuoteEntity.IS_A_NEXT_ALLOWED_STATUS_TRANSITION(currentQuote, newQuoteStatus)){
         return this.responseUtil.error("INVALID QUOTE STATUS CHANGE", "Troca de status de orçamento invalido", HttpStatus.CONFLICT);
         }
 
