@@ -66,6 +66,7 @@ public class QuoteEntity extends BasicEntityModel {
             return  this;
         }
 
+
         public Builder annex(List<AnnexEntity> annexes){
             if(annexes != null){
                 this.annexes = annexes;
@@ -121,7 +122,7 @@ public class QuoteEntity extends BasicEntityModel {
     @Column(nullable = false)
     private QuoteStatus status;
 
-    @OneToMany(mappedBy = "quote")
+    @OneToMany(mappedBy = "quote", cascade = CascadeType.ALL)
     private List<ItemsQuoteEntity> items;
 
    @ManyToOne

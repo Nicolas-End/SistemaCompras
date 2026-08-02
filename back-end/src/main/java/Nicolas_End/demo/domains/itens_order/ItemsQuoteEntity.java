@@ -22,6 +22,12 @@ public class ItemsQuoteEntity extends BasicEntityModel {
         this.item = item;
         this.quote = quote;
         this.quantity = quantity;
+
+        this.id = new ItensQuoteId();
+        this.id.setItemId(item.getId());
+        this.id.setQuoteId(quote.getId());
+
+
     }
 
     @EmbeddedId

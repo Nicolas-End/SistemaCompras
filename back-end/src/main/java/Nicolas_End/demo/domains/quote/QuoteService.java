@@ -10,13 +10,16 @@ import Nicolas_End.demo.domains.staff.StaffEntity;
 import Nicolas_End.demo.dtos.annex.AnnexPostDTO;
 import Nicolas_End.demo.dtos.items.ItemEntityAndQuantityDTO;
 import Nicolas_End.demo.dtos.items.ItemQuantityDTO;
+import Nicolas_End.demo.dtos.quotes.AllQuoteInfosDTO;
 import Nicolas_End.demo.dtos.quotes.QuoteBasicInfosDTO;
 import Nicolas_End.demo.dtos.quotes.QuoteEditableDatasDTO;
 import Nicolas_End.demo.dtos.quotes.QuotePostDatasDTO;
 import Nicolas_End.demo.enums.quotes.QuoteStatus;
+import Nicolas_End.demo.enums.staff.StaffRoles;
 import Nicolas_End.demo.infra.security.auth.AutheticatedStaff;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,44 @@ public class QuoteService {
         return this.responseUtil.sucess(basicInfosDTO, "Orçamento cadatrado com sucesso", HttpStatus.OK);
 
 
+    }
+
+    public ApiResponse getAllQuoteInfoById(UUID id){
+        StaffEntity staffEntity = AutheticatedStaff.Get();
+
+        AllQuoteInfosDTO quoteInfosDTO;
+
+        Optional<QuoteEntity> quote = this.quoteRepository.findById(id);
+
+        if(
+                quote.isEmpty()
+        ){
+            throw new EntityNotFoundException("Orçamento solicitado não encontrado");
+        }
+        if (
+                staffEntity.getRole() != StaffRoles.ADMINISTRADOR
+                        && !staffEntity.equals(quote.get().getRequestFor())
+        ) {
+            return this.responseUtil.error(
+                    "FORBIDDEN",
+                    "Permissão insuficiente para acessar pedido",
+                    HttpStatus.FORBIDDEN
+            );
+        }
+
+
+
+        /*
+        Preenche as informações que não precisam ser "remodeladas"
+        para um DTO que eu criei para tornar as informações do banco de dados retornaveis para JSON
+         */
+        quoteInfosDTO = this.fillBasicAllQuoteInfosDTOByQuoteEntity(quote.get());
+
+
+
+
+
+        return this.responseUtil.sucess(quoteInfosDTO,null,HttpStatus.OK);
     }
 
     @Transactional
@@ -197,12 +238,20 @@ public class QuoteService {
 
     }
 
-    private void editQuoteProviderIfDistinctOfDataBase(QuoteEntity databaseQuote, UUID providerId){
 
-        if(providerId != databaseQuote.getProvider().getId()){
 
-        }
+    private AllQuoteInfosDTO fillBasicAllQuoteInfosDTOByQuoteEntity(QuoteEntity quote){
+
+
+        return AllQuoteInfosDTO.builder(quote.getId(),quote.getRequestFor().getName(),quote.getStatus(),quote.getCreatedAt())
+                .observation(quote.getObservation())
+                .updatedAt(quote.getUpdatedAt())
+                .itemsByEntity(quote.getItems())
+                .annexesByEntity(quote.getAnnexes())
+                .build();
     }
+
+
 
 
 }

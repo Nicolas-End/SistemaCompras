@@ -15,17 +15,17 @@ async function fetchOrcamento(id: string): Promise<Orcamento> {
   return {
     id,
     requestFor: "Ana Souza",
-    observacoes: "Itens urgentes para o projeto de migração de infraestrutura. Favor priorizar a entrega.",
+    observation: "Itens urgentes para o projeto de migração de infraestrutura. Favor priorizar a entrega.",
     status: "APROVADO",
     createdAt: "2025-06-01T10:00:00Z",
     updatedAt: "2025-06-03T15:30:00Z",
-    itens: [
+    items: [
       { id: "i1", produtoId: "1", produtoNome: "Notebook Dell Inspiron 15", quantidade: 2 },
       { id: "i2", produtoId: "2", produtoNome: "Teclado Mecânico USB" , quantidade: 2, observacao: "Preferência ABNT2" },
       { id: "i3", produtoId: "3", produtoNome: "Mouse Sem Fio Logitech", quantidade: 2 },
       { id: "i4", produtoId: "4", produtoNome: "Cabo de Rede Cat6 10m", quantidade: 10 },
     ],
-    anexos: [
+    annexes: [
       { id: "a1", nome: "requisicao-ti.pdf",  tipo: "application/pdf", tamanho: 204800, url: "#" },
       { id: "a2", nome: "aprovacao-gerente.pdf", tipo: "application/pdf", tamanho: 98304, url: "#" },
     ],
@@ -81,9 +81,9 @@ function SummarySidebar({ orcamento }: { orcamento: Orcamento }) {
         {[
           { label: "Número", value: orcamento.id },
           { label: "Solicitante", value: orcamento.requestFor },
-          { label: "Total de Itens", value: `${orcamento.itens?.length } produto(s)` },
-          { label: "Total de Unidades", value: `${orcamento.itens?.reduce((a, i) => a + i.quantidade, 0)} un.` },
-          { label: "Anexos", value: `${orcamento.anexos?.length} arquivo(s)` },
+          { label: "Total de Itens", value: `${orcamento.items?.length } produto(s)` },
+          { label: "Total de Unidades", value: `${orcamento.items?.reduce((a, i) => a + i.quantidade, 0)} un.` },
+          { label: "Anexos", value: `${orcamento.annexes?.length} arquivo(s)` },
         ].map(({ label, value }) => (
           <div key={label}>
             <p className="text-[10px] font-bold text-[#9aad9b] uppercase tracking-[0.07em]">{label}</p>
@@ -140,8 +140,8 @@ export default function OrcamentoViewPage() {
           {/* ── Main column ── */}
           <div className="flex-1 flex flex-col gap-5 min-w-0">
             <OrcamentoInfo   orcamento={orcamento} />
-            <OrcamentoItens  itens={orcamento.itens?orcamento.itens : []} />
-            <OrcamentoAnexos anexos={orcamento.anexos?orcamento.anexos : []} />
+            <OrcamentoItens  itens={orcamento.items?orcamento.items : []} />
+            <OrcamentoAnexos anexos={orcamento.annexes?orcamento.annexes : []} />
           </div>
 
           {/* ── Sidebar ── */}

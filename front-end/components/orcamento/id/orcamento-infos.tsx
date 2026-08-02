@@ -54,13 +54,13 @@ export function OrcamentoInfo({ orcamento }: Props) {
       </div>
 
       {/* Observations */}
-      {orcamento.observacoes && (
+      {orcamento.observation && (
         <div className="px-5 pb-5">
           <div className="flex items-start gap-3 p-4 bg-[#f8faf8] border border-[#edf4ed] rounded-xl">
             <MessageSquare className="w-4 h-4 text-[#4CAF50] mt-0.5 flex-shrink-0" />
             <div>
               <p className="text-[10px] font-bold text-[#9aad9b] uppercase tracking-[0.07em] mb-1">Observações</p>
-              <p className="text-[13px] text-[#374937] leading-relaxed">{orcamento.observacoes}</p>
+              <p className="text-[13px] text-[#374937] leading-relaxed">{orcamento.observation}</p>
             </div>
           </div>
         </div>

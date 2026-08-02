@@ -5,10 +5,13 @@ import Nicolas_End.demo.dtos.quotes.QuoteEditableDatasDTO;
 import Nicolas_End.demo.dtos.quotes.QuotePostDatasDTO;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
+import com.sun.tools.jconsole.JConsoleContext;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/quote")
@@ -37,6 +40,14 @@ public class QuoteController {
         }
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity searchQuoteById(@PathVariable @Valid  UUID id){
+        ApiResponse apiResponse = this.quoteService.getAllQuoteInfoById(id);
+
+        return  ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
 
     @GetMapping()
     public ResponseEntity getAllQuotes(){

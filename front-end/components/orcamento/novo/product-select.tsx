@@ -1,5 +1,6 @@
 "use client"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useLayoutEffect } from "react"
+import { createPortal } from "react-dom"
 import { ChevronDown, Package, Search } from "lucide-react"
 import type { Item, Produto } from "@/lib/types"
 import { mockItems, mockProdutos } from "@/lib/mock-data"
@@ -17,11 +18,59 @@ export function ProductSelect({
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [itens, setItens] = useState<Item[] | null>([])
-  const ref = useRef<HTMLDivElement>(null)
+  const [coords, setCoords] = useState({ top: 0, left: 0, width: 0 })
+
+  const btnRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     mockItems().then(setItens)
   }, [])
+
+  // Calcula a posição do dropdown baseado no botão
+  useLayoutEffect(() => {
+  if (open && btnRef.current) {
+    const rect = btnRef.current.getBoundingClientRect()
+    setCoords({
+      top: rect.bottom + 4,
+      left: rect.left,
+      width: rect.width,
+    })
+  }
+}, [open])
+// recalcula o dropdown
+useEffect(() => {
+  if (!open) return
+  function updatePosition() {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect()
+      setCoords({ top: rect.bottom + 4, left: rect.left, width: rect.width })
+    }
+  }
+  window.addEventListener("scroll", updatePosition, true)
+  window.addEventListener("resize", updatePosition)
+  return () => {
+    window.removeEventListener("scroll", updatePosition, true)
+    window.removeEventListener("resize", updatePosition)
+  }
+}, [open])
+
+  // Fecha ao clicar fora (considerando botão + dropdown do portal)
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Node
+      const clickedButton = btnRef.current?.contains(target)
+      const clickedDropdown = dropdownRef.current?.contains(target)
+      if (!clickedButton && !clickedDropdown) {
+        setOpen(false)
+        setQuery("")
+      }
+    }
+    if (open) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [open])
 
   const filtered = itens?.filter(
     (p) =>
@@ -34,8 +83,9 @@ export function ProductSelect({
   const selected = itens?.find((p) => p.id === value)
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="relative">
       <button
+        ref={btnRef}
         type="button"
         onClick={() => setOpen(!open)}
         className="w-full h-[42px] px-3.5 flex items-center justify-between text-[13px] bg-[#f5f9f5] border-[1.5px] border-[#d4e4d5] rounded-xl hover:border-[#a8c4a9] hover:bg-[#f0f8f0] focus:border-[#2E7D32] focus:bg-white transition-all font-[inherit] cursor-pointer"
@@ -45,49 +95,56 @@ export function ProductSelect({
         </span>
         <ChevronDown className={`w-4 h-4 text-[#9aad9b] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
-      {open && (
-        <div className="absolute z-50 top-full left-0 right-0 mt-1 bg-white border border-[#e2ece2] rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-hidden">
-          <div className="p-2 border-b border-[#f0f5f0]">
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9aad9b]" />
-              <input
-                autoFocus
-                type="text"
-                placeholder="Buscar produto..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="w-full h-8 pl-8 pr-3 text-[12px] bg-[#f8faf8] border border-[#e2ece2] rounded-lg outline-none focus:border-[#2E7D32] transition-colors font-[inherit]"
-              />
+
+      {open &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            className="fixed z-50 bg-white border border-[#e2ece2] rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.08)] overflow-hidden"
+            style={{ top: coords.top, left: coords.left, width: coords.width }}
+          >
+            <div className="p-2 border-b border-[#f0f5f0]">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#9aad9b]" />
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Buscar produto..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="w-full h-8 pl-8 pr-3 text-[12px] bg-[#f8faf8] border border-[#e2ece2] rounded-lg outline-none focus:border-[#2E7D32] transition-colors font-[inherit]"
+                />
+              </div>
             </div>
-          </div>
-          <div className="max-h-48 overflow-y-auto">
-            {filtered?.length === 0 ? (
-              <p className="px-3 py-4 text-[12px] text-[#8da48e] text-center">Nenhum produto encontrado</p>
-            ) : (
-              filtered?.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => {
-                    onChange(p)
-                    setOpen(false)
-                    setQuery("")
-                  }}
-                  className="w-full flex items-start gap-2.5 px-3 py-2.5 hover:bg-[#f8faf8] transition-colors text-left"
-                >
-                  <div className="w-7 h-7 rounded-[7px] bg-[#f0faf0] flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Package className="w-3.5 h-3.5 text-[#2E7D32]" />
-                  </div>
-                  <div>
-                    <p className="text-[12px] font-semibold text-[#0d1f0e] leading-none">{p.name}</p>
-                    <p className="text-[10px] text-[#8da48e] mt-0.5 font-mono">{p.internalCode}</p>
-                  </div>
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-      )}
+            <div className="max-h-48 overflow-y-auto">
+              {filtered?.length === 0 ? (
+                <p className="px-3 py-4 text-[12px] text-[#8da48e] text-center">Nenhum produto encontrado</p>
+              ) : (
+                filtered?.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => {
+                      onChange(p)
+                      setOpen(false)
+                      setQuery("")
+                    }}
+                    className="w-full flex items-start gap-2.5 px-3 py-2.5 hover:bg-[#f8faf8] transition-colors text-left"
+                  >
+                    <div className="w-7 h-7 rounded-[7px] bg-[#f0faf0] flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Package className="w-3.5 h-3.5 text-[#2E7D32]" />
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-semibold text-[#0d1f0e] leading-none">{p.name}</p>
+                      <p className="text-[10px] text-[#8da48e] mt-0.5 font-mono">{p.internalCode}</p>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   )
 }

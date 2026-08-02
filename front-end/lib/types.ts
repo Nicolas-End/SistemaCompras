@@ -28,10 +28,10 @@ export interface OrcamentoAnexo {
 
 export interface Orcamento {
   id: string
-  observacoes?: string
+  observation?: string
   requestFor:string
-  itens?: OrcamentoItem[]
-  anexos?: OrcamentoAnexo[]
+  items?: OrcamentoItem[]
+  annexes?: OrcamentoAnexo[]
   itemsQuantity?:number
   annexQuantity?:number
   status: OrcamentoStatus
