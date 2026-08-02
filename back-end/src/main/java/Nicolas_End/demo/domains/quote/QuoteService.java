@@ -251,7 +251,9 @@ public class QuoteService {
                 .build();
     }
 
-
+    public Optional<QuoteEntity> getQuoteEntity(UUID id){
+        return this.quoteRepository.findById(id);
+    }
 
 
 }
