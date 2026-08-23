@@ -1,6 +1,8 @@
 package Nicolas_End.demo.domains.orders;
 
+import Nicolas_End.demo.dtos.order.OrderPatchDatasDTO;
 import Nicolas_End.demo.dtos.order.OrderPostDatasDTO;
+import Nicolas_End.demo.enums.order.OrderStatus;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import jakarta.validation.Valid;
@@ -8,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/order")
+/*=== ENDPOINT PARA MOODIFICAÇÕES E ACESSO A PARTE DE PEDIDOS ===*/
 public class OrderController {
 
     private final OrderService orderService;
@@ -20,12 +25,23 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping()
-    public ResponseEntity registerNewOrder(@RequestBody @Valid OrderPostDatasDTO orderDatas){
+    @PostMapping("/{id}")
+    public ResponseEntity registerNewOrder(@PathVariable UUID id, @RequestBody String internalId){
 
+        OrderPostDatasDTO orderDatas = new OrderPostDatasDTO(id,internalId);
 
         ApiResponse response = this.orderService.registerNewOrder(orderDatas);
 
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity changeOrderInfos(@PathVariable UUID id, @RequestBody @Valid OrderStatus orderStatus, @RequestBody String internalId ){
+
+        OrderPatchDatasDTO newOrderDatas = new OrderPatchDatasDTO(id,internalId,orderStatus);
+
+        ApiResponse apiResponse = this.orderService.patchOrderInfos(newOrderDatas);
+
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
     }
 }

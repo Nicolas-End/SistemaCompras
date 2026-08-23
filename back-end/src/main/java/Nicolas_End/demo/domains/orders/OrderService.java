@@ -3,6 +3,7 @@ package Nicolas_End.demo.domains.orders;
 import Nicolas_End.demo.domains.quote.QuoteEntity;
 import Nicolas_End.demo.domains.quote.QuoteService;
 import Nicolas_End.demo.domains.staff.StaffEntity;
+import Nicolas_End.demo.dtos.order.OrderPatchDatasDTO;
 import Nicolas_End.demo.dtos.order.OrderPostDatasDTO;
 import Nicolas_End.demo.enums.quotes.QuoteStatus;
 import Nicolas_End.demo.enums.staff.StaffRoles;
@@ -10,11 +11,13 @@ import Nicolas_End.demo.infra.security.auth.AutheticatedStaff;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -48,6 +51,20 @@ public class OrderService {
         return this.responseUtil.sucess(order,null, HttpStatus.OK);
     }
 
+    @Transactional
+    public ApiResponse patchOrderInfos(OrderPatchDatasDTO orderDatas){
+        ApiResponse notFailedChangeOrderInfos = this.patchOrderInfos(orderDatas);
+        if(!notFailedChangeOrderInfos.getSuccess()){
+            return notFailedChangeOrderInfos;
+        }
+        OrderEntity order = (OrderEntity) notFailedChangeOrderInfos.getDatas();
+
+        this.orderRepository.save(order);
+
+        return this.responseUtil.sucess("Order Updated", "Pedido Modificado com sucesso", HttpStatus.OK);
+
+    }
+
     private ApiResponse validateQuoteEntityToRegister(Optional<QuoteEntity> quote){
         StaffEntity staff = AutheticatedStaff.Get();
 
@@ -63,6 +80,34 @@ public class OrderService {
         }
         return this.responseUtil.sucess(null,null,null);
 
+    }
+
+    private ApiResponse validatePatchOrderInfos(OrderPatchDatasDTO newOrderDatas){
+        OrderEntity order = this.findValidaOrder(newOrderDatas.id());
+
+        // verifica se o status do pedido não e o mesmo depois faz a verificação para ver se é uma troca valida
+        if (!newOrderDatas.status().equals(order.getOrderStatus())) {
+            if (OrderEntity.IS_A_NEXT_ALLOWED_STATUS_TRANSITION(order.getOrderStatus(), newOrderDatas.status())) {
+                return this.responseUtil.error("Invalid Change Order Status", "Mudanca de status invalida", HttpStatus.BAD_REQUEST);
+            }
+            order.setOrderStatus(newOrderDatas.status());
+        }
+        if(!newOrderDatas.internalId().isBlank() && !newOrderDatas.internalId().equals(order.getInternalId())){
+            order.setInternalId(newOrderDatas.internalId());
+        }
+
+        return this.responseUtil.sucess(order,null,null);
+
+
+    }
+
+    private OrderEntity findValidaOrder(UUID id){
+        Optional<OrderEntity> order = this.orderRepository.findById(id);
+
+        if (order.isEmpty()){
+            throw new EntityNotFoundException("Pedido solicitado não econtrado no sistema");
+        }
+        return order.get();
     }
 
 }
