@@ -53,7 +53,7 @@ public class OrderService {
 
     @Transactional
     public ApiResponse patchOrderInfos(OrderPatchDatasDTO orderDatas){
-        ApiResponse notFailedChangeOrderInfos = this.patchOrderInfos(orderDatas);
+        ApiResponse notFailedChangeOrderInfos = this.validatePatchOrderInfos(orderDatas);
         if(!notFailedChangeOrderInfos.getSuccess()){
             return notFailedChangeOrderInfos;
         }
@@ -86,10 +86,13 @@ public class OrderService {
         OrderEntity order = this.findValidaOrder(newOrderDatas.id());
 
         // verifica se o status do pedido não e o mesmo depois faz a verificação para ver se é uma troca valida
-        if (!newOrderDatas.status().equals(order.getOrderStatus())) {
-            if (OrderEntity.IS_A_NEXT_ALLOWED_STATUS_TRANSITION(order.getOrderStatus(), newOrderDatas.status())) {
+        if (newOrderDatas.status() == null || !newOrderDatas.status().equals(order.getOrderStatus()) ) {
+
+            if (!OrderEntity.IS_A_NEXT_ALLOWED_STATUS_TRANSITION(order.getOrderStatus(), newOrderDatas.status())) {
+
                 return this.responseUtil.error("Invalid Change Order Status", "Mudanca de status invalida", HttpStatus.BAD_REQUEST);
             }
+
             order.setOrderStatus(newOrderDatas.status());
         }
         if(!newOrderDatas.internalId().isBlank() && !newOrderDatas.internalId().equals(order.getInternalId())){

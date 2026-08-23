@@ -1,12 +1,12 @@
 package Nicolas_End.demo.domains.orders;
 
 import Nicolas_End.demo.dtos.order.OrderPatchDatasDTO;
+import Nicolas_End.demo.dtos.order.OrderPatchDatasWithOutIdDTO;
 import Nicolas_End.demo.dtos.order.OrderPostDatasDTO;
 import Nicolas_End.demo.enums.order.OrderStatus;
 import Nicolas_End.demo.infra.util.model.response.ApiResponse;
 import Nicolas_End.demo.infra.util.model.response.ResponseUtil;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +36,9 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity changeOrderInfos(@PathVariable UUID id, @RequestBody @Valid OrderStatus orderStatus, @RequestBody String internalId ){
+    public ResponseEntity changeOrderInfos(@PathVariable UUID id, @RequestBody OrderPatchDatasWithOutIdDTO orderDTO) {
 
-        OrderPatchDatasDTO newOrderDatas = new OrderPatchDatasDTO(id,internalId,orderStatus);
+        OrderPatchDatasDTO newOrderDatas = new OrderPatchDatasDTO(id, orderDTO.internalId(), orderDTO.status());
 
         ApiResponse apiResponse = this.orderService.patchOrderInfos(newOrderDatas);
 
